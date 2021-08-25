@@ -140,8 +140,8 @@ RUN mkdir downloads && cd downloads && \
     sudo mv tkn /usr/local/bin && \
     curl -LO https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz && \
     tar -xvf gh_${GH_VERSION}_linux_amd64.tar.gz && \
-    chmod +x gh && \
-    sudo mv gh /usr/local/bin && \
+    chmod +x gh_${GH_VERSION}_linux_amd64/bin/gh && \
+    sudo mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin && \
     cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean
 
