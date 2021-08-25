@@ -1,0 +1,4 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "peru/ubuntu-20.04-desktop-amd64"
+  config.vm.box_version = "20210701.01"
+end
