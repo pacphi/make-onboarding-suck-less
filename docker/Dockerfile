@@ -27,10 +27,13 @@ ENV TZ=America/Los_Angeles \
     TERRAFORM_VERSION=1.0.5 \
     TERRAFORM_DOCS_VERSION=0.15.0 \
     LEFTOVERS_VERSION=0.62.0 \
+    TANZU_VERSION=1.3.1 \
     TF_CARVEL_PLUGIN_VERSION=0.9.0 \
     TMC_VERSION=0.3.0-69c3ca95 \
     VENDIR_VERSION=0.22.0 \
-    YTT_VERSION=0.36.0
+    YTT_VERSION=0.36.0 \
+    VMWUSER=$vmw_username \
+    VMWPASS=$vmw_password
 
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -150,5 +153,6 @@ USER docker
 FROM scratch
 
 COPY --from=build / /
+COPY dist/ /usr/local/bin
 
 CMD /bin/bash
