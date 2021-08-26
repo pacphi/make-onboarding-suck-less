@@ -138,37 +138,37 @@ Set-Variable TARGET_DIR "C:/Users/vagrant"
 
 Set-Variable TF_CARVEL_PLUGIN_VERSION 0.9.0
 md $TARGET_DIR/.terraform.d/plugins/registry.terraform.io/hashicorp/carvel/$TF_CARVEL_PLUGIN_VERSION -ea 0
-Invoke-WebRequest -Uri "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v$TF_CARVEL_PLUGIN_VERSION/terraform-provider-carvel-binaries.tgz" -OutFile "$TARGET_DIR/terraform-provider-carvel-binaries.tgz"
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v$TF_CARVEL_PLUGIN_VERSION/terraform-provider-carvel-binaries.tgz", "$TARGET_DIR/terraform-provider-carvel-binaries.tgz")
 tar xzvf $TARGET_DIR/terraform-provider-carvel-binaries.tgz -C $TARGET_DIR/.terraform.d/plugins/registry.terraform.io/hashicorp
-Remove-Item terraform-provider-carvel-binaries.tgz
+Remove-Item $TARGET_DIR/terraform-provider-carvel-binaries.tgz
 
 md $TARGET_DIR/.apps/bin -ea 0
 cd $TARGET_DIR/.apps/bin
 
 
 Set-Variable PIVNET_VERSION 3.0.1
-Invoke-WebRequest -Uri "https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION" -OutFile "$TARGET_DIR/.apps/bin/pivnet-windows-amd64-$PIVNET_VERSION.exe"
-Rename-Item -Path "pivnet-linux-amd64-$PIVNET_VERSION.exe" -NewName "pivnet.exe"
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION", "$TARGET_DIR/.apps/bin/pivnet-windows-amd64-$PIVNET_VERSION.exe")
+Rename-Item -Path "$TARGET_DIR/pivnet-linux-amd64-$PIVNET_VERSION.exe" -NewName "$TARGET_DIR/pivnet.exe"
 
 Set-Variable OM_VERSION 7.3.1
-Invoke-WebRequest -Uri "https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe" -OutFile "$TARGET_DIR/.apps/bin/om-windows-$OM_VERSION.exe"
-Rename-Item -Path "om-windows-$OM_VERSION.exe" -NewName "om.exe"
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe", "$TARGET_DIR/.apps/bin/om-windows-$OM_VERSION.exe")
+Rename-Item -Path "$TARGET_DIR/om-windows-$OM_VERSION.exe" -NewName "$TARGET_DIR/om.exe"
 
 Set-Variable ARGOCD_VERSION 3.0.10
-Invoke-WebRequest -Uri "https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe" -OutFile "$TARGET_DIR/.apps/bin/argocd-windows-amd64.exe"
-Rename-Item -Path "argocd-windows-amd64.exe" -NewName "argocd.exe"
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe", "$TARGET_DIR/.apps/bin/argocd-windows-amd64.exe")
+Rename-Item -Path "$TARGET_DIR/argocd-windows-amd64.exe" -NewName "$TARGET_DIR/argocd.exe"
 
 Set-Variable KREW_VERSION 0.4.1
-Invoke-WebRequest -Uri "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe" -OutFile "$TARGET_DIR/.apps/bin/krew.exe"
-Invoke-WebRequest -Uri "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml" -OutFile "$TARGET_DIR/.apps/bin/krew.yaml"
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe", "$TARGET_DIR/.apps/bin/krew.exe")
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml", "$TARGET_DIR/.apps/bin/krew.yaml")
 
 Set-Variable TMC_VERSION 0.3.0-69c3ca95
-Invoke-WebRequest -Uri "https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe" -OutFile "$TARGET_DIR/.apps/bin/tmc.exe"
+(New-Object System.Net.WebClient).DownloadFile("https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe", "$TARGET_DIR/.apps/bin/tmc.exe")
 
 Add-EnvPath -Path "$TARGET_DIR/.apps/bin" -Container "Machine"
 
 Move-Item -Path $TARGET_DIR/tanzu.exe -Destination $TARGET_DIR/.apps/bin/tanzu.exe
-krew install --manifest=krew.yaml
+krew install --manifest=$TARGET_DIR/.apps/bin/krew.yaml
 
 SCRIPT
 
