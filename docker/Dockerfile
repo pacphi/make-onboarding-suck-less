@@ -148,11 +148,11 @@ RUN mkdir downloads && cd downloads && \
     cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean
 
-USER docker
-
 FROM scratch
 
 COPY --from=build / /
 COPY dist/ /usr/local/bin
 
 CMD /bin/bash
+
+USER docker
