@@ -1,3 +1,9 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "StefanScherer/windows_10"
+  config.disksize.size = '50GB'
+  config.vm.provider "virtualbox" do |v|
+    v.check_guest_additions = false
+    v.memory = 8192
+    v.cpus = 2
+  end
 end
