@@ -12,6 +12,7 @@ ENV TZ=America/Los_Angeles \
     CF_VERSION=7.3.0 \
     CREDHUB_VERSION=2.9.0 \
     GH_VERSION=2.0.0 \
+    GO_VERSION=1.16.7 \
     HELM_VERSION=3.6.3 \
     HELMFILE_VERSION=0.140.0 \
     AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05" \
@@ -38,7 +39,7 @@ ENV TZ=America/Los_Angeles \
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
-    apt install build-essential curl git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev sudo tzdata unzip wget -y && \
+    apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
     apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
     add-apt-repository ppa:longsleep/golang-backports && \
     add-apt-repository ppa:cncf-buildpacks/pack-cli && \
@@ -145,6 +146,14 @@ RUN mkdir downloads && cd downloads && \
     tar -xvf gh_${GH_VERSION}_linux_amd64.tar.gz && \
     chmod +x gh_${GH_VERSION}_linux_amd64/bin/gh && \
     sudo mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin && \
+    wget -c https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local && \
+    sudo ln -s /usr/local/go/bin/go /usr/local/bin/go && \
+    sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt && \
+    git clone https://github.com/FiloSottile/mkcert && cd mkcert && \
+    go build -ldflags "-X main.Version=$(git describe --tags)" && \
+    sudo mv mkcert /usr/local/bin && \
+    cd .. && \
+    rm -Rf mkcert && \
     cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean
 

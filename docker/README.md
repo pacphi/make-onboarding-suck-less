@@ -6,7 +6,7 @@ If you want to build and run a portable container image, then execute
 
 ```
 cp ../scripts/fetch-tanzu-cli.sh .
-./fetch-tanzu-cli.sh {VMWUSER} {VMWPASS} {TANZU_CLI_VERSION}
+./fetch-tanzu-cli.sh {VMWUSER} {VMWPASS} linux {TANZU_CLI_VERSION}
 docker build -t tanzu/k8s-toolkit .
 docker run --rm -it tanzu/k8s-toolkit /bin/bash
 ```
