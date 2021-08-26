@@ -11,15 +11,18 @@ echo "curl" && curl --version && echo
 echo "Google Cloud SDK" && gcloud version && echo
 echo "Github CLI" && gh version && echo
 echo "git" && git --version && echo
+echo "Go" && go version && echo
 echo "Helm" && helm version && echo
 echo "Helm File" && helmfile version && echo
 echo "HTTPie" && http --version && echo
 echo "Carvel imgpkg" && imgpkg version && echo
+echo "Java" && java --version && echo
 echo "JSON Query (jq)" && jq --version && echo
 echo "Carvel kapp" && kapp version && echo
 echo "Carvel kwt" && kwt version && echo
 echo "Krew, the package manager for kubectl plugins" && krew version && echo
 echo "kubectl" && kubectl version && echo
+echo "mkcert" && mkcert --version && echo
 echo "VMware Tanzu Ops Manager CLI" && om version && echo
 echo "Open SSL" && openssl version && echo
 echo "Node JS" && node --version && echo

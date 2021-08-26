@@ -1,7 +1,64 @@
+$script = <<-SCRIPT
+
+softwareupdate --all --install --force
+
+# Install Homebrew; @see https://brew.sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+# Install minimal complement of tools
+brew install awscli aws-iam-authenticator azure-cli docker git gpg graphviz libressl mkcert nss openssl terraform terraform-docs tflint httpie kind kubernetes-cli kubeseal helm helmfile krew octant pv
+brew install --cask google-cloud-sdk
+brew install --cask keybase
+brew tap vmware-tanzu/carvel
+brew install ytt kbld kapp imgpkg kwt vendir
+brew install derailed/k9s/k9s
+brew install cloudfoundry/tap/bosh-cli
+brew install pivotal/tap/pivnet-cli
+brew install cloudfoundry/tap/cf-cli@7
+brew tap argoproj/tap
+brew install argoproj/tap/argocd
+brew install argoproj/tap/kubectl-argo-rollouts
+brew tap tektoncd/tools
+brew install tektoncd/tools/tektoncd-cli
+brew install minio/stable/mc
+brew install --cask visual-studio-code
+brew install buildpacks/tap/pack
+brew install java11
+
+# Install Terraform k14s provider; @see https://github.com/k14s/terraform-provider-k14s
+TF_CARVEL_PLUGIN_VERSION=0.9.0 && \
+mkdir -p ~/.terraform.d/plugins && \
+curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz" && \
+tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
+rm -Rf terraform-provider-carvel-binaries.tgz && \
+
+OM_VERSION=7.3.1
+curl -LO https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-darwin-${OM_VERSION} && \
+mv om-darwin-${OM_VERSION} om && \
+chmod +x om && \
+sudo mv om /usr/local/bin && \
+
+TMC_VERSION=0.3.0-69c3ca95 && \
+curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x64/tmc && \
+chmod +x tmc && \
+sudo mv tmc /usr/local/bin
+
+chmod +x tanzu
+sudo mv tanzu /usr/local/bin
+chmod +x inventory.sh
+
+SCRIPT
+
 Vagrant.configure("2") do |config|
   config.vm.box = "VMR/MacOS_Catalina-R"
+  config.disksize.size = '50GB'
   config.vm.synced_folder ".", "/vagrant", disabled: true
   config.vm.provider "virtualbox" do |v|
     v.check_guest_additions = false
+    v.memory = 8192
+    v.cpus = 2
   end
+  config.vm.provision "file", source: "dist/tanzu", destination: "/Users/vagrant/tanzu"
+  config.vm.provision "file", source: "inventory.sh", destination: "/Users/vagrant/inventory.sh"
+  config.vm.provision "shell", inline: $script, privileged: false
 end

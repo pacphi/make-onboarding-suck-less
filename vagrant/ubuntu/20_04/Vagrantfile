@@ -6,12 +6,14 @@ BOSH_VERSION=6.4.5
 CF_VERSION=7.3.0
 CREDHUB_VERSION=2.9.0
 GH_VERSION=2.0.0
+GO_VERSION=1.16.7
 HELM_VERSION=3.6.3
 HELMFILE_VERSION=0.140.0
 AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05"
 IMGPKG_VERSION=0.17.0
 KAPP_VERSION=0.39.0
 KBLD_VERSION=0.30.0
+KIND_VERSION=0.11.1
 KWT_VERSION=0.0.6
 KREW_VERSION=0.4.1
 KUBECTL_VERSION=1.22.1
@@ -30,7 +32,7 @@ YTT_VERSION=0.36.0
 mkdir downloads && cd downloads && \
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
 apt update -y && \
-apt install build-essential curl git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev sudo tzdata unzip wget -y && \
+apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
 apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
 add-apt-repository ppa:longsleep/golang-backports && \
 add-apt-repository ppa:cncf-buildpacks/pack-cli && \
@@ -97,7 +99,7 @@ tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
 rm -Rf terraform-provider-carvel-binaries.tgz && \
 curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc && \
 chmod +x tmc && \
-mv tmc /usr/local/bin && \
+sudo mv tmc /usr/local/bin && \
 curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz" && \
 tar -xvf helm-v${HELM_VERSION}-linux-amd64.tar.gz && \
 sudo mv linux-amd64/helm /usr/local/bin && \
@@ -137,17 +139,46 @@ curl -LO https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VER
 tar -xvf gh_${GH_VERSION}_linux_amd64.tar.gz && \
 chmod +x gh_${GH_VERSION}_linux_amd64/bin/gh && \
 sudo mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin && \
+wget -c https://dl.google.com/go/go${GO_VERSION}.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local && \
+sudo ln -s /usr/local/go/bin/go /usr/local/bin/go && \
+sudo ln -s /usr/local/go/bin/gofmt /usr/local/bin/gofmt && \
+git clone https://github.com/FiloSottile/mkcert && cd mkcert && \
+go build -ldflags "-X main.Version=$(git describe --tags)" && \
+sudo mv mkcert /usr/local/bin && \
+cd .. && \
+rm -Rf mkcert && \
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+sudo apt-get update && \
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io && \
+sudo usermod -aG docker vagrant && \
+sudo systemctl enable docker.service && \
+sudo systemctl enable containerd.service && \
+docker run --rm hello-world && \
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64 && \
+chmod +x ./kind && \
+sudo mv ./kind /usr/local/bin && \
 cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 apt clean
 
-sudo chmod +x tanzu
+chmod +x tanzu
 sudo mv tanzu /usr/local/bin
+chmod +x inventory.sh
 
 SCRIPT
 
 Vagrant.configure("2") do |config|
   config.vm.box = "peru/ubuntu-20.04-desktop-amd64"
   config.vm.box_version = "20210701.01"
+  config.disksize.size = '50GB'
+  config.vm.provider "virtualbox" do |v|
+    v.check_guest_additions = false
+    v.memory = 8192
+    v.cpus = 2
+  end
   config.vm.provision "file", source: "dist/tanzu", destination: "/home/vagrant/tanzu"
+  config.vm.provision "file", source: "inventory.sh", destination: "/home/vagrant/inventory.sh"
   config.vm.provision "shell", inline: $script
 end

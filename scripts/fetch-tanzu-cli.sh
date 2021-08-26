@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ] && [ -z "$2" ] && [-z "$3" ]; then
-	echo "Usage: fetch-tanzu-cli.sh {username} {password} {tanzu-cli-version}"
+if [ -z "$1" ] && [ -z "$2" ] && [-z "$3" ] && [-z "$4" ]; then
+	echo "Usage: fetch-tanzu-cli.sh {username} {password} {os} {tanzu-cli-version}"
 	exit 1
 fi
 
 VMWUSER="$1"
 VMWPASS="$2"
-TANZU_VERSION="$3"
+OS="$3"
+TANZU_VERSION="$4"
 
-FILE=tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
+FILE=tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
 CURRENT_VERSION="latest"
 if [ -e "dist/tanzu" ]; then
   cd dist
@@ -27,10 +28,10 @@ else
     npm list | grep vmw-cli || npm install vmw-cli --global
     mkdir -p dist
     vmw-cli ls vmware_tanzu_kubernetes_grid
-    vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
-    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C dist
-    chmod +x dist/cli/core/v${TANZU_VERSION}/tanzu-core-linux_amd64
-    cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-linux_amd64 dist/tanzu
+    vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
+    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar -C dist
+    chmod +x dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64
+    cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 dist/tanzu
     rm -Rf dist/cli
-    rm -f tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
+    rm -f tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
 fi
