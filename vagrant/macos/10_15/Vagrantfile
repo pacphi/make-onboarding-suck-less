@@ -16,6 +16,7 @@ brew install cloudfoundry/tap/bosh-cli
 brew install pivotal/tap/pivnet-cli
 brew install cloudfoundry/tap/cf-cli@7
 brew tap argoproj/tap
+brew install argoproj/tap/argo
 brew install argoproj/tap/argocd
 brew install argoproj/tap/kubectl-argo-rollouts
 brew tap tektoncd/tools

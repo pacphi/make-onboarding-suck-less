@@ -1,5 +1,6 @@
 
-Write-Output "Argo CD CLI" && argo version && Write-Output ""
+Write-Output "Argo CD CLI" && argocd version && Write-Output ""
+Write-Output "Argo Workflows CLI" && argo version && Write-Output ""
 Write-Output "Azure CLI" && az version && Write-Output ""
 Write-Output "AWS CLI" && aws --version && Write-Output ""
 Write-Output "AWS IAM Authenticator" && aws-iam-authenticator version && Write-Output ""
@@ -36,4 +37,3 @@ Write-Output "Tanzu Mission Control CLI" && tmc version && Write-Output ""
 Write-Output "CloudFoundry UAA CLI" && uaac --version && Write-Output ""
 Write-Output "Carvel vendir" && vendir version && Write-Output ""
 Write-Output "Carvel ytt" && ytt version && Write-Output ""
-Write-Output "wget" && wget --version && Write-Output ""

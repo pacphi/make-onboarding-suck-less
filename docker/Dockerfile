@@ -7,6 +7,7 @@ LABEL author=cphillipson@vmware.com
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV TZ=America/Los_Angeles \
+    ARGOCD_VERSION=2.1.1 \
     ARGO_VERSION=3.0.10 \
     BOSH_VERSION=6.4.5 \
     CF_VERSION=7.3.0 \
@@ -134,6 +135,9 @@ RUN mkdir downloads && cd downloads && \
     curl -LO https://dl.min.io/client/mc/release/linux-amd64/mc && \
     chmod +x mc && \
     sudo mv mc /usr/local/bin && \
+    wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
+    chmod +x argocd && \
+    sudo mv argocd /usr/local/bin && \
     curl -LO https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-amd64.gz && \
     gunzip argo-linux-amd64.gz && \
     chmod +x argo-linux-amd64 && \

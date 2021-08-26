@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-echo "Argo CD CLI" && argo version && echo
+echo "Argo CD CLI" && argocd version && echo
+echo "Argo Workflows CLI" && argo version && echo
 echo "Azure CLI" && az version && echo
 echo "AWS CLI" && aws --version && echo
 echo "AWS IAM Authenticator" && aws-iam-authenticator version && echo
