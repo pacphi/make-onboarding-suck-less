@@ -24,7 +24,7 @@ Login with
 If you want an inventory of all the relevant tools installed
 
 ```
-$HOME/.inventory.sh
+$HOME/inventory.sh
 ```
 > To be executed inside the VM
 
