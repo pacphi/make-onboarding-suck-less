@@ -30,8 +30,12 @@ else
     vmw-cli ls vmware_tanzu_kubernetes_grid
     vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
     tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar -C dist
-    chmod +x dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64
-    cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 dist/tanzu
+    if [ "$OS" == "windows" ]; then
+      cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64.exe dist/tanzu.exe
+    else
+      chmod +x dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64
+      cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 dist/tanzu
+    fi
     rm -Rf dist/cli
     rm -f tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
 fi

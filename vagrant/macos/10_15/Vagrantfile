@@ -24,6 +24,8 @@ brew install minio/stable/mc
 brew install --cask visual-studio-code
 brew install buildpacks/tap/pack
 brew install java11
+brew install tilt-dev/tap/tilt
+
 
 # Install Terraform k14s provider; @see https://github.com/k14s/terraform-provider-k14s
 TF_CARVEL_PLUGIN_VERSION=0.9.0 && \
