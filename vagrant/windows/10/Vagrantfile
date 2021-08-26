@@ -1,3 +1,174 @@
+$script = <<-SCRIPT
+
+# This script should be run in an administrative shell
+# It installs software using combination of two package managers: Chocolately and Scoop
+
+# @see https://gist.github.com/mkropat/c1226e0cc2ca941b23a9
+function Add-EnvPath {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Path,
+
+        [ValidateSet('Machine', 'User', 'Session')]
+        [string] $Container = 'Session'
+    )
+
+    if ($Container -ne 'Session') {
+        $containerMapping = @{
+            Machine = [EnvironmentVariableTarget]::Machine
+            User = [EnvironmentVariableTarget]::User
+        }
+        $containerType = $containerMapping[$Container]
+
+        $persistedPaths = [Environment]::GetEnvironmentVariable('Path', $containerType) -split ';'
+        if ($persistedPaths -notcontains $Path) {
+            $persistedPaths = $persistedPaths + $Path | where { $_ }
+            [Environment]::SetEnvironmentVariable('Path', $persistedPaths -join ';', $containerType)
+        }
+    }
+
+    $envPaths = $env:Path -split ';'
+    if ($envPaths -notcontains $Path) {
+        $envPaths = $envPaths + $Path | where { $_ }
+        $env:Path = $envPaths -join ';'
+    }
+}
+
+function Remove-EnvPath {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string] $Path,
+
+        [ValidateSet('Machine', 'User', 'Session')]
+        [string] $Container = 'Session'
+    )
+
+    if ($Container -ne 'Session') {
+        $containerMapping = @{
+            Machine = [EnvironmentVariableTarget]::Machine
+            User = [EnvironmentVariableTarget]::User
+        }
+        $containerType = $containerMapping[$Container]
+
+        $persistedPaths = [Environment]::GetEnvironmentVariable('Path', $containerType) -split ';'
+        if ($persistedPaths -contains $Path) {
+            $persistedPaths = $persistedPaths | where { $_ -and $_ -ne $Path }
+            [Environment]::SetEnvironmentVariable('Path', $persistedPaths -join ';', $containerType)
+        }
+    }
+
+    $envPaths = $env:Path -split ';'
+    if ($envPaths -contains $Path) {
+        $envPaths = $envPaths | where { $_ -and $_ -ne $Path }
+        $env:Path = $envPaths -join ';'
+    }
+}
+
+function Get-EnvPath {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateSet('Machine', 'User')]
+        [string] $Container
+    )
+
+    $containerMapping = @{
+        Machine = [EnvironmentVariableTarget]::Machine
+        User = [EnvironmentVariableTarget]::User
+    }
+    $containerType = $containerMapping[$Container]
+
+    [Environment]::GetEnvironmentVariable('Path', $containerType) -split ';' |
+        where { $_ }
+}
+
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1')
+
+
+#####################
+# BILL OF MATERIALS
+#####################
+
+scoop install git
+scoop bucket add extras
+
+# 7Zip
+scoop install 7zip
+
+# Dev Tools
+scoop install aria2
+choco install -y argocd-cli
+choco install -y bosh-cli
+scoop install curl
+scoop install vscode
+scoop install azure-cli
+choco install -y aws-iam-authenticator
+scoop install aws
+choco install -y cloudfoundry-cli
+scoop install gcloud
+choco install -y gnupg
+scoop install graphviz
+choco install -y libressl
+choco install -y minio-client
+choco install -y openssl
+scoop install terraform
+choco install -y terraform-docs
+scoop install tflint
+choco install -y httpie -source python
+choco install -y keybase
+choco install -y kind
+scoop install kubectl
+scoop install k9s
+scoop install helm
+scoop install helmfile
+choco install -y mkcert
+scoop install octant
+scoop tar install
+choco install -y tektoncd-cli
+choco install -y vendir
+choco install -y ytt
+choco install -y kapp
+choco install -y kbld
+choco install -y imgpkg
+
+Set-Variable TF_CARVEL_PLUGIN_VERSION 0.9.0
+md $HOME/.terraform.d/plugins/registry.terraform.io/hashicorp/carvel/$TF_CARVEL_PLUGIN_VERSION -ea 0
+curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v$TF_CARVEL_PLUGIN_VERSION/terraform-provider-carvel-binaries.tgz"
+tar xzvf terraform-provider-carvel-binaries.tgz -C $HOME/.terraform.d/plugins/
+Remove-Item terraform-provider-carvel-binaries.tgz
+
+
+md $HOME/.apps/bin -ea 0
+cd $HOME/.apps/bin
+
+Set-Variable PIVNET_VERSION 3.0.1
+curl -LO "https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION"
+Rename-Item -Path "pivnet-linux-amd64-$PIVNET_VERSION.exe" -NewName "pivnet.exe"
+
+Set-Variable OM_VERSION 7.3.1
+curl -LO "https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe"
+Rename-Item -Path "om-windows-$OM_VERSION.exe" -NewName "om.exe"
+
+Set-Variable ARGOCD_VERSION 3.0.10
+curl -LO "https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe"
+Rename-Item -Path "argocd-windows-amd64.exe" -NewName "argocd.exe"
+
+Set-Variable KREW_VERSION 0.4.1
+curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe"
+curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml"
+krew install --manifest=krew.yaml
+
+Set-Variable TMC_VERSION 0.3.0-69c3ca95
+curl -LO "https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe"
+
+Add-EnvPath -Path "$HOME/.apps/bin" -Container "Machine"
+
+Move-Item -Path $HOME\tanzu.exe -Destination $HOME\.apps\bin\tanzu.exe
+
+SCRIPT
+
 Vagrant.configure("2") do |config|
   config.vm.box = "StefanScherer/windows_10"
   config.disksize.size = '50GB'
@@ -6,4 +177,6 @@ Vagrant.configure("2") do |config|
     v.memory = 8192
     v.cpus = 2
   end
+  config.vm.provision "file", source: "dist/tanzu.exe", destination: "/Users/vagrant/tanzu.exe"
+  config.vm.provision "shell", inline: $script
 end
