@@ -101,7 +101,6 @@ scoop install 7zip
 scoop install aria2
 choco install -y argocd-cli
 choco install -y bosh-cli
-scoop install curl
 scoop install vscode
 scoop install azure-cli
 choco install -y aws-iam-authenticator
@@ -132,51 +131,56 @@ choco install -y ytt
 choco install -y kapp
 choco install -y kbld
 choco install -y imgpkg
+scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
+scoop install tilt
+
+Set-Variable TARGET_DIR "C:/Users/vagrant"
 
 Set-Variable TF_CARVEL_PLUGIN_VERSION 0.9.0
-md $HOME/.terraform.d/plugins/registry.terraform.io/hashicorp/carvel/$TF_CARVEL_PLUGIN_VERSION -ea 0
-curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v$TF_CARVEL_PLUGIN_VERSION/terraform-provider-carvel-binaries.tgz"
-tar xzvf terraform-provider-carvel-binaries.tgz -C $HOME/.terraform.d/plugins/
+md $TARGET_DIR/.terraform.d/plugins/registry.terraform.io/hashicorp/carvel/$TF_CARVEL_PLUGIN_VERSION -ea 0
+Invoke-WebRequest -Uri "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v$TF_CARVEL_PLUGIN_VERSION/terraform-provider-carvel-binaries.tgz" -OutFile "$TARGET_DIR/terraform-provider-carvel-binaries.tgz"
+tar xzvf $TARGET_DIR/terraform-provider-carvel-binaries.tgz -C $TARGET_DIR/.terraform.d/plugins/registry.terraform.io/hashicorp
 Remove-Item terraform-provider-carvel-binaries.tgz
 
+md $TARGET_DIR/.apps/bin -ea 0
+cd $TARGET_DIR/.apps/bin
 
-md $HOME/.apps/bin -ea 0
-cd $HOME/.apps/bin
 
 Set-Variable PIVNET_VERSION 3.0.1
-curl -LO "https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION"
+Invoke-WebRequest -Uri "https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION" -OutFile "$TARGET_DIR/.apps/bin/pivnet-windows-amd64-$PIVNET_VERSION.exe"
 Rename-Item -Path "pivnet-linux-amd64-$PIVNET_VERSION.exe" -NewName "pivnet.exe"
 
 Set-Variable OM_VERSION 7.3.1
-curl -LO "https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe"
+Invoke-WebRequest -Uri "https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe" -OutFile "$TARGET_DIR/.apps/bin/om-windows-$OM_VERSION.exe"
 Rename-Item -Path "om-windows-$OM_VERSION.exe" -NewName "om.exe"
 
 Set-Variable ARGOCD_VERSION 3.0.10
-curl -LO "https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe"
+Invoke-WebRequest -Uri "https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe" -OutFile "$TARGET_DIR/.apps/bin/argocd-windows-amd64.exe"
 Rename-Item -Path "argocd-windows-amd64.exe" -NewName "argocd.exe"
 
 Set-Variable KREW_VERSION 0.4.1
-curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe"
-curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml"
-krew install --manifest=krew.yaml
+Invoke-WebRequest -Uri "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe" -OutFile "$TARGET_DIR/.apps/bin/krew.exe"
+Invoke-WebRequest -Uri "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml" -OutFile "$TARGET_DIR/.apps/bin/krew.yaml"
 
 Set-Variable TMC_VERSION 0.3.0-69c3ca95
-curl -LO "https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe"
+Invoke-WebRequest -Uri "https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe" -OutFile "$TARGET_DIR/.apps/bin/tmc.exe"
 
-Add-EnvPath -Path "$HOME/.apps/bin" -Container "Machine"
+Add-EnvPath -Path "$TARGET_DIR/.apps/bin" -Container "Machine"
 
-Move-Item -Path $HOME\tanzu.exe -Destination $HOME\.apps\bin\tanzu.exe
+Move-Item -Path $TARGET_DIR/tanzu.exe -Destination $TARGET_DIR/.apps/bin/tanzu.exe
+krew install --manifest=krew.yaml
 
 SCRIPT
 
 Vagrant.configure("2") do |config|
   config.vm.box = "StefanScherer/windows_10"
-  config.disksize.size = '50GB'
+  config.disksize.size = '60GB'
   config.vm.provider "virtualbox" do |v|
     v.check_guest_additions = false
     v.memory = 8192
     v.cpus = 2
   end
   config.vm.provision "file", source: "dist/tanzu.exe", destination: "/Users/vagrant/tanzu.exe"
+  config.vm.provision "file", source: "inventory.ps1", destination: "/home/vagrant/inventory.ps1"
   config.vm.provision "shell", inline: $script
 end

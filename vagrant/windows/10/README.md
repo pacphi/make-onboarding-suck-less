@@ -8,7 +8,7 @@
 
 ```
 cp ../../../scripts/fetch-tanzu-cli.sh .
-cp ../../../scripts/inventory.sh .
+cp ../../../scripts/inventory.ps1 .
 ./fetch-tanzu-cli.sh {VMWUSER} {VMWPASS} windows {TANZU_CLI_VERSION}
 vagrant up
 ```
@@ -26,7 +26,7 @@ Login with
 If you want an inventory of all the relevant tools installed
 
 ```
-$HOME\inventory.ps1
+C:\Users\vagrant\inventory.ps1
 ```
 > To be executed inside the VM
 
