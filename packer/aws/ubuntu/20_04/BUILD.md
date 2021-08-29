@@ -60,4 +60,3 @@ packer build --var instance_type=m4.xlarge --var vpc_region=eu-west-3 .
     * eu-west-3 - ami-06d3fffafe8d48b35
 * [Amazon AMI Builder](https://www.packer.io/docs/builders/amazon)
 * [AMI Builder (EBS backed)](https://www.packer.io/docs/builders/amazon/ebs)
-* [Create a custom Linux-based image](http://help.strigo.io/en/articles/3611243-create-a-custom-linux-based-image)
