@@ -11,6 +11,11 @@ locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
 }
 
+variable "image_name" {
+  type    = string
+  default = "springone-2021-k8s-toolset-image"
+}
+
 variable "project_id" {
   type = string
   default = "fe-cphillipson"
@@ -38,7 +43,7 @@ variable "zone" {
 
 source "googlecompute" "k8s-toolset" {
   project_id          = var.project_id
-  image_name          = "k8s-toolset-${local.timestamp}"
+  image_name          = "${var.image_name}-${local.timestamp}"
   enable_secure_boot  = true
   machine_type        = var.machine_type
   source_image_family = "ubuntu-minimal-2004-lts"

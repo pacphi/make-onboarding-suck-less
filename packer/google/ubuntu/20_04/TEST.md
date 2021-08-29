@@ -31,10 +31,10 @@ export GOOGLE_APPLICATION_CREDENTIALS="%APPDATA%/gcloud/application_default_cred
 ```
 gcloud beta compute instances create {INSTANCE_NAME} \
     --zone {AVAILABILITY_ZONE} \
-    --image=https://www.googleapis.com/compute/v1/projects/{PROJECT_ID}/global/images/k8s-toolset-{TIMESTAMP} \
+    --image=https://www.googleapis.com/compute/v1/projects/{PROJECT_ID}/global/images/{IMAGE_NAME} \
     --machine-type {MACHINE_TYPE}
 ```
-> Replace `{INSTANCE_NAME}` with the name you want to assign the VM.  Replace `{AVAILABILITY_ZONE}` with one of `gcloud compute zones list`.  Replace `{PROJECT_ID}` with a valid [project identifier](https://cloud.google.com/resource-manager/docs/creating-managing-projects).  Replace `{TIMESTAMP}` as the suffix of a k8s-toolset custom image that had already been created.  Finally, replace `{MACHINE_TYPE}` with one of `gcloud compute machine-types list`.
+> Replace `{INSTANCE_NAME}` with the name you want to assign the VM.  Replace `{AVAILABILITY_ZONE}` with one of `gcloud compute zones list`.  Replace `{PROJECT_ID}` with a valid [project identifier](https://cloud.google.com/resource-manager/docs/creating-managing-projects).  Replace `{IMAGE_NAME}` with the name of a custom image that has already been created.  Finally, replace `{MACHINE_TYPE}` with one of `gcloud compute machine-types list`.
 
 
 ## Connect to VM
