@@ -14,7 +14,7 @@ Experiments with Docker, Packer and Vagrant. Striving to make it easy for varyin
 
 ## Tools used to curate toolsets
 
-_Vagrant_ is used to create and start a VM on a host OS. That VM, your choice of _MacOS_, _Ubuntu_, or _Windows_ has tools curated for a Kubernetes operator or developer. (You could certainly craft other variants).
+_Vagrant_ is used to create and start a VM on a host OS. That VM, your choice of _MacOS_, _Ubuntu_, or _Windows_ has tools curated for a Kubernetes operator or developer.  You could certainly craft other variants.  (Use case: get toolset ready for consumption on a laptop or workstation).
 
 _Docker_ is employed along with a Dockerfile to curate the same.
 
