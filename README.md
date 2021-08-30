@@ -27,6 +27,8 @@ The choice of tools used to package is not the focus rather the above are introd
 
 ## Examples
 
+### Found here
+
 * Vagrant
   * [MacOs 10.15](vagrant/macos/10_15)
   * [Ubuntu 20.04](vagrant/ubuntu/20_04)
@@ -37,6 +39,14 @@ The choice of tools used to package is not the focus rather the above are introd
   * [Ubuntu 20.04 on Google Compute VM](packer/google/ubuntu/20_04)
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
   * [Ubuntu 18.04 on Azure VM](packer/azure/ubuntu/18_04)
+
+### Elsewhere
+
+* [alicloud-image-builder](https://alibabacloud-howto.github.io/devops/tutorials/devops_for_small_to_medium_web_applications/part_04_continuous_delivery.html)
+* [ibm-cloud-image-builder](https://github.com/IBM-Cloud/ibmcloud-image-builder)
+* [oci-image-builder](https://github.com/oracle-quickstart/oci-byo-image)
+* [vmware-vsphere-image-builder](https://github.com/allthingsclowd/packer-vsphere-iso-example)
+
 
 ## What if I'm air-gapped?
 
