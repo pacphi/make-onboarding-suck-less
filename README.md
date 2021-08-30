@@ -1,5 +1,7 @@
 # Make Onboarding Suck Less
 
+> A Spring One 2021 [session](https://springone.io/2021/sessions/making-onboarding-suck-less).
+
 Experiments with Docker, Packer and Vagrant. Striving to make it easy for varying persona to get started with a curated collection of tooling packaged and available on popular OSes.  All while standing on the shoulders of giants.
 
 ## Prerequisites
@@ -49,7 +51,7 @@ A solid choice:
 Incorporate scanning to watch for critical security vulnerabilities (and gate consumption of the same).
 
 Consider:
-* [snyk](https://snyk.io/product/container-vulnerability-management/).
+* [snyk](https://snyk.io/product/container-vulnerability-management/)
 
 
 ## Cloud IDEs
