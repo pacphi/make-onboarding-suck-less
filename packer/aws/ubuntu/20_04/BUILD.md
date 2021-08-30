@@ -3,6 +3,7 @@
 ## Prerequisites
 
 * AWS administrator account credentials
+* [aws CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 * [Packer](https://www.packer.io/downloads)
 
 
