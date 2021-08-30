@@ -92,14 +92,6 @@ build {
     execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
   }
 
-  provisioner "shell" {
-    execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
-    inline = [
-      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
-    ]
-    inline_shebang = "/bin/sh -x"
-  }
-
   post-processor "checksum" {
     checksum_types = ["md5", "sha512"]
   }
