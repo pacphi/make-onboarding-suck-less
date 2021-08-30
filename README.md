@@ -36,6 +36,22 @@ The choice of tools used to package is not the focus rather the above are introd
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
   * [Ubuntu 18.04 on Azure VM](packer/azure/ubuntu/18_04)
 
+## What if I'm air-gapped?
+
+Host your own artifact repository within your own network. Mirror or package and maintain artifacts.
+
+A solid choice:
+
+* Artifactory
+  * [Docker](https://www.jfrog.com/confluence/display/JFROG/Docker+Registry)
+  * [Vagrant](https://www.jfrog.com/confluence/display/JFROG/Vagrant+Repositories)
+
+Incorporate scanning to watch for critical security vulnerabilities (and gate consumption of the same).
+
+Consider:
+* [snyk](https://snyk.io/product/container-vulnerability-management/).
+
+
 ## Cloud IDEs
 
 * [AWS Cloud9](https://aws.amazon.com/cloud9/)
