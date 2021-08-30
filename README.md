@@ -51,7 +51,9 @@ A solid choice:
 Incorporate scanning to watch for critical security vulnerabilities (and gate consumption of the same).
 
 Consider:
-* [snyk](https://snyk.io/product/container-vulnerability-management/)
+
+* [Snyk](https://snyk.io/product/container-vulnerability-management/)
+* [Tenable](https://www.tenable.com/)
 
 
 ## Cloud IDEs
