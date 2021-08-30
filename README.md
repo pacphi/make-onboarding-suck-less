@@ -66,6 +66,15 @@ Consider:
 * [Tenable](https://www.tenable.com/)
 
 
+## CI/CD Ideas
+
+* GitHub Actions
+  * [setup-packer](https://github.com/marketplace/actions/setup-packer)
+  * [vagrant-github-actions](https://github.com/jonashackt/vagrant-github-actions)
+* [Start GitHub Actions self-hosted runner with VirtualBox and Vagrant ](https://dev.to/peaceiris/start-github-actions-self-hosted-runner-with-virtualbox-and-vagrant-49ei)
+* [Using GitLab CI/CD Pipelines to Automate your HashiCorp Packer Builds](https://virtualhobbit.com/2020/05/05/using-gitlab-ci-cd-pipelines-to-automate-your-hashicorp-packer-builds/)
+
+
 ## Cloud IDEs
 
 * [AWS Cloud9](https://aws.amazon.com/cloud9/)
