@@ -10,12 +10,12 @@ variable "resource_group" {
 
 variable "image_name" {
   type    = string
-  default = "k8s-toolset-image"
+  default = "K8sToolsetImage"
 }
 
 variable "image_name_prefix" {
   type    = string
-  default = "springone-2021"
+  default = "SpringOne2021"
 }
 
 variable "init_script" {
@@ -26,11 +26,6 @@ variable "init_script" {
 variable "vm_size" {
   type    = string
   default = "Standard_D4d_v4"
-}
-
-variable "location" {
-  type    = string
-  default = "westus2"
 }
 
 variable "cloud_environment_name" {
@@ -46,15 +41,18 @@ variable "cloud_environment_name" {
 source "azure-arm" "k8s-toolset" {
   use_azure_cli_auth                   = var.use_azure_cli_auth
   cloud_environment_name               = var.cloud_environment_name                   # One of Public, China, Germany, or USGovernment. Defaults to Public. Long forms such as USGovernmentCloud and AzureUSGovernmentCloud are also supported.
+  managed_image_storage_account_type   = "Standard_LRS"
+  build_resource_group_name            = var.resource_group
   managed_image_resource_group_name    = var.resource_group
   managed_image_name                   = var.image_name
   os_type                              = "Linux"
   os_disk_size_gb                      = 50
-  image_publisher                      = "Canonical"                                  # e.g., az vm image list-publishers --location westus -o table
-  image_offer                          = "0001-com-ubuntu-minimal-focal-daily"        # e.g., az vm image list-offers --location westus --publisher Canonical -o table
-  image_sku                            = "minimal-20_04-daily-lts-gen2"               # e.g., az vm image list-skus --location westus --publisher Canonical --offer 0001-com-ubuntu-minimal-focal-daily -o table
-  location                             = var.location                                 # e.g., az account list-locations -o table
+  image_publisher                      = "Canonical"                                  # e.g., az vm image list-publishers --location westus2 -o table
+  image_offer                          = "UbuntuServer"                               # e.g., az vm image list-offers --location westus2 --publisher Canonical -o table
+  image_sku                            = "18.04-LTS"                                  # e.g., az vm image list-skus --location westus2 --publisher Canonical --offer 0001-com-ubuntu-minimal-focal-daily -o table
+  image_version                        = "latest"
   vm_size                              = var.vm_size                                  # e.g., az vm list-sizes --location westus -o table
+  ssh_username                         = "ubuntu"
 }
 
 
@@ -92,6 +90,14 @@ build {
     script = var.init_script
     # @see https://www.packer.io/docs/provisioners/shell#sudo-example
     execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+  }
+
+  provisioner "shell" {
+    execute_command = "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'"
+    inline = [
+      "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+    ]
+    inline_shebang = "/bin/sh -x"
   }
 
   post-processor "checksum" {
