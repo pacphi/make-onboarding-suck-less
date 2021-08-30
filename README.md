@@ -35,3 +35,10 @@ The choice of tools used to package is not the focus rather the above are introd
   * [Ubuntu 20.04 on Google Compute VM](packer/google/ubuntu/20_04)
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
   * [Ubuntu 18.04 on Azure VM](packer/azure/ubuntu/18_04)
+
+## Cloud IDEs
+
+* [AWS Cloud9](https://aws.amazon.com/cloud9/)
+* [GitHub Codespaces](https://github.com/features/codespaces)
+* [Google Cloud Shell](https://cloud.google.com/shell)
+* [Red Hat CodeReady Workspaces](https://developers.redhat.com/products/codeready-workspaces/overview)
