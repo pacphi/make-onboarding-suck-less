@@ -12,6 +12,7 @@ Experiments with Docker, Packer and Vagrant. Striving to make it easy for varyin
 * [Vagrant](https://www.vagrantup.com/downloads)
 * [Packer](https://www.packer.io/downloads)
 * [Docker](https://docs.docker.com/get-docker/)
+* [vmw-cli](https://github.com/apnex/vmw-cli)
 
 
 ## Tools used to curate toolsets
