@@ -41,7 +41,6 @@ jobs:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
-          credentials_file_path: ./packer/google/ubuntu/20_04/key.json
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
@@ -54,7 +53,9 @@ jobs:
 
       - name: Build image from template
         working-directory: ./packer/google/ubuntu/20_04
-        run: packer build -only=standard.* -var project_id=${{ secrets.GCP_PROJECT_ID }} .
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" > creds.json
+          packer build -only=standard.* -var project_id=${{ secrets.GCP_PROJECT_ID }} .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: ./packer/google/ubuntu/20_04/key.json

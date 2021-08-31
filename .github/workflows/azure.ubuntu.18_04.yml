@@ -35,11 +35,6 @@ jobs:
           source: "scripts/fetch-tanzu-cli.sh"
           target: "packer/azure/ubuntu/18_04/fetch-tanzu-cli.sh"
 
-      - name: Authenticate
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
         with:
@@ -47,11 +42,16 @@ jobs:
 
       - name: Initialize Packer
         working-directory: ./packer/azure/ubuntu/18_04
-        run: packer init .
+        run: packer init arm-ci.pkr.hcl
 
       - name: Build image from template
         working-directory: ./packer/azure/ubuntu/18_04
-        run: packer build -var -only=standard.* .
+        run: |
+          packer build \
+            -var subscription_id=${{ secrets.SUBSCRIPTION_ID }} \
+            -var tenant_id=${{ TENANT_ID }} \
+            -var client_id=${{ CLIENT_ID }} \
+            -var client_secret=${{ CLIENT_SECRET }}
+            -var -only=standard.* arm-ci.pkr.hcl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
