@@ -14,6 +14,11 @@ Experiments with Docker, Packer and Vagrant. Striving to make it easy for varyin
 * [Docker](https://docs.docker.com/get-docker/)
 * [vmw-cli](https://github.com/apnex/vmw-cli)
 
+For your convenience a set of scripts exist to install the complement of prerequisites listed above on (any of the following host OSes):
+
+* [MacOS](scripts/install-prereqs-macos.sh) >= 10.15
+* [Ubuntu](scripts/install-prereqs-linux.sh) >= 18.04
+* [Windows](scripts/install-prereqs-windows.ps1) >= 10
 
 ## Tools used to curate toolsets
 
