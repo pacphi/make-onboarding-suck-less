@@ -43,13 +43,14 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
-      - name: Initialize
+      - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+
+      - name: Initialize Packer
         working-directory: ./packer/azure/ubuntu/18_04
         run: packer init .
 
       - name: Build image from template
-        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/azure/ubuntu/18_04
         run: packer build -var -only=standard .
         env:

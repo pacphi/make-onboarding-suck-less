@@ -43,13 +43,14 @@ jobs:
           export_default_credentials: true
           credentials_file_path: ./packer/google/ubuntu/20_04/key.json
 
-      - name: Initialize
+      - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+
+      - name: Initialize
         working-directory: ./packer/google/ubuntu/20_04
         run: packer init .
 
       - name: Build image from template
-        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/google/ubuntu/20_04
         run: packer build -only=standard -var project_id=${{ secrets.GCP_PROJECT_ID }} .
         env:

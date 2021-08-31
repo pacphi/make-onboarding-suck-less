@@ -35,13 +35,14 @@ jobs:
           source: "scripts/fetch-tanzu-cli.sh"
           target: "packer/aws/ubuntu/20_04/fetch-tanzu-cli.sh"
 
-      - name: Initialize
+      - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+
+      - name: Initialize Packer
         working-directory: ./packer/aws/ubuntu/20_04
         run: packer init .
 
       - name: Build image from template
-        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/aws/ubuntu/20_04
         run: packer build -only=standard .
         env:
