@@ -1,0 +1,60 @@
+name: Build Ubuntu 20.04 VM Image on Google Compute
+
+on:
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use copy-file-action
+        uses: canastro/copy-file-action@master
+
+      - name: Copy init.sh
+        with:
+          source: "scripts/init.sh"
+          target: "packer/google/ubuntu/20_04/init.sh"
+
+      - name: Copy inventory.sh
+        with:
+          source: "scripts/inventory.sh"
+          target: "packer/google/ubuntu/20_04/inventory.sh"
+
+      - name: Copy kind-load-cafile.sh
+        with:
+          source: "scripts/kind-load-cafile.sh"
+          target: "packer/google/ubuntu/20_04/kind-load-cafile.sh"
+
+      - name: Copy fetch-tanzu-cli.sh
+        with:
+          source: "scripts/fetch-tanzu-cli.sh"
+          target: "packer/google/ubuntu/20_04/fetch-tanzu-cli.sh"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+          credentials_file_path: ./packer/google/ubuntu/20_04/key.json
+
+      - name: Use gcloud CLI
+        run: gcloud info
+
+      - name: Use latest Packer
+        uses: hashicorp-contrib/setup-packer@v1
+
+      - name: Initialize Packer
+        working-directory: ./packer/google/ubuntu/20_04
+        run: packer init .
+
+      - name: Build image from template
+        working-directory: ./packer/google/ubuntu/20_04
+        run: packer build -only=standard -var project_id=${{ secrets.GCP_PROJECT_ID }} .
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: ./packer/google/ubuntu/20_04/key.json
