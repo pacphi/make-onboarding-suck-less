@@ -244,7 +244,7 @@ main() {
   npm install vmw-cli --global
 
   # Move Tanzu CLI into place (if it had been file provisioned)
-  if [ -e "/home/ubuntu/tanzu"]; then
+  if [ -e "/home/ubuntu/tanzu" ]; then
     sudo mv /home/ubuntu/tanzu /usr/local/bin
   fi
 
