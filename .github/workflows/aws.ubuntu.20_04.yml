@@ -46,7 +46,7 @@ jobs:
 
       - name: Build image from template
         working-directory: ./packer/aws/ubuntu/20_04
-        run: packer build -only=standard .
+        run: packer build -only=standard.* .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

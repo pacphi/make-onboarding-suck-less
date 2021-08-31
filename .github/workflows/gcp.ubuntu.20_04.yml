@@ -54,7 +54,7 @@ jobs:
 
       - name: Build image from template
         working-directory: ./packer/google/ubuntu/20_04
-        run: packer build -only=standard -var project_id=${{ secrets.GCP_PROJECT_ID }} .
+        run: packer build -only=standard.* -var project_id=${{ secrets.GCP_PROJECT_ID }} .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: ./packer/google/ubuntu/20_04/key.json

@@ -51,7 +51,7 @@ jobs:
 
       - name: Build image from template
         working-directory: ./packer/azure/ubuntu/18_04
-        run: packer build -var -only=standard .
+        run: packer build -var -only=standard.* .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
