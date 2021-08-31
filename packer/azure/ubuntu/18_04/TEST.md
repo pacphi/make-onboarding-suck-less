@@ -48,9 +48,9 @@ It is recommended to use parameter "--public-ip-sku Standard" to create new VM w
 ## Connect to the instance
 
 ```
-ssh -i $HOME/.ssh/id_sra ubuntu@<PUBLIC_IP_ADDRESS>
+ssh -i $HOME/.ssh/id_sra ubuntu@{PUBLIC_IP_ADDRESS}
 ```
-> You were paying attention weren't you? The `<PUBLIC_IP_ADDRESS>` is available from the output of the prior command you issued.
+> You were paying attention weren't you? The `{PUBLIC_IP_ADDRESS}` is available from the output of the prior command you issued.
 
 
 ## Credit

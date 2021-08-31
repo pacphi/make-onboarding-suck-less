@@ -49,34 +49,36 @@ Copy common scripts into place
 cp ../../../../scripts/init.sh .
 cp ../../../../scripts/kind-load-cafile.sh .
 cp ../../../../scripts/inventory.sh .
+```
+
+(Optional) Fetch Tanzu CLI
+
+```
 cp ../../../../scripts/fetch-tanzu-cli.sh .
-```
-
-Fetch Tanzu CLI
-
-```
 ./fetch-tanzu-cli.sh {VMWUSER} {VMWPASS} linux {TANZU_CLI_VERSION}
 ```
 > Replace `{VMWUSER}` and `{VMWPASS}` with credentials you use to authenticate to https://console.cloud.vmware.com.  Replace `{TANZU_CLI_VERSION}` with a supported (and available) version number for the CLI you wish to embed in the container image.  If your account has been granted access, the script will download a tarball, extract the [Tanzu CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-cli-reference.html) and place it into a `dist` directory.  The tarball and other content will be discarded.  (The script has "smarts" built-in to determine whether or not to fetch a version of the CLI that may have already been fetched and placed in the `dist` directory).
 
-Type the following to build the AMI
+Type the following to build the image
 
 ```
 packer init .
 packer fmt .
 packer validate .
 packer inspect .
-packer build .
+packer build -only={BUILD_NAME} .
 ```
-> In ~10 minutes you should notice a `manifest.json` file where within the `artifact_id` contains a reference to the AMI ID.
+> Replace `{BUILD_NAME}` with one of [ `standard`, `with-tanzu` ]; a file provisioner uploads the Tanzu CLI into your image when set to `with-tanzu`.  You have the option post image build to fetch and install or upgrade it via [vmw-cli](https://github.com/apnex/vmw-cli).  The [fetch-tanzu-cli.sh](../../../../scripts/fetch-tanzu-cli.sh) script is also packaged and available for your convenience in the resultant image.
+
+>In ~10 minutes you should notice a `manifest.json` file where within the `artifact_id` contains a reference to the AMI ID.
 
 
 ### Available overrides
 
-You may wish to size the instance and/or choose a different region to host the AMI.
+You may wish to size the instance and/or choose a different region to host the image.
 
 ```
-packer build --var vm_size="Standard_A4" --var location="eastus2" .
+packer build --var vm_size="Standard_A4" --var location="eastus2" -only=standard .
 ```
 > Consult the `variable` blocks inside [arm.pkr.hcl](arm.pkr.hcl)
 

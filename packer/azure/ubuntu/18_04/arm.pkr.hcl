@@ -61,11 +61,21 @@ source "azure-arm" "k8s-toolset" {
 # https://www.packer.io/docs/templates/hcl_templates/blocks/build
 
 build {
-  sources = ["source.azure-arm.k8s-toolset"]
+
+  name = "with-tanzu"
+
+  sources = [
+    "source.azure-arm.k8s-toolset"
+  ]
 
   provisioner "file" {
     source      = "dist/tanzu"
     destination = "/home/ubuntu/tanzu"
+  }
+
+  provisioner "file" {
+    source      = "fetch-tanzu-cli.sh"
+    destination = "/home/ubuntu/fetch-tanzu-cli.sh"
   }
 
   provisioner "file" {
@@ -82,7 +92,55 @@ build {
     inline = [
       "chmod +x /home/ubuntu/tanzu",
       "chmod +x /home/ubuntu/inventory.sh",
-      "chmod +x /home/ubuntu/kind-load-cafile.sh"
+      "chmod +x /home/ubuntu/kind-load-cafile.sh",
+      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh"
+    ]
+  }
+
+  provisioner "shell" {
+    script = var.init_script
+    # @see https://www.packer.io/docs/provisioners/shell#sudo-example
+    execute_command = "echo 'packer' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'"
+  }
+
+  post-processor "checksum" {
+    checksum_types = ["md5", "sha512"]
+  }
+
+  post-processor "manifest" {
+    output     = "manifest.json"
+    strip_path = true
+  }
+}
+
+build {
+
+  name = "standard"
+
+  sources = [
+    "source.azure-arm.k8s-toolset"
+  ]
+
+  provisioner "file" {
+    source      = "fetch-tanzu-cli.sh"
+    destination = "/home/ubuntu/fetch-tanzu-cli.sh"
+  }
+
+  provisioner "file" {
+    source      = "inventory.sh"
+    destination = "/home/ubuntu/inventory.sh"
+  }
+
+  provisioner "file" {
+    source      = "kind-load-cafile.sh"
+    destination = "/home/ubuntu/kind-load-cafile.sh"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "chmod +x /home/ubuntu/inventory.sh",
+      "chmod +x /home/ubuntu/kind-load-cafile.sh",
+      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh"
     ]
   }
 

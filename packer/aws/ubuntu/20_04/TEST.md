@@ -24,9 +24,9 @@ aws ec2 import-key-pair --key-name "my-key" --public-key-material fileb://$HOME/
 ## Launch New EC2 Instance
 
 ```
-aws ec2 run-instances --image-id <AMI_ID> --instance-type=m4.large --key-name my-key
+aws ec2 run-instances --image-id {AMI_ID} --instance-type=m4.large --key-name my-key
 ```
-> Replace `<AMI_ID>` above with the AMI ID of the image you're hosting in your AWS account and region.
+> Replace `{AMI_ID}` above with the AMI ID of the image you're hosting in your AWS account and region.
 
 ### Fetch instance
 
@@ -39,9 +39,9 @@ aws ec2 describe-instances
 ## Connect to the instance
 
 ```
-ssh -i $HOME/.ssh/my-key ubuntu@<INSTANCE_PUBLIC_DNS_NAME>
+ssh -i $HOME/.ssh/my-key ubuntu@{INSTANCE_PUBLIC_DNS_NAME}
 ```
-> You were paying attention weren't you? The `<INSTANCE_PUBLIC_DNS_NAME>` is available from the output of the prior command you issued.
+> You were paying attention weren't you? The `{INSTANCE_PUBLIC_DNS_NAME}` is available from the output of the prior command you issued.
 
 
 ### Troubleshooting connectivity
@@ -56,26 +56,26 @@ ssh -i $HOME/.ssh/my-key ubuntu@<INSTANCE_PUBLIC_DNS_NAME>
 Any on-demand EC2 instance in a running state can be stopped with
 
 ```
-aws ec2 stop-instances --instance-ids <INSTANCE_ID>
+aws ec2 stop-instances --instance-ids {INSTANCE_ID}
 ```
 
 And started again with
 
 ```
-aws ec2 start-instances --instance-ids <INSTANCE_ID>
+aws ec2 start-instances --instance-ids {INSTANCE_ID}
 ```
 
-> Replace `<INSTANCE_ID>` above with the instance ID of the image you intend to stop or start
+> Replace `{INSTANCE_ID}` above with the instance ID of the image you intend to stop or start
 
 
-## Teminate an EC2 instance
+## Terminate an EC2 instance
 
 If we want to remove the instance completely, then we can terminate the instance with
 
 ```
-aws ec2 terminate-instances --instance-ids <INSTANCE_ID>
+aws ec2 terminate-instances --instance-ids {INSTANCE_ID}
 ```
-> Replace `<INSTANCE_ID>` above with the instance ID of the image you intend to terminate
+> Replace `{INSTANCE_ID}` above with the instance ID of the image you intend to terminate
 
 
 ## Credits

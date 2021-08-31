@@ -50,4 +50,4 @@ gcloud beta compute ssh --zone "{AVAILABILITY_ZONE}" --project "{PROJECT_ID}" "{
 ```
 gcloud compute instances delete --zone "{AVAILABILITY_ZONE}" --project "{PROJECT_ID}" "{INSTANCE_NAME}" -q
 ```
-> Replace `{AVAILABILTY_ZONE}`, `{PROJECT_ID}`, and `{INSTANCE_NAME}` with the same values you used to create the VM.
+> Replace `{AVAILABILITY_ZONE}`, `{PROJECT_ID}`, and `{INSTANCE_NAME}` with the same values you used to create the VM.
