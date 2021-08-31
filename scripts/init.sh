@@ -240,12 +240,17 @@ main() {
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin
 
+  # Install vmw-cli
+  npm install vmw-cli --global
+
+  # Move Tanzu CLI into place (if it had been file provisioned)
+  if [ -e "/home/ubuntu/tanzu"]; then
+    sudo mv /home/ubuntu/tanzu /usr/local/bin
+  fi
+
   # Clean-up APT cache
   cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/*
   apt clean
-
-  # Move Tanzu CLI into place
-  sudo mv /home/ubuntu/tanzu /usr/local/bin
 
 }
 
