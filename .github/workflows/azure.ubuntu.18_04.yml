@@ -46,12 +46,6 @@ jobs:
 
       - name: Build image from template
         working-directory: ./packer/azure/ubuntu/18_04
-        run: |
-          packer build \
-            -var subscription_id=${{ secrets.SUBSCRIPTION_ID }} \
-            -var tenant_id=${{ TENANT_ID }} \
-            -var client_id=${{ CLIENT_ID }} \
-            -var client_secret=${{ CLIENT_SECRET }}
-            -var -only=standard.* arm-ci.pkr.hcl
+        run: packer build -var subscription_id=${{ secrets.SUBSCRIPTION_ID }} -var tenant_id=${{ TENANT_ID }} -var client_id=${{ CLIENT_ID }} -var client_secret=${{ CLIENT_SECRET }} -only='standard.*'' arm-ci.pkr.hcl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
