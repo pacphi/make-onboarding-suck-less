@@ -36,7 +36,7 @@ The choice of tools used to package is not the focus rather the above are introd
 ### Found here
 
 * Vagrant
-  * [MacOs 10.15](vagrant/macos/10_15)
+  * [MacOS 10.15](vagrant/macos/10_15)
   * [Ubuntu 20.04](vagrant/ubuntu/20_04)
   * [Windows 10](vagrant/windows/10)
 * Docker
