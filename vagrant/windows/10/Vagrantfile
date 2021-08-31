@@ -98,6 +98,7 @@ scoop bucket add extras
 scoop install 7zip
 
 # Dev Tools
+choco install -y docker-desktop
 scoop install aria2
 choco install -y argocd-cli
 choco install -y bosh-cli
