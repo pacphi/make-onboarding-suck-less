@@ -29,7 +29,6 @@ ENV TZ=America/Los_Angeles \
     TERRAFORM_VERSION=1.0.5 \
     TERRAFORM_DOCS_VERSION=0.15.0 \
     LEFTOVERS_VERSION=0.62.0 \
-    TANZU_VERSION=1.3.1 \
     TF_CARVEL_PLUGIN_VERSION=0.9.0 \
     TMC_VERSION=0.3.0-69c3ca95 \
     VENDIR_VERSION=0.22.0 \
@@ -47,8 +46,6 @@ RUN mkdir downloads && cd downloads && \
     apt install pack-cli -y && \
     python3 -m pip install --user --upgrade pip && \
     python3 -m pip install --user virtualenv && \
-    useradd -m docker && echo "docker:docker" | chpasswd && \
-    adduser docker sudo && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
     unzip awscliv2.zip && \
     sudo ./aws/install && \
@@ -166,6 +163,11 @@ FROM scratch
 COPY --from=build / /
 COPY dist/ /usr/local/bin
 
-CMD /bin/bash
+RUN useradd -m docker && echo "docker:docker" | chpasswd && \
+    adduser docker sudo && \
+    npm install vmw-cli --global && \
+    sudo chown -R docker /usr/local/lib/node_modules
 
 USER docker
+
+CMD /bin/bash

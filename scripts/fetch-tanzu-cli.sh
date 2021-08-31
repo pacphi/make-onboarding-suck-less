@@ -12,12 +12,11 @@ TANZU_VERSION="$4"
 
 FILE=tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
 CURRENT_VERSION="latest"
+DIST_EXECUTABLE="dist/tanzu"
+TANZU_CLI="tanzu"
 if [ "$OS" == "windows" ]; then
   TANZU_CLI = "tanzu.exe"
   DIST_EXECUTABLE = "dist/tanzu.exe"
-else
-  TANZU_CLI="tanzu"
-  DIST_EXECUTABLE = "dist/tanzu"
 fi
 if [ -e "$DIST_EXECUTABLE" ]; then
   cd dist
