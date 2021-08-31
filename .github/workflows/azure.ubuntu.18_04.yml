@@ -15,38 +15,41 @@ jobs:
         uses: canastro/copy-file-action@master
 
       - name: Copy init.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/init.sh"
           target: "packer/azure/ubuntu/18_04/init.sh"
 
       - name: Copy inventory.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/inventory.sh"
           target: "packer/azure/ubuntu/18_04/inventory.sh"
 
       - name: Copy kind-load-cafile.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/kind-load-cafile.sh"
           target: "packer/azure/ubuntu/18_04/kind-load-cafile.sh"
 
       - name: Copy fetch-tanzu-cli.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/fetch-tanzu-cli.sh"
           target: "packer/azure/ubuntu/18_04/fetch-tanzu-cli.sh"
 
-      - name: Login via Azure CLI
+      - name: Authenticate
         uses: azure/login@v1
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
-      - name: Use latest Packer
-        uses: hashicorp-contrib/setup-packer@v1
-
       - name: Initialize
+        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/azure/ubuntu/18_04
         run: packer init .
 
       - name: Build image from template
+        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/azure/ubuntu/18_04
         run: packer build -var -only=standard .
         env:

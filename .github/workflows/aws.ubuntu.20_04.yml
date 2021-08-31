@@ -11,37 +11,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use copy-file-action
-        uses: canastro/copy-file-action@master
-
       - name: Copy init.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/init.sh"
           target: "packer/aws/ubuntu/20_04/init.sh"
 
       - name: Copy inventory.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/inventory.sh"
           target: "packer/aws/ubuntu/20_04/inventory.sh"
 
       - name: Copy kind-load-cafile.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/kind-load-cafile.sh"
           target: "packer/aws/ubuntu/20_04/kind-load-cafile.sh"
 
       - name: Copy fetch-tanzu-cli.sh
+        uses: canastro/copy-file-action@master
         with:
           source: "scripts/fetch-tanzu-cli.sh"
           target: "packer/aws/ubuntu/20_04/fetch-tanzu-cli.sh"
 
-      - name: Use latest Packer
+      - name: Initialize
         uses: hashicorp-contrib/setup-packer@v1
-
-      - name: Initialize Packer
         working-directory: ./packer/aws/ubuntu/20_04
         run: packer init .
 
       - name: Build image from template
+        uses: hashicorp-contrib/setup-packer@v1
         working-directory: ./packer/aws/ubuntu/20_04
         run: packer build -only=standard .
         env:

@@ -8,11 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout code, create dist directory, then build and tag container image
         uses: actions/checkout@v2
-
-      - name: Create dist directory
-        run: mkdir -p dist && docker build --file docker/Dockerfile --tag tanzu/k8s-toolset .
-
-      - name: Build and tag image
-        run: docker build --file docker/Dockerfile --tag tanzu/k8s-toolset .
+        run: |
+          mkdir -p dist
+          docker build --file docker/Dockerfile --tag tanzu/k8s-toolset .
