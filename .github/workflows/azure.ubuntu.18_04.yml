@@ -38,7 +38,7 @@ jobs:
       - name: Authenticate
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
