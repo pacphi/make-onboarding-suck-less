@@ -37,6 +37,8 @@ jobs:
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+        with:
+          packer-version: 1.7.4
 
       - name: Initialize Packer
         working-directory: ./packer/aws/ubuntu/20_04

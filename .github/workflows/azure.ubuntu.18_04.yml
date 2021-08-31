@@ -11,9 +11,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use copy-file-action
-        uses: canastro/copy-file-action@master
-
       - name: Copy init.sh
         uses: canastro/copy-file-action@master
         with:
@@ -45,6 +42,8 @@ jobs:
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+        with:
+          packer-version: 1.7.4
 
       - name: Initialize Packer
         working-directory: ./packer/azure/ubuntu/18_04

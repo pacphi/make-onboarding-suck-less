@@ -45,6 +45,8 @@ jobs:
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
+        with:
+          packer-version: 1.7.4
 
       - name: Initialize
         working-directory: ./packer/google/ubuntu/20_04
