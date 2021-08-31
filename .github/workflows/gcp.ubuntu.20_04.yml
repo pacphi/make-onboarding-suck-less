@@ -55,7 +55,7 @@ jobs:
         working-directory: ./packer/google/ubuntu/20_04
         run: |
           echo "${{ secrets.GCP_SA_KEY }}" > ./creds.json
-          packer build -only='standard.*'' -var project_id=${{ secrets.GCP_PROJECT_ID }} .
+          packer build -only='standard.*' -var project_id=${{ secrets.GCP_PROJECT_ID }} .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: ./packer/google/ubuntu/20_04/creds.json
