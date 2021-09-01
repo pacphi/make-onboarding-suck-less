@@ -17,7 +17,7 @@ Experiments with Docker, Packer and Vagrant. Striving to make it easy for varyin
 For your convenience a set of scripts exist to install the complement of prerequisites listed above on (any of the following host OSes):
 
 * [MacOS](scripts/install-prereqs-macos.sh) >= 10.15
-* [Ubuntu](scripts/install-prereqs-linux.sh) >= 18.04
+* [Ubuntu](scripts/install-prereqs-linux.sh) >= 20.04
 * [Windows](scripts/install-prereqs-windows.ps1) >= 10
 
 ## Tools used to curate toolsets
@@ -44,7 +44,7 @@ The choice of tools used to package is not the focus rather the above are introd
 * Packer
   * [Ubuntu 20.04 on Google Compute VM](packer/google/ubuntu/20_04)
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
-  * [Ubuntu 18.04 on Azure VM](packer/azure/ubuntu/18_04)
+  * [Ubuntu 20.04 on Azure VM](packer/azure/ubuntu/18_04)
 
 ### Elsewhere
 

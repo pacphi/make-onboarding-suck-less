@@ -1,4 +1,4 @@
-# Ubuntu 18.04 on Azure: Packer
+# Ubuntu 20.04 on Azure: Packer
 
 ## Instructions
 
