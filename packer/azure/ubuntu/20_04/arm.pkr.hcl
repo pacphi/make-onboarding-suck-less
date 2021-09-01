@@ -1,3 +1,27 @@
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
+variable "client_id" {
+  type    = string
+  default = ""
+}
+
+variable "client_secret" {
+  type    = string
+  default = ""
+}
+
+variable "subscription_id" {
+  type    = string
+  default = ""
+}
+
+variable "tenant_id" {
+  type    = string
+  default = ""
+}
+
 variable "use_azure_cli_auth" {
   type    = bool
   default = true
@@ -10,12 +34,7 @@ variable "resource_group" {
 
 variable "image_name" {
   type    = string
-  default = "K8sToolsetImage"
-}
-
-variable "image_name_prefix" {
-  type    = string
-  default = "SpringOne2021"
+  default = "SpringOne2021K8sToolsetImage"
 }
 
 variable "init_script" {
@@ -39,22 +58,21 @@ variable "cloud_environment_name" {
 # https://www.packer.io/docs/templates/hcl_templates/blocks/source
 
 source "azure-arm" "k8s-toolset" {
-  use_azure_cli_auth                   = var.use_azure_cli_auth
-  cloud_environment_name               = var.cloud_environment_name                   # One of Public, China, Germany, or USGovernment. Defaults to Public. Long forms such as USGovernmentCloud and AzureUSGovernmentCloud are also supported.
-  managed_image_storage_account_type   = "Standard_LRS"
-  build_resource_group_name            = var.resource_group
-  managed_image_resource_group_name    = var.resource_group
-  managed_image_name                   = var.image_name
-  os_type                              = "Linux"
-  os_disk_size_gb                      = 50
-  image_publisher                      = "Canonical"                                  # e.g., az vm image list-publishers --location westus2 -o table
-  image_offer                          = "UbuntuServer"                               # e.g., az vm image list-offers --location westus2 --publisher Canonical -o table
-  image_sku                            = "18.04-LTS"                                  # e.g., az vm image list-skus --location westus2 --publisher Canonical --offer 0001-com-ubuntu-minimal-focal-daily -o table
-  image_version                        = "latest"
-  vm_size                              = var.vm_size                                  # e.g., az vm list-sizes --location westus -o table
-  ssh_username                         = "ubuntu"
+  use_azure_cli_auth                 = var.use_azure_cli_auth
+  cloud_environment_name             = var.cloud_environment_name     # One of Public, China, Germany, or USGovernment. Defaults to Public. Long forms such as USGovernmentCloud and AzureUSGovernmentCloud are also supported.
+  managed_image_storage_account_type = "Standard_LRS"
+  build_resource_group_name          = var.resource_group
+  managed_image_resource_group_name  = var.resource_group
+  managed_image_name                 = "${var.image_name}${local.timestamp}"
+  os_type                            = "Linux"
+  os_disk_size_gb                    = 50
+  image_publisher                    = "Canonical"                    # e.g., az vm image list-publishers --location westus2 -o table
+  image_offer                        = "0001-com-ubuntu-server-focal" # e.g., az vm image list-offers --location westus2 --publisher Canonical -o table
+  image_sku                          = "20_04-lts-gen2"               # e.g., az vm image list-skus --location westus2 --publisher Canonical --offer 0001-com-ubuntu-minimal-focal-daily -o table
+  image_version                      = "latest"
+  vm_size                            = var.vm_size                    # e.g., az vm list-sizes --location westus -o table
+  ssh_username                       = "ubuntu"
 }
-
 
 # a build block invokes sources and runs provisioning steps on them. The
 # documentation for build blocks can be found here:

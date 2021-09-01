@@ -53,7 +53,7 @@ packer init .
 packer fmt .
 packer validate .
 packer inspect .
-packer build -only={BUILD_NAME} .
+packer build -only='{BUILD_NAME}.*' .
 ```
 > Replace `{BUILD_NAME}` with one of [ `standard`, `with-tanzu` ]; a file provisioner uploads the Tanzu CLI into your image when set to `with-tanzu`.  You have the option post image build to fetch and install or upgrade it via [vmw-cli](https://github.com/apnex/vmw-cli).  The [fetch-tanzu-cli.sh](../../../../scripts/fetch-tanzu-cli.sh) script is also packaged and available for your convenience in the resultant image.
 
@@ -65,7 +65,7 @@ packer build -only={BUILD_NAME} .
 You may wish to size the instance and/or choose a different region to host the image.
 
 ```
-packer build --var project_id=fe-cphillipson --var zone=europe-central2-a -only=standard .
+packer build --var project_id=fe-cphillipson --var zone=europe-central2-a -only='standard.*' .
 ```
 > Consult the `variable` blocks inside [googlecompute.pkr.hcl](googlecompute.pkr.hcl)
 

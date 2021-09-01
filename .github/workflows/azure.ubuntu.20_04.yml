@@ -1,0 +1,51 @@
+name: Build Ubuntu 20.04 VM Image on Azure
+
+on:
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Copy init.sh
+        uses: canastro/copy-file-action@master
+        with:
+          source: "scripts/init.sh"
+          target: "packer/azure/ubuntu/20_04/init.sh"
+
+      - name: Copy inventory.sh
+        uses: canastro/copy-file-action@master
+        with:
+          source: "scripts/inventory.sh"
+          target: "packer/azure/ubuntu/20_04/inventory.sh"
+
+      - name: Copy kind-load-cafile.sh
+        uses: canastro/copy-file-action@master
+        with:
+          source: "scripts/kind-load-cafile.sh"
+          target: "packer/azure/ubuntu/20_04/kind-load-cafile.sh"
+
+      - name: Copy fetch-tanzu-cli.sh
+        uses: canastro/copy-file-action@master
+        with:
+          source: "scripts/fetch-tanzu-cli.sh"
+          target: "packer/azure/ubuntu/20_04/fetch-tanzu-cli.sh"
+
+      - name: Use latest Packer
+        uses: hashicorp-contrib/setup-packer@v1
+        with:
+          packer-version: 1.7.4
+
+      - name: Initialize Packer
+        working-directory: ./packer/azure/ubuntu/20_04
+        run: packer init arm-ci.pkr.hcl
+
+      - name: Build image from template
+        working-directory: ./packer/azure/ubuntu/20_04
+        run: packer build -var subscription_id="${{ secrets.SUBSCRIPTION_ID }}" -var tenant_id="${{ secrets.TENANT_ID }}" -var client_id="${{ secrets.CLIENT_ID }}" -var client_secret="${{ secrets.CLIENT_SECRET }}" -only='standard.*' arm-ci.pkr.hcl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

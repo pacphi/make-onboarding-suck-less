@@ -62,13 +62,16 @@ cp ../../../../scripts/fetch-tanzu-cli.sh .
 Type the following to build the image
 
 ```
-packer init .
-packer fmt .
-packer validate .
-packer inspect .
-packer build -only={BUILD_NAME} .
+packer init {HCL_FILENAME}
+packer fmt {HC_FILENAME}
+packer validate {HCL_FILENAME}
+packer inspect {HCL}
+packer build -only='{BUILD_NAME}.*' {HCL_FILENAME}
 ```
+> Replace `{HCL_FILENAME}` with one of [ `arm.pkr.hcl`, `arm-ci.pkr.hcl` ].  If you choose `arm-ci.pkr.hcl` you will need to supply additional `-var` key-value pairs for [ `subscription_id`, `tenant_id`, `client_id`, and `client_secret` ] to `packer build` above.
+
 > Replace `{BUILD_NAME}` with one of [ `standard`, `with-tanzu` ]; a file provisioner uploads the Tanzu CLI into your image when set to `with-tanzu`.  You have the option post image build to fetch and install or upgrade it via [vmw-cli](https://github.com/apnex/vmw-cli).  The [fetch-tanzu-cli.sh](../../../../scripts/fetch-tanzu-cli.sh) script is also packaged and available for your convenience in the resultant image.
+
 
 >In ~10 minutes you should notice a `manifest.json` file where within the `artifact_id` contains a reference to the AMI ID.
 
@@ -78,7 +81,7 @@ packer build -only={BUILD_NAME} .
 You may wish to size the instance and/or choose a different region to host the image.
 
 ```
-packer build --var vm_size="Standard_A4" --var location="eastus2" -only=standard .
+packer build --var vm_size="Standard_A4" --var location="eastus2" -only='standard.*' arm.pkr.hcl
 ```
 > Consult the `variable` blocks inside [arm.pkr.hcl](arm.pkr.hcl)
 
