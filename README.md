@@ -44,7 +44,7 @@ The choice of tools used to package is not the focus rather the above are introd
 * Packer
   * [Ubuntu 20.04 on Google Compute VM](packer/google/ubuntu/20_04)
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
-  * [Ubuntu 20.04 on Azure VM](packer/azure/ubuntu/18_04)
+  * [Ubuntu 20.04 on Azure VM](packer/azure/ubuntu/20_04)
 
 ### Elsewhere
 

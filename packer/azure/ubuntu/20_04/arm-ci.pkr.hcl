@@ -1,3 +1,7 @@
+locals {
+  timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+}
+
 variable "client_id" {
   type    = string
   default = ""
@@ -25,12 +29,7 @@ variable "resource_group" {
 
 variable "image_name" {
   type    = string
-  default = "K8sToolsetImage"
-}
-
-variable "image_name_prefix" {
-  type    = string
-  default = "SpringOne2021"
+  default = "SpringOne2021K8sToolsetImage"
 }
 
 variable "init_script" {
@@ -61,7 +60,7 @@ source "azure-arm" "k8s-toolset" {
   managed_image_storage_account_type = "Standard_LRS"
   build_resource_group_name          = var.resource_group
   managed_image_resource_group_name  = var.resource_group
-  managed_image_name                 = var.image_name
+  managed_image_name                 = "${var.image_name}${local.timestamp}"
   os_type                            = "Linux"
   os_disk_size_gb                    = 50
   image_publisher                    = "Canonical"                    # e.g., az vm image list-publishers --location westus2 -o table
