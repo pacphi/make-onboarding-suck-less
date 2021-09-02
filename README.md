@@ -1,10 +1,6 @@
 # Make Onboarding Suck Less
 
-> A Spring One 2021 [session](https://springone.io/2021/sessions/making-onboarding-suck-less).
-
-## Presentation
-
-* [Slides](Making-Onboarding-Suck-Less.pdf)
+> A Spring One 2021 [session](https://springone.io/2021/sessions/making-onboarding-suck-less) | [slides](Making-Onboarding-Suck-Less.pdf)
 
 Experiments with Docker, Packer and Vagrant. Striving to make it easy for varying persona to get started with a curated collection of tooling packaged and available on popular OSes.  All while standing on the shoulders of giants.
 
