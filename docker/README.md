@@ -1,5 +1,13 @@
 # Ubuntu 20.04: Docker image
 
+## Prerequistes
+
+* [Docker](https://docs.docker.com/desktop/)
+
+> Notice: [Subscription](https://www.docker.com/blog/updating-product-subscriptions/) is required for buisness use.
+
+## Preparation
+
 (Optional) Fetch Tanzu CLI
 
 ```
