@@ -2,7 +2,7 @@
 
 > A Spring One 2021 [session](https://springone.io/2021/sessions/making-onboarding-suck-less).
 
-# Presentation
+## Presentation
 
 * [Slides](Making-Onboarding-Suck-Less.pdf)
 
