@@ -2,7 +2,12 @@
 
 > A Spring One 2021 [session](https://springone.io/2021/sessions/making-onboarding-suck-less).
 
+# Presentation
+
+* [Slides](Making-Onboarding-Suck-Less.pdf)
+
 Experiments with Docker, Packer and Vagrant. Striving to make it easy for varying persona to get started with a curated collection of tooling packaged and available on popular OSes.  All while standing on the shoulders of giants.
+
 
 ## Prerequisites
 
@@ -19,6 +24,7 @@ For your convenience a set of scripts exist to install the complement of prerequ
 * [MacOS](scripts/install-prereqs-macos.sh) >= 10.15
 * [Ubuntu](scripts/install-prereqs-linux.sh) >= 20.04
 * [Windows](scripts/install-prereqs-windows.ps1) >= 10
+
 
 ## Tools used to curate toolsets
 
