@@ -1,8 +1,5 @@
-FROM ubuntu:20.04 as build
+FROM ubuntu:20.10 as build
 LABEL author=cphillipson@vmware.com
-
-# Welcome to tf4k8s-toolsuite!
-# This image installs the following versions of CLIs on an Ubuntu Focal image
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -24,6 +21,7 @@ ENV TZ=America/Los_Angeles \
     KREW_VERSION=0.4.1 \
     KUBECTL_VERSION=1.22.1 \
     OM_VERSION=7.3.1 \
+    PACK_VERSION=0.20.0 \
     PIVNET_VERSION=3.0.1 \
     TEKTONCD_VERSION=0.20.0 \
     TERRAFORM_VERSION=1.0.5 \
@@ -32,18 +30,14 @@ ENV TZ=America/Los_Angeles \
     TF_CARVEL_PLUGIN_VERSION=0.9.0 \
     TMC_VERSION=0.3.0-69c3ca95 \
     VENDIR_VERSION=0.22.0 \
-    YTT_VERSION=0.36.0 \
-    VMWUSER=$vmw_username \
-    VMWPASS=$vmw_password
+    YTT_VERSION=0.36.0
 
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
-    apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
+    apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
     apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
-    add-apt-repository ppa:longsleep/golang-backports && \
-    add-apt-repository ppa:cncf-buildpacks/pack-cli && \
-    apt install pack-cli -y && \
+    (curl -sSL "https://github.com/buildpacks/pack/releases/download/v${PACK_VERSION}/pack-v${PACK_VERSION}-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack) && \
     python3 -m pip install --user --upgrade pip && \
     python3 -m pip install --user virtualenv && \
     curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \

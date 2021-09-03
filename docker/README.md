@@ -1,4 +1,4 @@
-# Ubuntu 20.04: Docker image
+# Ubuntu 20.10: Docker image
 
 ## Prerequistes
 

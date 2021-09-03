@@ -46,7 +46,7 @@ The choice of tools used to package is not the focus rather the above are introd
   * [Ubuntu 20.04](vagrant/ubuntu/20_04)
   * [Windows 10](vagrant/windows/10)
 * Docker
-  * [Ubuntu 20.04](docker/README.md)
+  * [Ubuntu 20.10](docker/README.md)
 * Packer
   * [Ubuntu 20.04 on Google Compute VM](packer/google/ubuntu/20_04)
   * [Ubuntu 20.04 on Amazon EC2](packer/aws/ubuntu/20_04)
