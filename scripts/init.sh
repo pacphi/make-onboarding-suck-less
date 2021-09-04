@@ -23,13 +23,13 @@ main() {
   KWT_VERSION=0.0.6
   KREW_VERSION=0.4.1
   KUBECTL_VERSION=1.22.1
+  LEFTOVERS_VERSION=0.62.0
   OM_VERSION=7.3.1
   PIVNET_VERSION=3.0.1
+  TANZU_VERSION=1.3.1
   TEKTONCD_VERSION=0.20.0
   TERRAFORM_VERSION=1.0.5
   TERRAFORM_DOCS_VERSION=0.15.0
-  LEFTOVERS_VERSION=0.62.0
-  TANZU_VERSION=1.3.1
   TF_CARVEL_PLUGIN_VERSION=0.9.0
   TMC_VERSION=0.3.0-69c3ca95
   VENDIR_VERSION=0.22.0
@@ -156,16 +156,31 @@ main() {
   chmod +x leftovers
   sudo mv leftovers /usr/local/bin
 
-  # Install Carvel Terraform plugin
-  mkdir -p ~/.terraform.d/plugins
-  curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz"
-  tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/
-  rm -Rf terraform-provider-carvel-binaries.tgz
+  # Install vmw-cli
+  npm install vmw-cli --global
+
+  # Move Tanzu CLI into place (if it had been file provisioned)
+  if [ -e "/home/ubuntu/tanzu" ]; then
+    sudo mv /home/ubuntu/tanzu /usr/local/bin
+  fi
+
+  if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then
+    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C .
+    tanzu plugin clean
+    tanzu plugin install --local cli all
+    rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
+  fi
 
   # Install Tanzu Mission Control CLI
   curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc
   chmod +x tmc
   sudo mv tmc /usr/local/bin
+
+  # Install Carvel Terraform plugin
+  mkdir -p ~/.terraform.d/plugins
+  curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz"
+  tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/
+  rm -Rf terraform-provider-carvel-binaries.tgz
 
   # Install Helm
   curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"
@@ -239,14 +254,6 @@ main() {
   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin
-
-  # Install vmw-cli
-  npm install vmw-cli --global
-
-  # Move Tanzu CLI into place (if it had been file provisioned)
-  if [ -e "/home/ubuntu/tanzu" ]; then
-    sudo mv /home/ubuntu/tanzu /usr/local/bin
-  fi
 
   # Clean-up APT cache
   cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/*

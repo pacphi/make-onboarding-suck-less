@@ -190,7 +190,7 @@ Vagrant.configure("2") do |config|
     v.memory = 8192
     v.cpus = 2
   end
-  config.vm.provision "file", source: "dist/tanzu.exe", destination: "/Users/vagrant/tanzu.exe"
+  config.vm.provision "file", source: "dist", destination: "/Users/vagrant"
   config.vm.provision "file", source: "inventory.ps1", destination: "/home/vagrant/inventory.ps1"
   config.vm.provision "shell", inline: $script
 end

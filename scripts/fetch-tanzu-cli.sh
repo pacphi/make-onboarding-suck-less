@@ -43,5 +43,5 @@ else
       cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 ${DIST_EXECUTABLE}
     fi
     rm -Rf dist/cli
-    rm -f tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
+    mv tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar dist
 fi

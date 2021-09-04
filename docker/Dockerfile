@@ -1,7 +1,8 @@
-FROM ubuntu:20.10 as build
+FROM ubuntu:20.10
 LABEL author=cphillipson@vmware.com
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG tanzu_cli_version=1.3.1
 
 ENV TZ=America/Los_Angeles \
     ARGOCD_VERSION=2.1.1 \
@@ -23,6 +24,7 @@ ENV TZ=America/Los_Angeles \
     OM_VERSION=7.3.1 \
     PACK_VERSION=0.20.0 \
     PIVNET_VERSION=3.0.1 \
+    TANZU_VERSION=$tanzu_cli_version \
     TEKTONCD_VERSION=0.20.0 \
     TERRAFORM_VERSION=1.0.5 \
     TERRAFORM_DOCS_VERSION=0.15.0 \
@@ -31,6 +33,8 @@ ENV TZ=America/Los_Angeles \
     TMC_VERSION=0.3.0-69c3ca95 \
     VENDIR_VERSION=0.22.0 \
     YTT_VERSION=0.36.0
+
+COPY dist/ /usr/local/bin
 
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -57,12 +61,10 @@ RUN mkdir downloads && cd downloads && \
     sudo mv bosh /usr/local/bin && \
     wget -O cf.tgz "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=${CF_VERSION}&source=github-rel" && \
     tar -xvf cf.tgz && \
-    rm -Rf cf.tgz && \
     sudo mv cf7 cf && \
     sudo mv cf /usr/local/bin && \
     wget https://github.com/cloudfoundry-incubator/credhub-cli/releases/download/${CREDHUB_VERSION}/credhub-linux-${CREDHUB_VERSION}.tgz && \
     tar -xvzf credhub-linux-${CREDHUB_VERSION}.tgz && \
-    rm -Rf credhub-linux-${CREDHUB_VERSION}.tgz && \
     sudo mv credhub /usr/local/bin && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
     chmod +x kubectl && \
@@ -70,7 +72,6 @@ RUN mkdir downloads && cd downloads && \
     curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.tar.gz" && \
     curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml" && \
     tar -xvzf krew.tar.gz && \
-    rm -Rf krew.tar.gz && \
     sudo mv krew-linux_amd64 /usr/local/bin/krew && \
     krew install --manifest=krew.yaml && \
     wget https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-linux-${OM_VERSION} && \
@@ -83,7 +84,6 @@ RUN mkdir downloads && cd downloads && \
     sudo mv pivnet /usr/local/bin && \
     wget https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-    rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
     sudo mv terraform /usr/local/bin && \
     curl -Lo ./terraform-docs https://github.com/segmentio/terraform-docs/releases/download/v${TERRAFORM_DOCS_VERSION}/terraform-docs-v${TERRAFORM_DOCS_VERSION}-$(uname | tr '[:upper:]' '[:lower:]')-amd64 && \
     chmod +x ./terraform-docs && \
@@ -95,7 +95,6 @@ RUN mkdir downloads && cd downloads && \
     mkdir -p ~/.terraform.d/plugins && \
     curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz" && \
     tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
-    rm -Rf terraform-provider-carvel-binaries.tgz && \
     curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc && \
     chmod +x tmc && \
     mv tmc /usr/local/bin && \
@@ -147,21 +146,17 @@ RUN mkdir downloads && cd downloads && \
     git clone https://github.com/FiloSottile/mkcert && cd mkcert && \
     go build -ldflags "-X main.Version=$(git describe --tags)" && \
     sudo mv mkcert /usr/local/bin && \
-    cd .. && \
-    rm -Rf mkcert && \
-    cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    apt clean
-
-FROM scratch
-
-COPY --from=build / /
-COPY dist/ /usr/local/bin
-
-RUN useradd -m docker && echo "docker:docker" | chpasswd && \
+    cd ../.. && \
+    rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    apt clean && \
+    useradd -m docker && echo "docker:docker" | chpasswd && \
     adduser docker sudo && \
     npm install vmw-cli --global && \
-    sudo chown -R docker /usr/local/lib/node_modules
+    sudo chown -R docker /usr/local/lib/node_modules && \
+    sudo chgrp -R docker /usr/local/lib/node_modules && \
+    cd /home/docker && \
+    if [ -e "/usr/local/bin/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then sudo mv /usr/local/bin/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar . && tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && sudo rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar; fi
 
 USER docker
 
-CMD /bin/bash
+CMD [ "/bin/bash" ]

@@ -87,8 +87,8 @@ build {
   ]
 
   provisioner "file" {
-    source      = "dist/tanzu"
-    destination = "/home/ubuntu/tanzu"
+    source      = "dist"
+    destination = "/home/ubuntu"
   }
 
   provisioner "file" {
