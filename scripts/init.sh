@@ -45,9 +45,8 @@ main() {
   apt update -y
 
   # Install packages from APT
-  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tree tzdata unzip wget -y
+  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tree tzdata unzip wget -y
   apt install apt-transport-https ca-certificates gnupg lsb-release nano software-properties-common dirmngr -y
-  add-apt-repository ppa:longsleep/golang-backports
   add-apt-repository ppa:cncf-buildpacks/pack-cli
   apt install pack-cli -y
 
@@ -155,9 +154,6 @@ main() {
   mv leftovers-v${LEFTOVERS_VERSION}-linux-amd64 leftovers
   chmod +x leftovers
   sudo mv leftovers /usr/local/bin
-
-  # Install vmw-cli
-  npm install vmw-cli --global
 
   # Move Tanzu CLI into place (if it had been file provisioned)
   if [ -e "/home/ubuntu/tanzu" ]; then

@@ -24,7 +24,3 @@ sudo usermod -aG docker $USER
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 docker run --rm hello-world
-
-# Install vmw-cli
-sudo apt install nodejs npm -y
-npm install vmw-cli --global

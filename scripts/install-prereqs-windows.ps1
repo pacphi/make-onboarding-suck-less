@@ -95,7 +95,3 @@ choco install -y packer
 
 # Install Docker
 choco install -y docker-desktop
-
-# Install vmw-cli
-choco install -y nodejs
-npm install vmw-cli --global

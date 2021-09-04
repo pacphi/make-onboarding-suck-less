@@ -14,7 +14,3 @@ brew install packer
 
 # Install Docker
 brew install --cask docker
-
-# Install vmw-cli
-brew install node
-npm install vmw-cli --global

@@ -33,9 +33,7 @@ YTT_VERSION=0.36.0
 mkdir downloads && cd downloads && \
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
 apt update -y && \
-apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tzdata unzip wget -y && \
-apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
-add-apt-repository ppa:longsleep/golang-backports && \
+apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tzdata unzip wget -y && \
 add-apt-repository ppa:cncf-buildpacks/pack-cli && \
 apt install pack-cli -y && \
 sudo snap install snap-store && \
