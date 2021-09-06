@@ -13,7 +13,6 @@ Experiments with Docker, Packer and Vagrant. Striving to make it easy for varyin
 * [Vagrant](https://www.vagrantup.com/downloads)
 * [Packer](https://www.packer.io/downloads)
 * [Docker](https://docs.docker.com/get-docker/)
-* [vmw-cli](https://github.com/apnex/vmw-cli)
 
 For your convenience a set of scripts exist to install the complement of prerequisites listed above on (any of the following host OSes):
 

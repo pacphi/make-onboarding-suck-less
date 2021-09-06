@@ -26,6 +26,7 @@ brew install --cask visual-studio-code
 brew install buildpacks/tap/pack
 brew install java11
 brew install tilt-dev/tap/tilt
+brew install podman
 
 
 # Install Terraform k14s provider; @see https://github.com/k14s/terraform-provider-k14s
@@ -46,8 +47,18 @@ curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x6
 chmod +x tmc && \
 sudo mv tmc /usr/local/bin
 
-chmod +x tanzu
-sudo mv tanzu /usr/local/bin
+if [ -e "/home/ubuntu/tanzu" ]; then
+  sudo chmod +x /home/ubuntu/tanzu
+  sudo mv /home/ubuntu/tanzu /usr/local/bin
+fi
+
+TANZU_VERSION=1.3.1
+if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-darwin-amd64.tar" ]; then
+  tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-darwin-amd64.tar -C .
+  tanzu plugin clean
+  tanzu plugin install --local cli all
+  rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-darwin-amd64.tar
+fi
 chmod +x inventory.sh
 
 SCRIPT
@@ -61,7 +72,7 @@ Vagrant.configure("2") do |config|
     v.memory = 8192
     v.cpus = 2
   end
-  config.vm.provision "file", source: "dist/tanzu", destination: "/Users/vagrant/tanzu"
+  config.vm.provision "file", source: "dist", destination: "/Users/vagrant"
   config.vm.provision "file", source: "inventory.sh", destination: "/Users/vagrant/inventory.sh"
   config.vm.provision "shell", inline: $script, privileged: false
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -z "$1" ] && [ -z "$2" ] && [-z "$3" ] && [-z "$4" ]; then
+if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]; then
 	echo "Usage: fetch-tanzu-cli.sh {username} {password} {os} {tanzu-cli-version}"
 	exit 1
 fi
@@ -31,10 +31,10 @@ if [ "$TANZU_VERSION" == "$CURRENT_VERSION" ]; then
     echo "$FILE already downloaded."
 else
     echo "$FILE does not exist. Will begin fetching from https://console.cloud.vmware.com."
-    npm list | grep vmw-cli || npm install vmw-cli --global
     mkdir -p dist
-    vmw-cli ls vmware_tanzu_kubernetes_grid
-    vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
+    docker run -itd --name vmw -e VMWUSER=${VMWUSER} -e VMWPASS=${VMWPASS} -v ${PWD}:/files --entrypoint=sh apnex/vmw-cli
+    docker exec -t vmw vmw-cli ls vmware_tanzu_kubernetes_grid
+    docker exec -t vmw vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
     tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar -C dist
     if [ "$OS" == "windows" ]; then
       cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64.exe ${DIST_EXECUTABLE}
@@ -43,5 +43,6 @@ else
       cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 ${DIST_EXECUTABLE}
     fi
     rm -Rf dist/cli
-    rm -f tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
+    mv tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar dist
+    docker rm -f vmw
 fi
