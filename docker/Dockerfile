@@ -31,6 +31,7 @@ ENV TZ=America/Los_Angeles \
     LEFTOVERS_VERSION=0.62.0 \
     TF_CARVEL_PLUGIN_VERSION=0.9.0 \
     TMC_VERSION=0.3.0-69c3ca95 \
+    VELERO_VERSION=1.6.3 \
     VENDIR_VERSION=0.22.0 \
     YTT_VERSION=0.36.0
 
@@ -144,6 +145,10 @@ RUN mkdir downloads && cd downloads && \
     git clone https://github.com/FiloSottile/mkcert && cd mkcert && \
     go build -ldflags "-X main.Version=$(git describe --tags)" && \
     sudo mv mkcert /usr/local/bin && \
+    curl -LO https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
+    tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
+    chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
+    sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
     cd ../.. && \
     rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean && \

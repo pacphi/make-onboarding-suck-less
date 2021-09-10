@@ -32,6 +32,7 @@ main() {
   TERRAFORM_DOCS_VERSION=0.15.0
   TF_CARVEL_PLUGIN_VERSION=0.9.0
   TMC_VERSION=0.3.0-69c3ca95
+  VELERO_VERSION=1.6.3
   VENDIR_VERSION=0.22.0
   YTT_VERSION=0.36.0
 
@@ -250,6 +251,12 @@ main() {
   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64
   chmod +x ./kind
   sudo mv ./kind /usr/local/bin
+
+  # Install Velero
+  curl -LO https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz
+  tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz
+  chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero
+  sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
 
   # Clean-up APT cache
   cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/*
