@@ -27,6 +27,7 @@ brew install buildpacks/tap/pack
 brew install java11
 brew install tilt-dev/tap/tilt
 brew install podman
+brew install velero
 
 
 # Install Terraform k14s provider; @see https://github.com/k14s/terraform-provider-k14s

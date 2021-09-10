@@ -136,6 +136,7 @@ choco install -y kbld
 choco install -y imgpkg
 scoop bucket add tilt-dev https://github.com/tilt-dev/scoop-bucket
 scoop install tilt
+choco install -y velero
 
 Set-Variable TARGET_DIR "C:/Users/vagrant"
 

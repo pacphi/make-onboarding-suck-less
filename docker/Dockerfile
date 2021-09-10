@@ -145,6 +145,10 @@ RUN mkdir downloads && cd downloads && \
     go build -ldflags "-X main.Version=$(git describe --tags)" && \
     sudo mv mkcert /usr/local/bin && \
     cd ../.. && \
+    curl -LO https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERSION}/velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
+    tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
+    chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
+    sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
     rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean && \
     useradd -m docker && echo "docker:docker" | chpasswd && \
