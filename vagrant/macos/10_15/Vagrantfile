@@ -43,7 +43,7 @@ mv om-darwin-${OM_VERSION} om && \
 chmod +x om && \
 sudo mv om /usr/local/bin && \
 
-TMC_VERSION=0.3.0-69c3ca95 && \
+TMC_VERSION=0.4.0-08a1abaa && \
 curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x64/tmc && \
 chmod +x tmc && \
 sudo mv tmc /usr/local/bin
