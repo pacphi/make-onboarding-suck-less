@@ -34,8 +34,6 @@ ENV TZ=America/Los_Angeles \
     VENDIR_VERSION=0.22.0 \
     YTT_VERSION=0.36.0
 
-COPY dist/ /usr/local/bin
-
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
@@ -153,10 +151,14 @@ RUN mkdir downloads && cd downloads && \
     adduser docker sudo && \
     npm install vmw-cli --global && \
     sudo chown -R docker /usr/local/lib/node_modules && \
-    sudo chgrp -R docker /usr/local/lib/node_modules && \
-    cd /home/docker && \
-    if [ -e "/usr/local/bin/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then sudo mv /usr/local/bin/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar . && tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && sudo rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar; fi
+    sudo chgrp -R docker /usr/local/lib/node_modules
 
 USER docker
+
+WORKDIR /home/docker
+
+COPY dist/ /home/docker/
+
+RUN if [ -e "/home/docker/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then echo "docker" | sudo -S mv /home/docker/tanzu /usr/local/bin && tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar; fi
 
 CMD [ "/bin/bash" ]
