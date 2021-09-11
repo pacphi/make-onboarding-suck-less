@@ -66,7 +66,7 @@ build {
   ]
 
   provisioner "file" {
-    source      = "dist"
+    source      = "dist/"
     destination = "/home/ubuntu"
   }
 
