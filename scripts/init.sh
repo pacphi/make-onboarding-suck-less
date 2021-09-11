@@ -156,18 +156,6 @@ main() {
   chmod +x leftovers
   sudo mv leftovers /usr/local/bin
 
-  # Move Tanzu CLI into place (if it had been file provisioned)
-  if [ -e "/home/ubuntu/tanzu" ]; then
-    sudo mv /home/ubuntu/tanzu /usr/local/bin
-  fi
-
-  if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then
-    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C .
-    tanzu plugin clean
-    tanzu plugin install --local cli all
-    rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
-  fi
-
   # Install Tanzu Mission Control CLI
   curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc
   chmod +x tmc
@@ -259,8 +247,22 @@ main() {
   sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
 
   # Clean-up APT cache
-  cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/*
+  rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
   apt clean
+
+  cd /home/ubuntu
+
+  # Move Tanzu CLI into place (if it had been file provisioned)
+  if [ -e "/home/ubuntu/tanzu" ]; then
+    sudo mv /home/ubuntu/tanzu /usr/local/bin
+  fi
+
+  if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then
+    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C .
+    tanzu plugin clean
+    tanzu plugin install --local cli all
+    rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
+  fi
 
 }
 
