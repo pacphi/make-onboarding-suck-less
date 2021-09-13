@@ -259,9 +259,6 @@ main() {
 
   if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then
     tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C .
-    tanzu plugin clean
-    tanzu plugin install --local cli all
-    rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar
   fi
 
 }
