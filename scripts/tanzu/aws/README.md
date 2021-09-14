@@ -253,7 +253,7 @@ tkg-system    pod/kapp-controller-76f8756b46-d876z                              
 ```
 tanzu cluster delete zoolabs-workload
 ```
-> Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~10 minutes to provision the supporting infrastructure.
+
 
 ### Teardown Management cluster
 
