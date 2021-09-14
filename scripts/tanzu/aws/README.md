@@ -105,11 +105,11 @@ Obtain a Tanzu Mission Control registration URL by following the steps in [Regis
 
 ### Create Management cluster
 
-Consult the [sample config](aws-mgmt-cluster-config.sample.yml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws.html).
+Consult the [sample config](aws-mgmt-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws.html).  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
 ```
 kubectl config use-context kind-kind
-tanzu management-cluster create --file aws-mgmt-cluster-config.sample.yml --use-existing-bootstrap-cluster
+tanzu management-cluster create --file aws-mgmt-cluster-config.sample.yaml --use-existing-bootstrap-cluster
 ```
 > Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~20 minutes to provision the supporting infrastructure.
 
@@ -160,11 +160,18 @@ kubectl patch deployment capa-controller-manager -n capa-system --patch-file pat
 
 ### Create Workload cluster
 
-// TODO
+Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
+
+```
+tanzu cluster create --file aws-workload-cluster-config.sample.yaml
+```
 
 ### Teardown Workload cluster
 
-// TODO
+```
+tanzu cluster delete zoolabs-workload
+```
+> Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~10 minutes to provision the supporting infrastructure.
 
 ### Teardown Management cluster
 
