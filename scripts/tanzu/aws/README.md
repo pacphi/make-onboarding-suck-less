@@ -158,33 +158,94 @@ kubectl get secret capa-manager-bootstrap-credentials -n capa-system -o json | j
 kubectl patch deployment capa-controller-manager -n capa-system --patch-file patch-mgmt-deployment-config.yml
 ```
 
+
 ### Create Workload cluster
 
 Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
+```
+tanzu cluster create --file aws-workload-cluster-config.sample.yaml
+```
+> Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~20 minutes to provision the supporting infrastructure.
 
-Run the following commmand, referencing the config file created for the workload cluster. (Example below uses a config file named tkg-workload-config.yaml)
+
+On completion, list the available workload clusters.
 
 ```
-ubuntu@ip-172-31-11-39:~$ tanzu cluster create -f tkg-workload-config.yaml
+tanzu cluster list
 ```
-After completion, get the new workload cluster kubectl configuration and validate cluster status.
 
 ```
-ubuntu@ip-172-31-11-39:~$ tanzu cluster list
-  NAME                    NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES   PLAN  
-  aws-ihsm-labs-workload  default    running  1/1           1/1      v1.20.5+vmware.1  <none>  dev
-ubuntu@ip-172-31-11-39:~$ tanzu cluster kubeconfig get aws-ihsm-labs-workload --admin
-Credentials of cluster 'aws-ihsm-labs-workload' have been saved 
-You can now access the cluster by running 'kubectl config use-context aws-ihsm-labs-workload-admin@aws-ihsm-labs-workload'
-ubuntu@ip-172-31-11-39:~$ kubectl config get-contexts
-CURRENT   NAME                                                  CLUSTER                  AUTHINFO                       NAMESPACE
-*         aws-ihsm-labs-workload-admin@aws-ihsm-labs-workload   aws-ihsm-labs-workload   aws-ihsm-labs-workload-admin   
-          aws-ihsm-tkg-mgmt-admin@aws-ihsm-tkg-mgmt             aws-ihsm-tkg-mgmt        aws-ihsm-tkg-mgmt-admin        
-ubuntu@ip-172-31-11-39:~$ kubectl get nodes
-NAME                                       STATUS   ROLES                  AGE   VERSION
-ip-10-0-0-110.us-west-2.compute.internal   Ready    control-plane,master   17m   v1.20.5+vmware.1
-ip-10-0-0-87.us-west-2.compute.internal    Ready    <none>                 16m   v1.20.5+vmware.1
+NAME                    NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES   PLAN
+zoolabs-workload        default    running  3/3           3/3      v1.20.5+vmware.1  <none>  prod
+```
+
+Obtain the new workload cluster kubectl configuration.
+
+```
+tanzu cluster kubeconfig get zoolabs-workload --admin
+```
+
+```
+Credentials of cluster 'zoolabs-workload' have been saved
+You can now access the cluster by running 'kubectl config use-context zoolabs-workload-admin@zoolabs-workload'
+```
+
+Set the context
+
+```
+kubectl config use-context zoolabs-workload-admin@zoolabs-workload
+```
+
+```
+Switched to context "zoolabs-workload-admin@zoolabs-workload".
+```
+
+Then validate status
+
+```
+kubectl get nodes,pods -A
+```
+
+```
+NAME                                            STATUS   ROLES                  AGE   VERSION
+node/ip-10-0-0-227.us-west-2.compute.internal   Ready    <none>                 28m   v1.20.5+vmware.1
+node/ip-10-0-0-76.us-west-2.compute.internal    Ready    control-plane,master   29m   v1.20.5+vmware.1
+node/ip-10-0-2-207.us-west-2.compute.internal   Ready    control-plane,master   24m   v1.20.5+vmware.1
+node/ip-10-0-2-228.us-west-2.compute.internal   Ready    <none>                 28m   v1.20.5+vmware.1
+node/ip-10-0-4-206.us-west-2.compute.internal   Ready    <none>                 28m   v1.20.5+vmware.1
+node/ip-10-0-4-215.us-west-2.compute.internal   Ready    control-plane,master   27m   v1.20.5+vmware.1
+
+NAMESPACE     NAME                                                                   READY   STATUS    RESTARTS   AGE
+kube-system   pod/antrea-agent-4l6sp                                                 2/2     Running   0          27m
+kube-system   pod/antrea-agent-58slz                                                 2/2     Running   0          28m
+kube-system   pod/antrea-agent-dzrk8                                                 2/2     Running   0          28m
+kube-system   pod/antrea-agent-k8h2k                                                 2/2     Running   0          28m
+kube-system   pod/antrea-agent-n6f48                                                 2/2     Running   0          28m
+kube-system   pod/antrea-agent-ndgf6                                                 2/2     Running   0          24m
+kube-system   pod/antrea-controller-7fd86b64bd-ztwm4                                 1/1     Running   0          28m
+kube-system   pod/coredns-68d49685bd-2zmf9                                           1/1     Running   0          29m
+kube-system   pod/coredns-68d49685bd-qzh92                                           1/1     Running   0          29m
+kube-system   pod/etcd-ip-10-0-0-76.us-west-2.compute.internal                       1/1     Running   0          29m
+kube-system   pod/etcd-ip-10-0-2-207.us-west-2.compute.internal                      1/1     Running   0          24m
+kube-system   pod/etcd-ip-10-0-4-215.us-west-2.compute.internal                      1/1     Running   0          26m
+kube-system   pod/kube-apiserver-ip-10-0-0-76.us-west-2.compute.internal             1/1     Running   0          29m
+kube-system   pod/kube-apiserver-ip-10-0-2-207.us-west-2.compute.internal            1/1     Running   0          24m
+kube-system   pod/kube-apiserver-ip-10-0-4-215.us-west-2.compute.internal            1/1     Running   0          26m
+kube-system   pod/kube-controller-manager-ip-10-0-0-76.us-west-2.compute.internal    1/1     Running   1          29m
+kube-system   pod/kube-controller-manager-ip-10-0-2-207.us-west-2.compute.internal   1/1     Running   0          24m
+kube-system   pod/kube-controller-manager-ip-10-0-4-215.us-west-2.compute.internal   1/1     Running   0          26m
+kube-system   pod/kube-proxy-dkgw8                                                   1/1     Running   0          29m
+kube-system   pod/kube-proxy-drmzv                                                   1/1     Running   0          27m
+kube-system   pod/kube-proxy-fc24q                                                   1/1     Running   0          28m
+kube-system   pod/kube-proxy-gmknt                                                   1/1     Running   0          28m
+kube-system   pod/kube-proxy-rj4j7                                                   1/1     Running   0          24m
+kube-system   pod/kube-proxy-rrzcx                                                   1/1     Running   0          28m
+kube-system   pod/kube-scheduler-ip-10-0-0-76.us-west-2.compute.internal             1/1     Running   1          29m
+kube-system   pod/kube-scheduler-ip-10-0-2-207.us-west-2.compute.internal            1/1     Running   0          24m
+kube-system   pod/kube-scheduler-ip-10-0-4-215.us-west-2.compute.internal            1/1     Running   0          26m
+kube-system   pod/metrics-server-68b875f65b-jzknl                                    1/1     Running   0          28m
+tkg-system    pod/kapp-controller-76f8756b46-d876z                                   1/1     Running   1          29m
 ```
 
 ### Teardown Workload cluster
