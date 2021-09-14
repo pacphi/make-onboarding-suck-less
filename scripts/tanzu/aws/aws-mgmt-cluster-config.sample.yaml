@@ -1,126 +1,20 @@
-#! ---------------------------------------------------------------------
-#! Basic cluster creation configuration
-#! ---------------------------------------------------------------------
-
 CLUSTER_NAME: zoolabs-mgmt
-CLUSTER_PLAN: dev
+CLUSTER_PLAN: prod
 INFRASTRUCTURE_PROVIDER: aws
-ENABLE_CEIP_PARTICIPATION: true
-TMC_REGISTRATION_URL: "https://westtanzuseamericas.tmc.cloud.vmware.com/installer?id=a94c907683c6eb0c98c8762a4d489a174a7888af8fb7fd8f9f1d5d53cbacde63&source=registration&type=tkgm"
-ENABLE_AUDIT_LOGGING: true
+ENABLE_CEIP_PARTICIPATION: false
+TMC_REGISTRATION_URL: "https://westtanzuseamericas.tmc.cloud.vmware.com/installer?id=44611631e6db440751266e076e81131f43005677b54ce840e4fdf6e10ef1d429&source=registration&type=tkgm"
+ENABLE_AUDIT_LOGGING: false
 CLUSTER_CIDR: 100.96.0.0/11
 SERVICE_CIDR: 100.64.0.0/13
-
-#! ---------------------------------------------------------------------
-#! Image repository configuration
-#! ---------------------------------------------------------------------
-
-# TKG_CUSTOM_IMAGE_REPOSITORY: ""
-# TKG_CUSTOM_IMAGE_REPOSITORY_CA_CERTIFICATE: ""
-
-#! ---------------------------------------------------------------------
-#! Proxy configuration
-#! ---------------------------------------------------------------------
-
-# TKG_HTTP_PROXY: ""
-# TKG_HTTPS_PROXY: ""
-# TKG_NO_PROXY: ""
-
-#! ---------------------------------------------------------------------
-#! Node configuration
-#! AWS-only MACHINE_TYPE settings override cloud-agnostic SIZE settings.
-#! ---------------------------------------------------------------------
-
-# SIZE:
-# CONTROLPLANE_SIZE:
-# WORKER_SIZE:
 CONTROL_PLANE_MACHINE_TYPE: t3.large
 NODE_MACHINE_TYPE: m5.large
-# OS_NAME: ""
-# OS_VERSION: ""
-# OS_ARCH: ""
-
-#! ---------------------------------------------------------------------
-#! AWS configuration
-#! ---------------------------------------------------------------------
-
 AWS_REGION: "us-west-2"
 AWS_NODE_AZ: "us-west-2a"
 AWS_NODE_AZ_1: "us-west-2b"
 AWS_NODE_AZ_2: "us-west-2c"
-# AWS_ACCESS_KEY_ID:
-# AWS_SECRET_ACCESS_KEY:
-AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2a"
+AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2"
 BASTION_HOST_ENABLED: true
-# AWS_NODE_AZ_1: ""
-# AWS_NODE_AZ_2: ""
-# AWS_VPC_ID: ""
-# AWS_PRIVATE_SUBNET_ID: ""
-# AWS_PUBLIC_SUBNET_ID: ""
-# AWS_PUBLIC_SUBNET_ID_1: ""
-# AWS_PRIVATE_SUBNET_ID_1: ""
-# AWS_PUBLIC_SUBNET_ID_2: ""
-# AWS_PRIVATE_SUBNET_ID_2: ""
-# AWS_VPC_CIDR: 10.0.0.0/16
-# AWS_PRIVATE_NODE_CIDR: 10.0.0.0/24
-# AWS_PUBLIC_NODE_CIDR: 10.0.1.0/24
-# AWS_PRIVATE_NODE_CIDR_1: 10.0.2.0/24
-# AWS_PUBLIC_NODE_CIDR_1: 10.0.3.0/24
-# AWS_PRIVATE_NODE_CIDR_2: 10.0.4.0/24
-# AWS_PUBLIC_NODE_CIDR_2: 10.0.5.0/24
-
-
-#! ---------------------------------------------------------------------
-#! Machine Health Check configuration
-#! ---------------------------------------------------------------------
-
 ENABLE_MHC: true
 MHC_UNKNOWN_STATUS_TIMEOUT: 5m
 MHC_FALSE_STATUS_TIMEOUT: 12m
-
-#! ---------------------------------------------------------------------
-#! Identity management configuration
-#! ---------------------------------------------------------------------
-
-IDENTITY_MANAGEMENT_TYPE: "oidc"
-
-#! Settings for OIDC
-# CERT_DURATION: 2160h
-# CERT_RENEW_BEFORE: 360h
-# OIDC_IDENTITY_PROVIDER_CLIENT_ID:
-# OIDC_IDENTITY_PROVIDER_CLIENT_SECRET:
-# OIDC_IDENTITY_PROVIDER_GROUPS_CLAIM: groups
-# OIDC_IDENTITY_PROVIDER_ISSUER_URL:
-# OIDC_IDENTITY_PROVIDER_SCOPES: email
-# OIDC_IDENTITY_PROVIDER_USERNAME_CLAIM: email
-
-#! The following two variables are used to configure Pinniped JWTAuthenticator for workload clusters
-# SUPERVISOR_ISSUER_URL:
-# SUPERVISOR_ISSUER_CA_BUNDLE_DATA:
-
-#! Settings for LDAP
-# LDAP_BIND_DN:
-# LDAP_BIND_PASSWORD:
-# LDAP_HOST:
-# LDAP_USER_SEARCH_BASE_DN:
-# LDAP_USER_SEARCH_FILTER:
-# LDAP_USER_SEARCH_USERNAME: userPrincipalName
-# LDAP_USER_SEARCH_ID_ATTRIBUTE: DN
-# LDAP_USER_SEARCH_EMAIL_ATTRIBUTE: DN
-# LDAP_USER_SEARCH_NAME_ATTRIBUTE:
-# LDAP_GROUP_SEARCH_BASE_DN:
-# LDAP_GROUP_SEARCH_FILTER:
-# LDAP_GROUP_SEARCH_USER_ATTRIBUTE: DN
-# LDAP_GROUP_SEARCH_GROUP_ATTRIBUTE:
-# LDAP_GROUP_SEARCH_NAME_ATTRIBUTE: cn
-# LDAP_ROOT_CA_DATA_B64:
-
-#! ---------------------------------------------------------------------
-#! Antrea CNI configuration
-#! ---------------------------------------------------------------------
-
-# ANTREA_NO_SNAT: false
-# ANTREA_TRAFFIC_ENCAP_MODE: "encap"
-# ANTREA_PROXY: false
-# ANTREA_POLICY: true
-# ANTREA_TRACEFLOW: false
+IDENTITY_MANAGEMENT_TYPE: "none"
