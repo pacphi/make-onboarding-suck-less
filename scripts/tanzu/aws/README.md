@@ -162,8 +162,29 @@ kubectl patch deployment capa-controller-manager -n capa-system --patch-file pat
 
 Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
+
+Run the following commmand, referencing the config file created for the workload cluster. (Example below uses a config file named tkg-workload-config.yaml)
+
 ```
-tanzu cluster create --file aws-workload-cluster-config.sample.yaml
+ubuntu@ip-172-31-11-39:~$ tanzu cluster create -f tkg-workload-config.yaml
+```
+After completion, get the new workload cluster kubectl configuration and validate cluster status.
+
+```
+ubuntu@ip-172-31-11-39:~$ tanzu cluster list
+  NAME                    NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES   PLAN  
+  aws-ihsm-labs-workload  default    running  1/1           1/1      v1.20.5+vmware.1  <none>  dev
+ubuntu@ip-172-31-11-39:~$ tanzu cluster kubeconfig get aws-ihsm-labs-workload --admin
+Credentials of cluster 'aws-ihsm-labs-workload' have been saved 
+You can now access the cluster by running 'kubectl config use-context aws-ihsm-labs-workload-admin@aws-ihsm-labs-workload'
+ubuntu@ip-172-31-11-39:~$ kubectl config get-contexts
+CURRENT   NAME                                                  CLUSTER                  AUTHINFO                       NAMESPACE
+*         aws-ihsm-labs-workload-admin@aws-ihsm-labs-workload   aws-ihsm-labs-workload   aws-ihsm-labs-workload-admin   
+          aws-ihsm-tkg-mgmt-admin@aws-ihsm-tkg-mgmt             aws-ihsm-tkg-mgmt        aws-ihsm-tkg-mgmt-admin        
+ubuntu@ip-172-31-11-39:~$ kubectl get nodes
+NAME                                       STATUS   ROLES                  AGE   VERSION
+ip-10-0-0-110.us-west-2.compute.internal   Ready    control-plane,master   17m   v1.20.5+vmware.1
+ip-10-0-0-87.us-west-2.compute.internal    Ready    <none>                 16m   v1.20.5+vmware.1
 ```
 
 ### Teardown Workload cluster
