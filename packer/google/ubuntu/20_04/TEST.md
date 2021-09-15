@@ -45,6 +45,13 @@ gcloud beta compute ssh --zone "{AVAILABILITY_ZONE}" --project "{PROJECT_ID}" "{
 > Replace `{AVAILABILTY_ZONE}`, `{PROJECT_ID}`, and `{INSTANCE_NAME}` with the same values you used to create the VM.
 
 
+## On using the Tanzu CLI
+
+One time setup
+
+You will need to install the plugins the Tanzu CLI requires after connecting by exploding the tarball and executing `tanzu plugin install --local cli all`
+
+
 ## Destroy VM
 
 ```

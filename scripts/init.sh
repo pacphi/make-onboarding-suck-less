@@ -26,7 +26,6 @@ main() {
   LEFTOVERS_VERSION=0.62.0
   OM_VERSION=7.3.1
   PIVNET_VERSION=3.0.1
-  TANZU_VERSION=1.3.1
   TEKTONCD_VERSION=0.20.0
   TERRAFORM_VERSION=1.0.5
   TERRAFORM_DOCS_VERSION=0.15.0
@@ -257,8 +256,8 @@ main() {
     sudo mv /home/ubuntu/tanzu /usr/local/bin
   fi
 
-  if [ -e "/home/ubuntu/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then
-    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C .
+  if [ -e "/home/ubuntu/tanzu-cli-bundle-linux-amd64.tar" ]; then
+    tar xvf tanzu-cli-bundle-linux-amd64.tar -C .
   fi
 
 }

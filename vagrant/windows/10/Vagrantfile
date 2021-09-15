@@ -99,6 +99,7 @@ scoop install 7zip
 
 # Dev Tools
 choco install -y docker-desktop
+choco install podman-cli -y --pre
 scoop install aria2
 choco install -y argocd-cli
 choco install -y bosh-cli

@@ -44,6 +44,13 @@ ssh -i $HOME/.ssh/my-key ubuntu@{INSTANCE_PUBLIC_DNS_NAME}
 > You were paying attention weren't you? The `{INSTANCE_PUBLIC_DNS_NAME}` is available from the output of the prior command you issued.
 
 
+## On using the Tanzu CLI
+
+One time setup
+
+You will need to install the plugins the Tanzu CLI requires after connecting by exploding the tarball and executing `tanzu plugin install --local cli all`
+
+
 ### Troubleshooting connectivity
 
 * [Can you telnet to SSH?](https://stackoverflow.com/questions/11548787/can-you-telnet-to-ssh)
