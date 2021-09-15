@@ -2,7 +2,6 @@ FROM ubuntu:20.10
 LABEL author=cphillipson@vmware.com
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG tanzu_cli_version=1.3.1
 
 ENV TZ=America/Los_Angeles \
     ARGOCD_VERSION=2.1.1 \
@@ -24,7 +23,6 @@ ENV TZ=America/Los_Angeles \
     OM_VERSION=7.3.1 \
     PACK_VERSION=0.20.0 \
     PIVNET_VERSION=3.0.1 \
-    TANZU_VERSION=$tanzu_cli_version \
     TEKTONCD_VERSION=0.20.0 \
     TERRAFORM_VERSION=1.0.5 \
     TERRAFORM_DOCS_VERSION=0.15.0 \
@@ -164,6 +162,6 @@ WORKDIR /home/docker
 
 COPY dist/ /home/docker/
 
-RUN if [ -e "/home/docker/tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar" ]; then echo "docker" | sudo -S mv /home/docker/tanzu /usr/local/bin && tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && rm -Rf cli tanzu-cli-bundle-v${TANZU_VERSION}-linux-amd64.tar; fi
+RUN if [ -e "/home/docker/tanzu-cli-bundle-linux-amd64.tar" ]; then echo "docker" | sudo -S mv /home/docker/tanzu /usr/local/bin && tar xvf tanzu-cli-bundle-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && rm -Rf cli tanzu-cli-bundle-linux-amd64.tar; fi
 
 CMD [ "/bin/bash" ]

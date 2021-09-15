@@ -23,9 +23,8 @@ If you want to build a portable container image, then execute
 
 ```
 mkdir -p dist
-docker build --build-arg tanzu_cli_version={TANZU_CLI_VERSION} -t tanzu/k8s-toolkit .
+docker build -t tanzu/k8s-toolkit .
 ```
-> Replace `{TANZU_CLI_VERSION}` with same version you fetched earlier.  Note that if you did not pre-fetch the Tanzu CLI you may omit `--build-arg tanzu_cli_version={TANZU_CLI_VERSION}` from `docker build`.
 
 
 ## Launching

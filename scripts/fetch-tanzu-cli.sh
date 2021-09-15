@@ -10,7 +10,7 @@ VMWPASS="$2"
 OS="$3"
 TANZU_VERSION="$4"
 
-FILE=tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
+FILE=tanzu-cli-bundle-${OS}-amd64.tar
 CURRENT_VERSION="latest"
 DIST_EXECUTABLE="dist/tanzu"
 TANZU_CLI="tanzu"
@@ -34,8 +34,8 @@ else
     mkdir -p dist
     docker run -itd --name vmw -e VMWUSER=${VMWUSER} -e VMWPASS=${VMWPASS} -v ${PWD}:/files --entrypoint=sh apnex/vmw-cli
     docker exec -t vmw vmw-cli ls vmware_tanzu_kubernetes_grid
-    docker exec -t vmw vmw-cli cp tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar
-    tar xvf tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar -C dist
+    docker exec -t vmw vmw-cli cp $FILE
+    tar xvf $FILE -C dist
     if [ "$OS" == "windows" ]; then
       cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64.exe ${DIST_EXECUTABLE}
     else
@@ -43,6 +43,6 @@ else
       cp dist/cli/core/v${TANZU_VERSION}/tanzu-core-${OS}_amd64 ${DIST_EXECUTABLE}
     fi
     rm -Rf dist/cli
-    mv tanzu-cli-bundle-v${TANZU_VERSION}-${OS}-amd64.tar dist
+    mv $FILE dist
     docker rm -f vmw
 fi
