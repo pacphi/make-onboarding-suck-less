@@ -42,7 +42,7 @@ gcloud beta compute instances create {INSTANCE_NAME} \
 ```
 gcloud beta compute ssh --zone "{AVAILABILITY_ZONE}" --project "{PROJECT_ID}" "{INSTANCE_NAME}"
 ```
-> Replace `{AVAILABILTY_ZONE}`, `{PROJECT_ID}`, and `{INSTANCE_NAME}` with the same values you used to create the VM.
+> Replace `{AVAILABILITY_ZONE}`, `{PROJECT_ID}`, and `{INSTANCE_NAME}` with the same values you used to create the VM.
 
 
 ## On using the Tanzu CLI
