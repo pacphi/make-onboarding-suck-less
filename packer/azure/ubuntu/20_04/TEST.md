@@ -53,6 +53,13 @@ ssh -i $HOME/.ssh/id_sra ubuntu@{PUBLIC_IP_ADDRESS}
 > You were paying attention weren't you? The `{PUBLIC_IP_ADDRESS}` is available from the output of the prior command you issued.
 
 
+## On using the Tanzu CLI
+
+One time setup
+
+You will need to install the plugins the Tanzu CLI requires after connecting by exploding the tarball and executing `tanzu plugin install --local cli all`
+
+
 ## Credit
 
 * [Create a VM from a generalized image version using the Azure CLI](https://docs.microsoft.com/en-us/azure/virtual-machines/vm-generalized-image-version-cli)
