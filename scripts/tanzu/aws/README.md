@@ -105,7 +105,7 @@ Obtain a Tanzu Mission Control registration URL by following the steps in [Regis
 
 ### Create Management cluster
 
-Consult the [sample config](aws-mgmt-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws.html).  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
+Consult the [sample config](aws-mgmt-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-mgmt-clusters-aws.html).  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
 ```
 kubectl config use-context kind-kind
@@ -113,55 +113,10 @@ tanzu management-cluster create --file aws-mgmt-cluster-config.sample.yaml --use
 ```
 > Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~20 minutes to provision the supporting infrastructure.
 
-To address a defect that would eventually prevent you from life-cycle managing the management cluster, we will need to blank the capa-controller secret and patch the deployment to include some affinity and toleration rules.
-
-Create the patch file.
-
-```
-cat >patch-mgmt-deployment-config.yml <<EOF
-spec:
-  template:
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: "node-role.kubernetes.io/control-plane"
-                operator: "Exists"
-            - matchExpressions:
-              - key: "node-role.kubernetes.io/master"
-                operator: "Exists"
-      tolerations:
-      - effect: "NoSchedule"
-        key: "node-role.kubernetes.io/control-plane"
-      - effect: "NoSchedule"
-        key: "node-role.kubernetes.io/master"
-EOF
-```
-
-Set the kubectl context.  (Note: this is a sample).
-
-```
-ubuntu@ip-172-31-25-21:~$ kubectl config get-contexts
-CURRENT   NAME                              CLUSTER        AUTHINFO             NAMESPACE
-*         kind-kind                         kind-kind      kind-kind
-          zoolabs-mgmt-admin@zoolabs-mgmt   zoolabs-mgmt   zoolabs-mgmt-admin
-ubuntu@ip-172-31-25-21:~$ kubectl config use-context zoolabs-mgmt-admin@zoolabs-mgmt
-Switched to context "zoolabs-mgmt-admin@zoolabs-mgmt".
-```
-
-Now execute the commands
-
-```
-kubectl get secret capa-manager-bootstrap-credentials -n capa-system -o json | jq '.data["credentials"]="Cg=="' | kubectl apply -f -
-kubectl patch deployment capa-controller-manager -n capa-system --patch-file patch-mgmt-deployment-config.yml
-```
-
 
 ### Create Workload cluster
 
-Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
+Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
 ```
 tanzu cluster create --file aws-workload-cluster-config.sample.yaml
@@ -177,7 +132,7 @@ tanzu cluster list
 
 ```
 NAME                    NAMESPACE  STATUS   CONTROLPLANE  WORKERS  KUBERNETES        ROLES   PLAN
-zoolabs-workload        default    running  3/3           3/3      v1.20.5+vmware.1  <none>  prod
+zoolabs-workload        default    running  3/3           3/3      v1.21.2+vmware.1  <none>  prod
 ```
 
 Obtain the new workload cluster kubectl configuration.
