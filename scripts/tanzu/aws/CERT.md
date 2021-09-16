@@ -81,3 +81,19 @@ cp "$(mkcert -CAROOT)"/rootCA.pem tkg-custom-ca.pem
 ```
 
 You're now ready to create a new workload cluster.  That cluster's and any subsequently created workload cluster's nodes will allow for images to be pulled from a container registry employing the same certificate.
+
+## Adjustment for production cluster plans
+
+Note: if you set `CLUSTER_PLAN: prod` in your cluster configuration, you will have to amend the overlay above.
+
+Where you see occurrences of
+
+```
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
+```
+
+replace with
+
+```
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}), expects="1+"
+```
