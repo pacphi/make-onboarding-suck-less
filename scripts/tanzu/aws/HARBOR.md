@@ -81,30 +81,6 @@ tl;dr
 tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager --create-namespace
 ```
 
-### Install CA cert cluster wide issuer
-
-```
-SECRET_NAME=harbor-tls-secret
-cat > cluster-issuer.yml <<EOF
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: tls-ca-issuer
-spec:
-  ca:
-    secretName: ${SECRET_NAME}
-EOF
-
-kapp deploy -a cert-manager \
--f .k8s/cluster-issuer.yml \
--f <(kubectl create secret tls ${SECRET_NAME} \
---cert="$(mkcert -CAROOT)"/rootCA.pem \
---key="$(mkcert -CAROOT)"/rootCA-key.pem \
---namespace cert-manager \
---dry-run=client \
--o yaml) --yes
-```
-
 ## Install Contour
 
 Consult the instructions [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-ingress-contour.html).
@@ -217,7 +193,7 @@ aws iam create-access-key --user-name {SUBDOMAIN}-owner
 > Replace the value of `{SUBDOMAIN}` with what you chose in the prior step.  Make sure you capture the access key and secret key in the JSON output.  You'll require these values later on when you configure and install external-dns.
 
 
-### Create a hosted zones in Route53
+### Create hosted zones in Route53
 
 We're going to use [Terraform](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) to expedite the process of creating a
 
@@ -363,6 +339,7 @@ kubectl -n tanzu-system-service-discovery create secret generic route53-credenti
   --from-literal=aws_access_key_id={YOUR-ACCESS-KEY-ID} \
   --from-literal=aws_secret_access_key={YOUR-SECRET-ACCESS-KEY}
 ```
+> Replace the curl-bracketed values with the credentials of the `{SUBDOMAIN}-owner`
 
 Create the data values file
 
