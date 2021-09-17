@@ -81,6 +81,29 @@ tl;dr
 tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager --create-namespace
 ```
 
+### Install CA cert cluster wide issuer
+
+```
+SECRET_NAME=harbor-tls-secret
+cat > cluster-issuer.yml <<EOF
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: tls-ca-issuer
+spec:
+  ca:
+    secretName: ${SECRET_NAME}
+EOF
+
+kapp deploy -a cert-manager \
+-f .k8s/cluster-issuer.yml \
+-f <(kubectl create secret tls ${SECRET_NAME} \
+--cert="$(mkcert -CAROOT)"/rootCA.pem \
+--key="$(mkcert -CAROOT)"/rootCA-key.pem \
+--namespace cert-manager \
+--dry-run=client \
+-o yaml) --yes
+```
 
 ## Install Contour
 
@@ -436,7 +459,6 @@ Add values for:
     * registry
       * size (set to 100Gi)
 
-// FIXME I had to leave tls.crt, tls.key, and ca.crt blank.  Not sure if these properties support multi-line values.
 
 Install the package
 
@@ -447,4 +469,46 @@ tanzu package install harbor \
   --version 2.2.3+vmware.1-tkg.1 \
   --values-file harbor-data-values.yaml \
   --namespace tanzu-system-registry
+```
+
+Address issue post-install
+
+See [the harbor-notary-signer pod fails to start](https://kb.vmware.com/s/article/85725)
+
+Create file overlay
+
+```
+cat > overlay-notary-signer-image-fix.yaml <<EOF
+#@ load("@ytt:overlay", "overlay")
+
+#@overlay/match by=overlay.and_op(overlay.subset({"kind": "Deployment"}), overlay.subset({"metadata": {"name": "harbor-notary-signer"}}))
+---
+spec:
+  template:
+    spec:
+      containers:
+        #@overlay/match by="name",expects="0+"
+        - name: notary-signer
+          image: projects.registry.vmware.com/tkg/harbor/notary-signer-photon@sha256:4dfbf3777c26c615acfb466b98033c0406766692e9c32f3bb08873a0295e24d1
+EOF
+```
+
+Apply overlay and patch the package
+
+```
+kubectl -n tanzu-system-registry create secret generic harbor-notary-singer-image-overlay -o yaml --dry-run=client --from-file=overlay-notary-signer-image-fix.yaml | kubectl apply -f -
+kubectl -n tanzu-system-registry annotate packageinstalls harbor ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-notary-singer-image-overlay
+```
+
+The harbor-notary-signer pod might be stuck in a CrashLoopBackoff state.  If this is the case, execute
+
+```
+kubectl delete pod harbor-notary-signer-xxxxxxxxxx-xxxxx -n tanzu-system-registry
+```
+> Replace the "xxxxxxxxxx-xxxxx" suffix of the pod name above with the real suffix you see from having executed `kubectl get pod -n tanzu-system-registry`
+
+Lastly, we need to restart contour
+
+```
+kubectl rollout restart deployment.apps/contour -n tanzu-system-ingress
 ```
