@@ -25,6 +25,33 @@ export AWS_PAGER=
 
 Follow instructions for trusting [Custom CA Certificates on Tanzu Kubernetes Grid Cluster Nodes](CERT.md).
 
+Next let's create key file and cert file for wildcard subdomains.
+
+```
+mkcert -key-file key.pem -cert-file cert.pem {DOMAIN} {SUBDOMAIN} *.{SUBDOMAIN} localhost 127.0.0.1 ::1
+```
+
+For example
+
+```
+ubuntu@ip-172-31-61-62:~$ mkcert -key-file key.pem -cert-file cert.pem zoolabs.me lab.zoolabs.me *.lab.zoolabs.me localhost 127.0.0.1 ::1
+
+Created a new certificate valid for the following names 📜
+ - "zoolabs.me"
+ - "lab.zoolabs.me"
+ - "*.lab.zoolabs.me"
+ - "localhost"
+ - "127.0.0.1"
+ - "::1"
+
+Reminder: X.509 wildcards only go one level deep, so this won't match a.b.lab.zoolabs.me ℹ️
+
+The certificate is at "cert.pem" and the key at "key.pem" ✅
+
+It will expire on 19 December 2023 🗓
+```
+> Make note of file names.  We're going to use these later.  They are located in the directory you executed the command from.
+
 
 ## Create a dedicated workload cluster
 
@@ -419,8 +446,8 @@ Add values for:
 
 * hostname (the hostname you want to use to access Harbor)
 * tlsCertificate (you can obtain the values for the crt, key and ca from mkcert)
-  * tls.crt ( cat "$(mkcert -CAROOT)"/rootCA.pem )
-  * tls.key ( cat "$(mkcert -CAROOT)"/rootCA-key.pem )
+  * tls.crt ( cert.pem )
+  * tls.key ( key.pem )
   * ca.crt ( cat "$(mkcert -CAROOT)"/rootCA.crt )
 * harborAdminPassword
 * secretKey (used for encryption and must be a string of at least 16 characters in length)
@@ -473,8 +500,8 @@ EOF
 Apply overlay and patch the package
 
 ```
-kubectl -n tanzu-system-registry create secret generic harbor-notary-singer-image-overlay -o yaml --dry-run=client --from-file=overlay-notary-signer-image-fix.yaml | kubectl apply -f -
-kubectl -n tanzu-system-registry annotate packageinstalls harbor ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-notary-singer-image-overlay
+kubectl -n tanzu-system-registry create secret generic harbor-notary-signer-image-overlay -o yaml --dry-run=client --from-file=overlay-notary-signer-image-fix.yaml | kubectl apply -f -
+kubectl -n tanzu-system-registry annotate packageinstalls harbor ext.packaging.carvel.dev/ytt-paths-from-secret-name.0=harbor-notary-signer-image-overlay
 ```
 
 The harbor-notary-signer pod might be stuck in a CrashLoopBackoff state.  If this is the case, execute
@@ -488,4 +515,22 @@ Lastly, we need to restart contour
 
 ```
 kubectl rollout restart deployment.apps/contour -n tanzu-system-ingress
+```
+
+## Test login
+
+```
+docker login -u admin -p {HARBOR_PASSWORD} https://{HARBOR_DOMAIN}
+```
+
+For example
+
+```
+ubuntu@ip-172-31-61-62:~$ docker login -u admin -p 'xxx' https://harbor.lab.zoolabs.me
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+WARNING! Your password will be stored unencrypted in /home/ubuntu/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
 ```
