@@ -519,6 +519,9 @@ kubectl rollout restart deployment.apps/contour -n tanzu-system-ingress
 
 ## Test login
 
+
+### with Docker
+
 ```
 docker login -u admin -p {HARBOR_PASSWORD} https://{HARBOR_DOMAIN}
 ```
@@ -534,3 +537,33 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
 Login Succeeded
 ```
+
+Did you face this [issue](https://github.com/goharbor/harbor/issues/9429) when attempting to login?
+
+You'll need to copy the key, cert and root CA files into `/etc/docker/certs.d/{HARBOR_DOMAIN}`.
+
+Assuming you were on the toolset jumpbox when you installed Harbor, you could use `scp` to fetch those files and then move them into place.
+
+For example
+
+```
+scp -r -i $HOME/.ssh/se-cphillipson-cloudgate-aws-us-west-2 ubuntu@ec2-44-242-138-94.us-west-2.compute.amazonaws.com:/home/ubuntu/key.pem .
+scp -r -i $HOME/.ssh/se-cphillipson-cloudgate-aws-us-west-2 ubuntu@ec2-44-242-138-94.us-west-2.compute.amazonaws.com:/home/ubuntu/cert.pem .
+scp -r -i $HOME/.ssh/se-cphillipson-cloudgate-aws-us-west-2 ubuntu@ec2-44-242-138-94.us-west-2.compute.amazonaws.com:/home/ubuntu/.local/share/mkcert/rootCA.crt .
+mv rootCA.crt ca.crt
+mv key.pem client.key
+mv cert.pem client.cert
+sudo mkdir -p /etc/docker/certs.d/harbor.lab.zoolabs.me
+sudo mv ca.crt /etc/docker/certs.d/harbor.lab.zoolabs.me
+sudo mv client.* /etc/docker/certs.d/harbor.lab.zoolabs.me
+```
+
+Try to login again.
+
+### with a Browser
+
+You're going to have to import the root CA.  The procedure for doing this varies depending on the browser vendor.
+
+* [Internet Explorer or Microsoft Edge](https://www.techrepublic.com/article/how-to-add-a-trusted-certificate-authority-certificate-to-internet-explorer-or-microsoft-edge/)
+* [Firefox](https://javorszky.co.uk/2019/11/06/get-firefox-to-trust-your-self-signed-certificates/)
+* [Safari](https://support.apple.com/guide/keychain-access/add-certificates-to-a-keychain-kyca2431/mac)
