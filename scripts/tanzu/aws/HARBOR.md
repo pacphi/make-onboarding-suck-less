@@ -477,7 +477,7 @@ tanzu package install harbor \
 
 Address issue post-install
 
-See [the harbor-notary-signer pod fails to start](https://kb.vmware.com/s/article/85725)
+> See [the harbor-notary-signer pod fails to start](https://kb.vmware.com/s/article/85725)
 
 Create file overlay
 
@@ -564,6 +564,6 @@ Try to login again.
 
 You're going to have to import the root CA.  The procedure for doing this varies depending on the browser vendor.
 
-* [Internet Explorer or Microsoft Edge](https://www.techrepublic.com/article/how-to-add-a-trusted-certificate-authority-certificate-to-internet-explorer-or-microsoft-edge/)
 * [Firefox](https://javorszky.co.uk/2019/11/06/get-firefox-to-trust-your-self-signed-certificates/)
+* [Internet Explorer or Microsoft Edge](https://www.techrepublic.com/article/how-to-add-a-trusted-certificate-authority-certificate-to-internet-explorer-or-microsoft-edge/)
 * [Safari](https://support.apple.com/guide/keychain-access/add-certificates-to-a-keychain-kyca2431/mac)
