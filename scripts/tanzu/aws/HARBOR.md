@@ -538,7 +538,7 @@ https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 Login Succeeded
 ```
 
-Did you face this [issue](https://github.com/goharbor/harbor/issues/9429) when attempting to login?
+Did you face this [issue](https://github.com/goharbor/harbor/issues/6774#issuecomment-455951285) when attempting to login?
 
 You'll need to copy the key, cert and root CA files into `/etc/docker/certs.d/{HARBOR_DOMAIN}`.
 
