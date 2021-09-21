@@ -97,12 +97,23 @@ Where you see occurrences of
 ```
 #@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"})
 ```
+or
+
+```
+#@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"})
+```
 
 replace with
 
 ```
+#@overlay/match by=overlay.subset({"kind":"KubeadmControlPlane"}), expects="1+"
+```
+or
+
+```
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}), expects="1+"
 ```
+respectively.
 
 
 ## Create a workload cluster
