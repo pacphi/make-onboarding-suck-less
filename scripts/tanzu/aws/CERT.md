@@ -6,6 +6,9 @@ If you want to create a certificate you have a few options.
 
 For the purposes of this tutorial we're going to employ a locally trusted certificate that is created by [mkcert](https://github.com/FiloSottile/mkcert).
 
+
+## Create the CA
+
 Let's create a root certificate.
 
 ```
@@ -18,6 +21,9 @@ Place yourself in the ytt overlay directory for AWS infrastructure.
 ```
 cd ~/.config/tanzu/tkg/providers/infrastructure-aws/ytt
 ```
+
+
+## Create the overlay
 
 Let's create a new overlay.
 
@@ -82,7 +88,7 @@ cp "$(mkcert -CAROOT)"/rootCA.pem tkg-custom-ca.pem
 
 You're now ready to create a new workload cluster.  That cluster's and any subsequently created workload cluster's nodes will allow for images to be pulled from a container registry employing the same certificate.
 
-## Adjustment for production cluster plans
+### Adjustment for production cluster plans
 
 Note: if you set `CLUSTER_PLAN: prod` in your cluster configuration, you will have to amend the overlay above.
 
@@ -97,3 +103,77 @@ replace with
 ```
 #@overlay/match by=overlay.subset({"kind":"KubeadmConfigTemplate"}), expects="1+"
 ```
+
+
+## Create a workload cluster
+
+With the overlay in place, [create a workload cluster](README.md#create-workload-cluster).
+
+
+## Verify that the CA was injected
+
+Make sure your context is set to target the management cluster.
+
+Note that the following API resources have been installed
+
+```
+ubuntu@ip-172-31-61-62:~$ kubectl api-resources | grep Kube
+kubeadmconfigs                                 bootstrap.cluster.x-k8s.io/v1alpha3                  true         KubeadmConfig
+kubeadmconfigtemplates                         bootstrap.cluster.x-k8s.io/v1alpha3                  true         KubeadmConfigTemplate
+kubeadmcontrolplanes              kcp          controlplane.cluster.x-k8s.io/v1alpha3               true         KubeadmControlPlane
+tanzukubernetesreleases           tkr          run.tanzu.vmware.com/v1alpha1                        false        TanzuKubernetesRelease
+```
+
+Let's list all the KubeadmControlPlane and KubeadmConfigTemplate resources
+
+```
+kubectl get KubeadmControlPlane,KubeadmConfigTemplate -A
+```
+
+For example
+
+```
+ubuntu@ip-172-31-61-62:~$ kubectl get KubeadmControlPlane,KubeadmConfigTemplate -A
+NAMESPACE    NAME                                                                             INITIALIZED   API SERVER AVAILABLE   VERSION            REPLICAS   READY   UPDATED   UNAVAILABLE
+default      kubeadmcontrolplane.controlplane.cluster.x-k8s.io/zoolabs-harbor-control-plane   true          true                   v1.21.2+vmware.1   3          3       3
+default      kubeadmcontrolplane.controlplane.cluster.x-k8s.io/zoolabs-tbs-control-plane      true          true                   v1.21.2+vmware.1   3          3       3
+tkg-system   kubeadmcontrolplane.controlplane.cluster.x-k8s.io/zoolabs-mgmt-control-plane     true          true                   v1.21.2+vmware.1   3          3       3
+
+NAMESPACE    NAME                                                                   AGE
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-harbor-md-0   5d2h
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-harbor-md-1   5d2h
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-harbor-md-2   5d2h
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-tbs-md-0      11h
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-tbs-md-1      11h
+default      kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-tbs-md-2      11h
+tkg-system   kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-mgmt-md-0     7d1h
+tkg-system   kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-mgmt-md-1     7d1h
+tkg-system   kubeadmconfigtemplate.bootstrap.cluster.x-k8s.io/zoolabs-mgmt-md-2     7d1h
+```
+
+We want to verify that the CA was injected into both the _control plane_ and _worker_ nodes.
+
+### Inspect control plane node
+
+```
+kubectl get kcp {node_name} -o yaml | grep -i tkg-custom-ca.pem
+```
+
+For example
+
+```
+kubectl get kcp zoolabs-tbs-control-plane -o yaml | grep -i tkg-custom-ca.pem
+```
+
+### Inspect worker node
+
+```
+kubectl get KubeadmConfigTemplate {template_name} -o yaml | grep -i tkg-custom-ca.pem
+```
+
+For example
+
+```
+kubectl get KubeadmConfigTemplate zoolabs-tbs-md-0 -o yaml | grep -i tkg-custom-ca.pem
+```
+
