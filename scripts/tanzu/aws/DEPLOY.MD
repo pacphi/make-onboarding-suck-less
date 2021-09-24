@@ -1,6 +1,20 @@
 # Deploy an application to Tanzu Kubernetes Grid on AWS
 
+Where are you performing your development work?
+
+Make sure you've installed the pre-requisite tooling.
+
+
 ## Restore the ~/.config/tanzu directory
+
+If...
+
+* You'd been working on a jumpbox in an AWS region and already deployed a management cluster and workload clusters hosting Harbor and TBS
+* Management cluster hasn't been registered with TMC
+* Workload clusters haven't been registered with or attached to TMC
+* You've decided to shift to working from your laptop or workstation
+
+... proceed with the following steps to reconstitute config from jumpbox and subsequently obtain cluster credentials
 
 Fetch .kube, .kube-tkg, and .tanzu directories from toolset jumpbox with Tanzu 1.4.0 CLI installed to workstation
 
@@ -63,7 +77,7 @@ kubectl config use-context {DEV_WORKLOAD_CLUSTER_NAME}-admin@{DEV_WORKLOAD_CLUST
 tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager --create-namespace
 ```
 
-Skip this step if cert-manager already installed in workload cluster
+Skip this step if cert-manager is already installed in the workload cluster
 
 ## Install Contour
 
@@ -105,22 +119,24 @@ EOF
 tanzu package install contour --package-name contour.tanzu.vmware.com --version 1.17.1+vmware.1-tkg.1 --namespace contour --values-file contour-data-values.yaml --create-namespace
 ```
 
-Skip this step if cert-manager already installed in workload cluster
+Skip this step if contour is already installed in the workload cluster
 
 
-## Create namespace
+## Create a namespace
 
 ```
 kubectl create ns apps
 ```
 
-## Create secret
+## Create a secret
 
 ```
 kubectl apply -f registry-credentials.yml --namespace apps
 ```
 
-## Deploy app
+## Deploy an app
+
+The deployment will consume the secret which has the credentials required to pull image from a private container registry.
 
 Example manifest
 
@@ -132,7 +148,6 @@ metadata:
   labels:
     app: primes-dev
   name: primes-dev
-  namespace: apps
 spec:
   replicas: 3
   selector:
@@ -155,7 +170,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: primes-dev
-  namespace: apps
 spec:
   ports:
   - port: 8080
@@ -165,13 +179,13 @@ spec:
 EOF
 ```
 
-Deploy it
+Deploy it!
 
 ```
-kubectl apply -f primes-dev-deployment.yml
+kubectl apply -f primes-dev-deployment.yml --namespace apps
 ```
 
-## Connect to app
+## Connect to the app
 
 We're going to use [kwt](https://github.com/vmware-tanzu/carvel-kwt).
 
@@ -179,7 +193,9 @@ We're going to use [kwt](https://github.com/vmware-tanzu/carvel-kwt).
 sudo -E kwt net start
 ```
 
-Open another terminal session, then
+Let's calculate some primes!
+
+Open another terminal session, then execute
 
 ```
 curl http://primes-dev.apps.svc.cluster.local:8080/primes/1/20 | jq
