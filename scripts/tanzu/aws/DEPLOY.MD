@@ -54,8 +54,18 @@ kubectl config use-context {TBS_WORKLOAD_CLUSTER_NAME}-admin@{TBS_WORKLOAD_CLUST
 
 ## Obtain container registry secrets
 
+
 ```
 kubectl get secret registry-credentials -o yaml > registry-credentials.yml
+```
+
+Purge unnecessary lines from the manifest to make it reusable
+
+```
+sed -i '/namespace/d' registry-credentials.yml
+sed -i '/resourceVersion/d' registry-credentials.yml
+sed -i '/uid/d' registry-credentials.yml
+sed -i '/creationTimestamp/d' registry-credentials.yml
 ```
 
 ## Fetch credentials for development cluster
