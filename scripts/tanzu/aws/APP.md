@@ -183,6 +183,7 @@ Use SHA to update the reference in your `k8s-manifests` git repo.  You're going 
 Clone the manifests repo and use VIM to update the App CR
 ```
 git clone https://github.com/pacphi/k8s-manifests
+cd k8s-manifests
 vi com/fns/primes/{namespace}/config.yml
 ```
 
@@ -193,7 +194,7 @@ containers:
 - name: primes-dev
   image: harbor.lab.zoolabs.me/apps/primes@sha256:061ac41e98cff9c90f9e6bd8d34b5666c3f2f91fe4bb6196d1855d702e49cdaf
 ```
-> Replace the SHA.  You'll likely want to update the container registry domain too.
+> Replace the SHA.  You'll want to update the container registry domain too.
 
 Then type
 
