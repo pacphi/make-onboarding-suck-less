@@ -62,6 +62,17 @@ kubectl apply -f {namespace}-sa.yml
 
 We're going to create a custom resource that corresponds to the application we want to deploy.
 
+For both options below it's assumed you'll be pulling images from a private container registry, so you're going to need to deploy a secret that has the credentials.
+
+Here's you would:
+
+* [obtain](DEPLOY.MD#obtain-container-registry-secrets)
+  * Assumes you have access to the cluster where registry (e.g., Harbor) is deployed.
+* [deploy](DEPLOY.MD#create-a-secret)\
+  * Make sure you're targeting the right workload cluster
+
+the secret.
+
 
 ### Option 1
 
@@ -101,8 +112,8 @@ Apply this CR when you want to pull and deploy the latest image available update
 
 ```
 cat > primes-dev-cd-via-imagepull.yml <<EOF
-apiVersion: kappctrl.k14s.io/v1alpha1
 kind: App
+apiVersion: kappctrl.k14s.io/v1alpha1
 metadata:
   name: primes-dev
   namespace: {namespace}
