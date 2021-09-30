@@ -71,5 +71,5 @@ kp image save primes-dev \
   --tag harbor.lab.zoolabs.me/apps/primes \
   --registry-ca-cert-path /home/ubuntu/.local/share/mkcert/rootCA.crt \
   --wait
-```https
+```
 > Consult public documentation [here](https://docs.pivotal.io/build-service/1-2/managing-images.html#save-image).
