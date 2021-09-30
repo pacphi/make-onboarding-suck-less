@@ -64,7 +64,7 @@ We're going to create a custom resource that corresponds to the application we w
 
 For both options below it's assumed you'll be pulling images from a private container registry, so you're going to need to deploy a secret that has the credentials.
 
-Here's you would:
+Here's how you would:
 
 * [obtain](DEPLOY.MD#obtain-container-registry-secrets)
   * Assumes you have access to the cluster where registry (e.g., Harbor) is deployed.
