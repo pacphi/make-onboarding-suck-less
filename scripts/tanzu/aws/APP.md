@@ -119,9 +119,9 @@ spec:
   - kapp: {}
 EOF
 ```
-> Replace occurrences of `{namespace}` with same name you defined in the earlier step.  This repo holds all the Kubernetes manifests for the app you'll continuously deploy.  Replace `{registry-domain}` with a domain name (e.g., harbor.lab.zoolabs.me).
+> Replace occurrences of `{namespace}` with same name you defined in the earlier step.  Replace `{registry-domain}` with a domain name (e.g., harbor.lab.zoolabs.me).
 
-The drawback to choosing this option is that while it directly sources the latest image updates from a container registry it does to give you the option to configure environment variables.
+The drawback to choosing this option is that while it directly sources the latest image updates from a container registry it does not give you the option to configure environment variables.
 
 
 ## Deploy the App CR
