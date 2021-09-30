@@ -68,7 +68,7 @@ Here's how you would:
 
 * [obtain](DEPLOY.MD#obtain-container-registry-secrets)
   * Assumes you have access to the cluster where registry (e.g., Harbor) is deployed.
-* [deploy](DEPLOY.MD#create-a-secret)\
+* [deploy](DEPLOY.MD#create-a-secret)
   * Make sure you're targeting the right workload cluster
 
 the secret.
@@ -103,7 +103,7 @@ EOF
 You will have to orchestrate git commit updates by updating the SHA of the container image reference in `config.yml` file located under the `subPath` directory of the repo after each image tag and push (or `kp save image`) to a container registry.
 
 
-If you do choose this for your CR, then you'll want to fork git repo for your own purposes.  And you'll want to fork the repo as defined in `config.yml`.  Note that the container `image` reference will need to be updated in `config.yml` because it's expected you will publish image updates to your own private container registry.
+If you do choose this for your CR, then you'll want to fork the `k8s-manifests` git repo for your own purposes.  And you'll want to fork the `primes` repo as defined in `config.yml`.  Note that the container `image` reference will need to be updated in `config.yml` because it's expected you will publish image updates to your own private container registry.
 
 
 ### Option 2
