@@ -140,13 +140,13 @@ The drawback to choosing this option is that while it directly sources the lates
 Choose to deploy one of the App CR manifests you created in the previous step.
 
 ```
-kapp deploy -a primes-dev -f primes-dev-cd-via-gitrepo.yml -f
+kapp deploy -a primes-dev -f primes-dev-cd-via-gitrepo.yml -y
 ```
 
 or
 
 ```
-kapp deploy -a primes-dev -f primes-dev-cd-via-imagepull.yml -f
+kapp deploy -a primes-dev -f primes-dev-cd-via-imagepull.yml -y
 ```
 
 Then
@@ -246,5 +246,5 @@ The SHA of the container image should match what you'd expect.
 When you delete the CR notice how it deletes the deployment
 
 ```
-kapp delete -a primes-dev
+kapp delete -a primes-dev -y
 ```
