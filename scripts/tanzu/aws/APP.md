@@ -67,7 +67,7 @@ For both options below it's assumed you'll be pulling images from a private cont
 Here's how you would:
 
 * [obtain](DEPLOY.MD#obtain-container-registry-secrets)
-  * Assumes you have access to the cluster where registry (e.g., Harbor) is deployed.
+  * Assumes you have access to the cluster where TBS is deployed.
 * [deploy](DEPLOY.MD#create-a-secret)
   * Make sure you're targeting the right workload cluster
 
