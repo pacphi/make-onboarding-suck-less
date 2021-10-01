@@ -157,6 +157,8 @@ Then
 
 ## Simulate CI
 
+Make sure you're targeting the cluster where TBS is installed.
+
 To follow along here you must have chosen to author an App CR implementing a git repo reference.
 
 Build the app and publish an updated image to the container registry.
@@ -170,6 +172,7 @@ git clone https://github.com/fastnsilver/primes
 cd primes
 git checkout solution
 sed -i 's/2.5.4/2.5.5/g' build.gradle
+sed -i 's/6.7/6.9/g' gradle/gradle-wrapper.properties
 git add .
 git commit -m "Update Spring Boot to 2.5.5"
 git push
