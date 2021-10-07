@@ -31,5 +31,6 @@ tmc clustergroup create --name {NAME} --description "{DESCRIPTION}"
 ## Attach a workload cluster
 
 ```
-tmc cluster attach --cluster-group {GROUP} --name {NAME}
+tmc cluster attach --cluster-group {GROUP} --name {NAME} --file {NAME}-tmc-attach-k8s-manifest.yml
+kubectl apply -f  {NAME}-tmc-attach-k8s-manifest.yml
 ```
