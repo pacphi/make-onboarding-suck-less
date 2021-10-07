@@ -171,7 +171,7 @@ spec:
       imagePullSecrets:
       - name: registry-credentials
       containers:
-      - image: harbor.lab.zoolabs.me/apps/primes@sha256:c9a561afcef1dd3ab33afc7710d9a9b028f9363034241b1f93131e5d2fdf1c66
+      - image: harbor.lab.zoolabs.me/apps/primes@sha256:9d06cbf458794d3b652501db72d4a364bbec44442bc6b47622501962ae000656
         name: primes-dev
         ports:
         - containerPort: 8080
@@ -182,7 +182,7 @@ metadata:
   name: primes-dev
 spec:
   ports:
-  - port: 8080
+  - port: 80
     targetPort: 8080
   selector:
     app: "primes-dev"
@@ -208,7 +208,7 @@ Let's calculate some primes!
 Open another terminal session, then execute
 
 ```
-curl http://primes-dev.apps.svc.cluster.local:8080/primes/1/20 | jq
+curl http://primes-dev.apps.svc.cluster.local/primes/1/20 | jq
 ```
 
 To teardown the connection

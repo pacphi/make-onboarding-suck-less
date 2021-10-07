@@ -1,5 +1,9 @@
 # Implementing Continuous Application Deployment
 
+We'll start with the assumption [you have already published an image](TBS.md#save-a-container-image) that you want to deploy.
+
+Now we're going to walk thru the process of how to setup continuous deployment.
+
 We're going to leverage the App spec of [kapp-controller](https://carvel.dev/kapp-controller/docs/latest/app-spec/) to do it!
 
 First we need to target a workload cluster.
@@ -172,7 +176,6 @@ git clone https://github.com/fastnsilver/primes
 cd primes
 git checkout solution
 sed -i 's/2.5.4/2.5.5/g' build.gradle
-sed -i 's/6.7/6.9/g' gradle/gradle-wrapper.properties
 git add .
 git commit -m "Update Spring Boot to 2.5.5"
 git push

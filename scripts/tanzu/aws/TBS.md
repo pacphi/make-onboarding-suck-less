@@ -67,9 +67,23 @@ For example
 ```
 kp image save primes-dev \
   --git https://github.com/fastnsilver/primes \
-  --git-revision 09f83d1950c2380874b89f870ac74872dd5d7963 \
+  --git-revision 5b07f16024a92ec4a211e1307393db7da0d7387e \
   --tag harbor.lab.zoolabs.me/apps/primes \
   --registry-ca-cert-path /home/ubuntu/.local/share/mkcert/rootCA.crt \
   --wait
 ```
 > Consult public documentation [here](https://docs.pivotal.io/build-service/1-2/managing-images.html#save-image).
+
+Console output should end with something like the following
+
+```
+Saving harbor.lab.zoolabs.me/apps/primes...
+*** Images (sha256:9d06cbf458794d3b652501db72d4a364bbec44442bc6b47622501962ae000656):
+      harbor.lab.zoolabs.me/apps/primes
+      harbor.lab.zoolabs.me/apps/primes:b5.20211007.123122
+Reusing cache layer 'paketo-buildpacks/bellsoft-liberica:jdk'
+Adding cache layer 'paketo-buildpacks/gradle:application'
+Adding cache layer 'paketo-buildpacks/gradle:cache'
+```
+
+Make a note of the image SHA.
