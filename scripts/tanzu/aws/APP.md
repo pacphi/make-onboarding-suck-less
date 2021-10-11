@@ -194,6 +194,13 @@ Obtain image SHA
 ```
 kp image list
 ```
+> Lists all images built.  You would need to scan and find the latest image corresponding to `primes-dev`.
+
+or, if you're looking for a one-liner
+
+```
+kp image status primes-dev | sed -n '3 p' | cut -d ':' -f 2- | tr -d ' '
+```
 
 Use SHA to update the reference in your `k8s-manifests` git repo.  You're going to use your fork, OK?
 
@@ -254,3 +261,42 @@ When you delete the CR notice how it deletes the deployment
 ```
 kapp delete -a primes-dev -y
 ```
+
+
+## Automation idea
+
+If you're thinking about automating the above, then you could:
+
+* Capture the image SHA from a build
+
+  ```
+  export NEW_IMAGE_SHA=$(kp build status primes-dev -b 5 | sed -n '1 p' | cut -d ':' -f 2- | tr -d ' ')
+  ```
+
+* Clone the manifests repo and place yourself in a desired branch
+
+  ```
+  git clone https://github.com/fastnsilver/primes
+  cd primes
+  git checkout solution
+  ```
+
+* Fetch the original image SHA in config.yml
+
+  ```
+  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image" com/vmware/console-availability/client/apps/config.yml
+  ```
+
+* Update the image SHA in config.yml
+
+  ```
+  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image = $NEW_IMAGE_SHA" -i com/vmware/console-availability/client/apps/config.yml
+  ```
+
+* Commit and push the update
+
+  ```
+  git add .
+  git commit -m "Update image SHA"
+  git push
+  ```
