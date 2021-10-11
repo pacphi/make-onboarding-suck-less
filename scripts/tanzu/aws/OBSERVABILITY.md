@@ -242,6 +242,27 @@ EOF
 kapp deploy -a console-availability-client -f console-availability-client-cd-via-private-gitrepo.yml -y
 ```
 
+## What can we take a look at?
+
+### Cluster Metrics
+
+![Cluster Metrics](cluster-metrics.png)
+
+### Node Metrics
+
+![Node Metrics](node-metrics.png)
+
+### Pod Metrics
+
+![Pod Metrics](pod-metrics.png)
+
+### Application Status
+
+![Application Status](application-status.png)
+
+### Application Tracing
+
+![Application Tracing](client-server-tracing.png)
 
 ## Tear down applications
 
