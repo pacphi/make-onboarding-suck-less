@@ -296,13 +296,13 @@ If you're thinking about automating the above, then you could:
 * Fetch the original image SHA in config.yml
 
   ```
-  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image" com/vmware/console-availability/client/apps/config.yml
+  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image" com/fns/primes/apps/config.yml
   ```
 
 * Update the image SHA in config.yml
 
   ```
-  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image = $NEW_IMAGE_SHA" -i com/vmware/console-availability/client/apps/config.yml
+  yq e "select(.spec.template.spec.containers) | .spec.template.spec.containers[0].image = $NEW_IMAGE_SHA" -i com/fns/primes/apps/config.yml
   ```
 
 * Commit and push the update
