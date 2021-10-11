@@ -179,6 +179,7 @@ sed -i 's/2.5.4/2.5.5/g' build.gradle
 git add .
 git commit -m "Update Spring Boot to 2.5.5"
 git push
+
 kp image save primes-dev \
   --git https://github.com/fastnsilver/primes \
   --git-revision $(git rev-parse --verify HEAD) \
@@ -267,18 +268,29 @@ kapp delete -a primes-dev -y
 
 If you're thinking about automating the above, then you could:
 
+* Build app container image from source
+
+  ```
+  kp image save primes-dev \
+  --git https://github.com/fastnsilver/primes \
+  --git-revision {git-revision} \
+  --tag {registry-domain}/apps/primes \
+  --registry-ca-cert-path /home/ubuntu/.local/share/mkcert/rootCA.crt \
+  --wait
+  ```
+  > Replace `{git-revision}` with a branch, tag or a commit SHA.  Replace `{registry-domain}` with a domain name (e.g., harbor.lab.zoolabs.me).
+
 * Capture the image SHA from a build
 
   ```
   export NEW_IMAGE_SHA=$(kp build status primes-dev -b 5 | sed -n '1 p' | cut -d ':' -f 2- | tr -d ' ')
   ```
 
-* Clone the manifests repo and place yourself in a desired branch
+* Clone the manifests repo (and place yourself in a desired branch)
 
   ```
-  git clone https://github.com/fastnsilver/primes
-  cd primes
-  git checkout solution
+  git clone https://github.com/pacphi/k8s-manifests
+  cd k8s-manifests
   ```
 
 * Fetch the original image SHA in config.yml
