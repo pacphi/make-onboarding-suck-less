@@ -248,7 +248,7 @@ Target cluster, then
 
 ```
 kubectl get pods -n {namespace}
-kubectl get pod primes-dev-{suffix}} -n apps -o json | jq ".spec.containers[].image"
+kubectl get pod primes-dev-{suffix} -n apps -o json | jq ".spec.containers[].image"
 ```
 > Replace `{namespace}` with same name you defined in the earlier steps.  Replace `{suffix}` with what you observed in output from the first `kubectl` command.
 
