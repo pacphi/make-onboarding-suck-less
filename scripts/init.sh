@@ -6,7 +6,7 @@ main() {
 
   # Manage software versions installed here
   TZ=America/Los_Angeles
-  ARGO_VERSION=3.2.0
+  ARGO_VERSION=3.1.14
   ARGOCD_VERSION=2.1.4
   BOSH_VERSION=6.4.7
   CF_VERSION=7.3.0
