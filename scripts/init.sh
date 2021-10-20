@@ -28,7 +28,6 @@ main() {
   TEKTONCD_VERSION=0.29.0
   TERRAFORM_VERSION=1.0.9
   TERRAFORM_DOCS_VERSION=0.16.0
-  TF_CARVEL_PLUGIN_VERSION=0.10.0
   TMC_VERSION=0.4.0-21354296
   VELERO_VERSION=1.7.0
   VENDIR_VERSION=0.23.0
@@ -118,8 +117,8 @@ main() {
   sudo mv kubectl /usr/local/bin
 
   # Install krew
-  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz"
-  tar zxvf krew.tar.gz
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz"
+  tar zxvf krew-linux_amd64.tar.gz
   KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')"
   "$KREW" install krew
   echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc
@@ -157,12 +156,6 @@ main() {
   curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc
   chmod +x tmc
   sudo mv tmc /usr/local/bin
-
-  # Install Carvel Terraform plugin
-  mkdir -p ~/.terraform.d/plugins
-  curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz"
-  tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/
-  rm -Rf terraform-provider-carvel-binaries.tgz
 
   # Install Helm
   curl -LO "https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz"

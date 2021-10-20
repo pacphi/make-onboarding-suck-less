@@ -26,7 +26,6 @@ ENV TZ=America/Los_Angeles \
     TERRAFORM_VERSION=1.0.9 \
     TERRAFORM_DOCS_VERSION=0.16.0 \
     LEFTOVERS_VERSION=0.62.0 \
-    TF_CARVEL_PLUGIN_VERSION=0.10.0 \
     TMC_VERSION=0.4.0-21354296 \
     VELERO_VERSION=1.7.0 \
     VENDIR_VERSION=0.23.0 \
@@ -65,8 +64,8 @@ RUN mkdir downloads && cd downloads && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
     chmod +x kubectl && \
     sudo mv kubectl /usr/local/bin && \
-    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz" && \
-    tar zxvf krew.tar.gz && \
+    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz" && \
+    tar zxvf krew-linux_amd64.tar.gz && \
     KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')" && \
     "$KREW" install krew && \
     echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc && \
@@ -88,9 +87,6 @@ RUN mkdir downloads && cd downloads && \
     mv leftovers-v${LEFTOVERS_VERSION}-linux-amd64 leftovers && \
     chmod +x leftovers && \
     sudo mv leftovers /usr/local/bin && \
-    mkdir -p ~/.terraform.d/plugins && \
-    curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz" && \
-    tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
     curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc && \
     chmod +x tmc && \
     mv tmc /usr/local/bin && \
