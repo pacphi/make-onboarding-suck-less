@@ -21,7 +21,6 @@ main() {
   KBLD_VERSION=0.31.0
   KIND_VERSION=0.11.1
   KWT_VERSION=0.0.6
-  KREW_VERSION=0.4.2
   KUBECTL_VERSION=1.22.1
   LEFTOVERS_VERSION=0.62.0
   OM_VERSION=7.3.2
@@ -119,12 +118,11 @@ main() {
   sudo mv kubectl /usr/local/bin
 
   # Install krew
-  curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.tar.gz"
-  curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml"
-  tar -xvzf krew.tar.gz
-  rm -Rf krew.tar.gz
-  sudo mv krew-linux_amd64 /usr/local/bin/krew
-  krew install --manifest=krew.yaml
+  curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew.tar.gz"
+  tar zxvf krew.tar.gz
+  KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')"
+  "$KREW" install krew
+  echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc
 
   # Install Operations Manager CLI (for Cloud Foundry)
   wget https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-linux-${OM_VERSION}
