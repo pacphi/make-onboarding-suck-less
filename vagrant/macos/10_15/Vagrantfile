@@ -29,14 +29,6 @@ brew install tilt-dev/tap/tilt
 brew install podman
 brew install velero
 
-
-# Install Terraform k14s provider; @see https://github.com/k14s/terraform-provider-k14s
-TF_CARVEL_PLUGIN_VERSION=0.9.0 && \
-mkdir -p ~/.terraform.d/plugins && \
-curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz" && \
-tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
-rm -Rf terraform-provider-carvel-binaries.tgz && \
-
 OM_VERSION=7.3.1
 curl -LO https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-darwin-${OM_VERSION} && \
 mv om-darwin-${OM_VERSION} om && \

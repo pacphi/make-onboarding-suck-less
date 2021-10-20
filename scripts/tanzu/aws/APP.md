@@ -283,8 +283,9 @@ If you're thinking about automating the above, then you could:
 * Capture the image SHA from a build
 
   ```
-  export NEW_IMAGE_SHA=$(kp build status primes-dev -b 5 | sed -n '1 p' | cut -d ':' -f 2- | tr -d ' ')
+  export NEW_IMAGE_SHA=$(kp build status primes-dev -b {build-number} | sed -n '1 p' | cut -d ':' -f 2- | tr -d ' ')
   ```
+  > Replace `{build-number}` with an appropriate build number (e.g., 5)
 
 * Clone the manifests repo (and place yourself in a desired branch)
 

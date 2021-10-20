@@ -4,34 +4,32 @@ LABEL author=cphillipson@vmware.com
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV TZ=America/Los_Angeles \
-    ARGOCD_VERSION=2.1.1 \
-    ARGO_VERSION=3.0.10 \
-    BOSH_VERSION=6.4.5 \
+    ARGO_VERSION=3.1.14 \
+    ARGOCD_VERSION=2.1.4 \
+    BOSH_VERSION=6.4.7 \
     CF_VERSION=7.3.0 \
     CREDHUB_VERSION=2.9.0 \
-    GH_VERSION=2.0.0 \
+    GH_VERSION=2.1.0 \
     GO_VERSION=1.17 \
-    HELM_VERSION=3.6.3 \
-    HELMFILE_VERSION=0.140.0 \
+    HELM_VERSION=3.7.0 \
+    HELMFILE_VERSION=0.141.0 \
     AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05" \
-    IMGPKG_VERSION=0.17.0 \
-    KAPP_VERSION=0.39.0 \
-    KBLD_VERSION=0.30.0 \
+    IMGPKG_VERSION=0.20.0 \
+    KAPP_VERSION=0.42.0 \
+    KBLD_VERSION=0.31.0 \
     KWT_VERSION=0.0.6 \
-    KREW_VERSION=0.4.1 \
     KUBECTL_VERSION=1.22.1 \
-    OM_VERSION=7.3.1 \
-    PACK_VERSION=0.20.0 \
+    OM_VERSION=7.3.2 \
+    PACK_VERSION=0.21.1 \
     PIVNET_VERSION=3.0.1 \
-    TEKTONCD_VERSION=0.20.0 \
-    TERRAFORM_VERSION=1.0.5 \
-    TERRAFORM_DOCS_VERSION=0.15.0 \
+    TEKTONCD_VERSION=0.21.0 \
+    TERRAFORM_VERSION=1.0.9 \
+    TERRAFORM_DOCS_VERSION=0.16.0 \
     LEFTOVERS_VERSION=0.62.0 \
-    TF_CARVEL_PLUGIN_VERSION=0.9.0 \
-    TMC_VERSION=0.4.0-08a1abaa \
-    VELERO_VERSION=1.6.3 \
-    VENDIR_VERSION=0.22.0 \
-    YTT_VERSION=0.36.0
+    TMC_VERSION=0.4.0-21354296 \
+    VELERO_VERSION=1.7.0 \
+    VENDIR_VERSION=0.23.0 \
+    YTT_VERSION=0.37.0
 
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
@@ -66,11 +64,11 @@ RUN mkdir downloads && cd downloads && \
     curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
     chmod +x kubectl && \
     sudo mv kubectl /usr/local/bin && \
-    curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.tar.gz" && \
-    curl -LO "https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml" && \
-    tar -xvzf krew.tar.gz && \
-    sudo mv krew-linux_amd64 /usr/local/bin/krew && \
-    krew install --manifest=krew.yaml && \
+    curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz" && \
+    tar zxvf krew-linux_amd64.tar.gz && \
+    KREW=./krew-"$(uname | tr '[:upper:]' '[:lower:]')_$(uname -m | sed -e 's/x86_64/amd64/' -e 's/arm.*$/arm/')" && \
+    "$KREW" install krew && \
+    echo 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"' >> $HOME/.bashrc && \
     wget https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-linux-${OM_VERSION} && \
     mv om-linux-${OM_VERSION} om && \
     chmod +x om && \
@@ -89,9 +87,6 @@ RUN mkdir downloads && cd downloads && \
     mv leftovers-v${LEFTOVERS_VERSION}-linux-amd64 leftovers && \
     chmod +x leftovers && \
     sudo mv leftovers /usr/local/bin && \
-    mkdir -p ~/.terraform.d/plugins && \
-    curl -LO "https://github.com/vmware-tanzu/terraform-provider-carvel/releases/download/v${TF_CARVEL_PLUGIN_VERSION}/terraform-provider-carvel-binaries.tgz" && \
-    tar xzvf terraform-provider-carvel-binaries.tgz -C ~/.terraform.d/plugins/ && \
     curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/linux/x64/tmc && \
     chmod +x tmc && \
     mv tmc /usr/local/bin && \
@@ -125,7 +120,7 @@ RUN mkdir downloads && cd downloads && \
     wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
     chmod +x argocd && \
     sudo mv argocd /usr/local/bin && \
-    curl -LO https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-amd64.gz && \
+    curl -LO "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-amd64.gz" && \
     gunzip argo-linux-amd64.gz && \
     chmod +x argo-linux-amd64 && \
     sudo mv argo-linux-amd64 /usr/local/bin/argo && \

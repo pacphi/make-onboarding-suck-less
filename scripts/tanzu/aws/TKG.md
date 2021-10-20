@@ -224,3 +224,31 @@ tanzu management-cluster delete --use-existing-cleanup-cluster
 ```
 kind delete clusters kind
 ```
+
+
+## Using K9s
+
+If you see
+
+```
+ ____  __.________
+|    |/ _/   __   \______
+|      < \____    /  ___/
+|    |  \   /    /\___ \
+|____|__ \ /____//____  >
+        \/            \/
+
+Boom!! Unable to locate K8s cluster configuration.
+```
+
+then
+
+```
+mkdir -p $HOME/.k9s
+```
+
+and
+
+```
+k9s --kubeconfig $HOME/.kube/config
+```
