@@ -22,7 +22,7 @@ ENV TZ=America/Los_Angeles \
     OM_VERSION=7.3.2 \
     PACK_VERSION=0.21.1 \
     PIVNET_VERSION=3.0.1 \
-    TEKTONCD_VERSION=0.29.0 \
+    TEKTONCD_VERSION=0.21.0 \
     TERRAFORM_VERSION=1.0.9 \
     TERRAFORM_DOCS_VERSION=0.16.0 \
     LEFTOVERS_VERSION=0.62.0 \
@@ -120,7 +120,7 @@ RUN mkdir downloads && cd downloads && \
     wget -O argocd https://github.com/argoproj/argo-cd/releases/download/v${ARGOCD_VERSION}/argocd-linux-amd64 && \
     chmod +x argocd && \
     sudo mv argocd /usr/local/bin && \
-    curl -LO https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-amd64.gz && \
+    curl -LO "https://github.com/argoproj/argo-workflows/releases/download/v${ARGO_VERSION}/argo-linux-amd64.gz" && \
     gunzip argo-linux-amd64.gz && \
     chmod +x argo-linux-amd64 && \
     sudo mv argo-linux-amd64 /usr/local/bin/argo && \
