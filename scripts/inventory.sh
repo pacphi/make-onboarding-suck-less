@@ -19,6 +19,7 @@ echo "HTTPie" && http --version && echo
 echo "Carvel imgpkg" && imgpkg version && echo
 echo "Java" && java --version && echo
 echo "JSON Query (jq)" && jq --version && echo
+echo "K9s" && k9s version && echo
 echo "Carvel kapp" && kapp version && echo
 echo "Carvel kwt" && kwt version && echo
 echo "Krew, the package manager for kubectl plugins" && krew version && echo
