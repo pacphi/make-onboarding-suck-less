@@ -110,9 +110,11 @@ Follow these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Service-Mesh
 
 ## Onboard clusters to TSM
 
-* Rinse-and-repeat these instructions for each cluster
+Rinse-and-repeat these instructions for each cluster
   * See [Onboard a Cluster to Tanzu Service Mesh
 ](https://docs.vmware.com/en/VMware-Tanzu-Service-Mesh/services/getting-started-guide/GUID-DE9746FD-8369-4B1E-922C-67CF4FB22D21.html)
+
+A visual montage...
 
 ![Navigate to Inventory](tsm-infra-1.png)
 
