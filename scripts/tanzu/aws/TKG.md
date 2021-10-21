@@ -105,7 +105,7 @@ Obtain a Tanzu Mission Control registration URL by following the steps in [Regis
 
 ### Create Management cluster
 
-Consult the [sample config](aws-mgmt-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-mgmt-clusters-aws.html).  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
+Consult the [sample config](aws-mgmt-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific [needs](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-mgmt-clusters-aws.html).  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
 ```
 kubectl config use-context kind-kind
@@ -116,7 +116,7 @@ tanzu management-cluster create --file aws-mgmt-cluster-config.sample.yaml --use
 
 ### Create Workload cluster
 
-Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
+Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
 
 ```
 tanzu cluster create --file aws-workload-cluster-config.sample.yaml
@@ -252,3 +252,30 @@ and
 ```
 k9s --kubeconfig $HOME/.kube/config
 ```
+
+
+## Troubleshooting
+
+If you see something like the following output on either _management_ or _workload_ cluster creation:
+
+```
+Validating configuration...
+Warning: Pinniped configuration not found. Skipping pinniped configuration in workload cluster. Please refer to the documentation to check if you can configure pinniped on workload cluster manually
+unable to verify if the AWS CloudFormation stack tkg-cloud-vmware-com is available in the AWS account.
+Creating workload cluster 'zoolabs-workload-2'...
+Waiting for cluster to be initialized...
+Error: unable to wait for cluster and get the cluster kubeconfig: error waiting for cluster to be provisioned (this may take a few minutes): cluster creation failed, reason:'VpcReconciliationFailed', message:'0 of 7 completed'
+```
+
+then consult this Knowledge Base [article](https://kb.vmware.com/s/article/83313) for the fix.
+
+```
+Validating configuration...
+Warning: Pinniped configuration not found. Skipping pinniped configuration in workload cluster. Please refer to the documentation to check if you can configure pinniped on workload cluster manually
+unable to verify if the AWS CloudFormation stack tkg-cloud-vmware-com is available in the AWS account.
+Creating workload cluster 'zoolabs-workload-2'...
+Waiting for cluster to be initialized...
+Error: unable to wait for cluster and get the cluster kubeconfig: error waiting for cluster to be provisioned (this may take a few minutes): cluster creation failed, reason:'NatGatewaysReconciliationFailed', message:'3 of 7 completed'
+```
+
+then consult this Knowledge Base [article](https://kb.vmware.com/s/article/85203) for the fix.
