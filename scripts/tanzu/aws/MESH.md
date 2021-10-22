@@ -184,7 +184,7 @@ Here's what no checks configuration looks like...
 ![Acknowledge prior configuration choices and finish](tsm-gns-7.png)
 
 
-### Make use of GNS domain in console-availability-client
+## Make use of GNS domain in console-availability-client
 
 Whew! You'd think you were done by now.
 
@@ -194,14 +194,35 @@ For the _primes_ app, since it's a simple micro-service application, so you are 
 To leverage service discovery within the mesh, and to facilitate failover in case of a pod or cluster failure
 (where a server instance would become unavailable), we'll want to update the configuration of the client to employ the GNS domain.
 
-So, let's update the App CR for the `console-availability-client`.
+### Update GNS domain in manifest
+
+Fork and clone either of https://github.com/pacphi/k8s-manifests or https://github.com/pacphi/k8s-manifests-private.  Then make the necessary update.
+
+E.g.,
+
+```
+git clone ... # fill in the rest targeting your fork
+git checkout mesh
+cd k8s-manifests/com/vmware/console-availability/client/apps
+sed -i 's/apps.svc.cluster.local/{gns-domain}/g' values.yml
+```
+> Replace `{gns-domain}` above with your actual GNS domain.
+
+Commit and push the update.
+
+```
+git add .
+git commit -m "Update GNS domain"
+git push -u origin mesh
+```
+
+### Update App CR
 
 ```
 kubectl edit app console-availability-client -n apps
 ```
 
 Look for `spec.fetch.git.ref` and update the value to be `origin/mesh`.
-> When you forked either of https://github.com/pacphi/k8s-manifests or https://github.com/pacphi/k8s-manifests-private you acquired this branch.
 
 Then save your changes and exit from the editor.  (If you're relying on `vi`, type `:wq`)
 
