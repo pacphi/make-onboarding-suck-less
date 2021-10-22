@@ -40,7 +40,7 @@ tmc clustergroup create --name {NAME} --description "{DESCRIPTION}"
 
 
 ```
-tmc cluster attach -g {GROUP} -n {NAME} -f {NAME}-tmc-attach-k8s-manifest.yml
+tmc cluster attach -g {GROUP} -n {NAME} -o {NAME}-tmc-attach-k8s-manifest.yml
 kubectl apply -f  {NAME}-tmc-attach-k8s-manifest.yml
 ```
 
