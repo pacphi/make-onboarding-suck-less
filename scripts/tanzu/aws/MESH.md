@@ -17,7 +17,7 @@ NAMESPACE: default
 CNI: antrea
 IDENTITY_MANAGEMENT_TYPE: none
 CONTROL_PLANE_MACHINE_TYPE: t3.large
-NODE_MACHINE_TYPE: m5.large
+NODE_MACHINE_TYPE: m5.xlarge
 AWS_REGION: "us-west-2"
 AWS_NODE_AZ: "us-west-2a"
 AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2"
@@ -39,7 +39,7 @@ NAMESPACE: default
 CNI: antrea
 IDENTITY_MANAGEMENT_TYPE: none
 CONTROL_PLANE_MACHINE_TYPE: t3.large
-NODE_MACHINE_TYPE: m5.large
+NODE_MACHINE_TYPE: m5.xlarge
 AWS_REGION: "us-west-2"
 AWS_NODE_AZ: "us-west-2b"
 AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2"
@@ -54,10 +54,13 @@ SERVICE_CIDR: 100.64.0.0/13
 ENABLE_AUTOSCALER: false
 EOF
 
-tanzu cluster create --file zoolabs-workload-1.yaml
-tanzu cluster create --file zoolabs-workload-2.yaml
+tanzu cluster create --file zoolabs-workload-1.yml
+tanzu cluster create --file zoolabs-workload-2.yml
+
+tanzu cluster scale zoolabs-workload-1 --worker-machine-count 3
+tanzu cluster scale zoolabs-workload-2 --worker-machine-count 3
 ```
-> You'll want to change a few of the values for the properties of each cluster's configuration above; minimally `CLUSTER_NAME` and `AWS_SSH_KEY_NAME`.  It'll take ~10-12 minutes to provision the supporting infrastructure for each cluster.
+> You'll want to change a few of the values for the properties of each cluster's configuration above; minimally `CLUSTER_NAME` and `AWS_SSH_KEY_NAME`. Also, it's worth mentioning that you'll want to specify a `NODE_MACHINE_TYPE` that has at least 4 CPU. It'll take ~15-20 minutes to provision the supporting infrastructure and scale the worker nodes for each cluster.
 
 Obtain the new workload cluster kubectl configuration.
 
@@ -152,10 +155,14 @@ A visual montage...
 
 ### General Details
 
-![Fill in General Details]()
+![Fill in General Details](tsm-gns-3.png)
+
+> Make sure that the Domain is not set to your real domain.
 
 
 ### Define Service Mapping
+
+![Fill in Service Mapping](tsm-gns-4.png)
 
 
 ### Create a Public Services
@@ -163,10 +170,129 @@ A visual montage...
 Follow these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Service-Mesh/services/using-tanzu-service-mesh-guide/GUID-58A3FA7C-4EFC-44B2-B37B-D2152CB16359.html).
 
 
+![Fill in Public Services](tsm-gns-5.png)
+
 ### (Optional) Add Health Checks
+
+Here's what no checks configuration looks like...
+
+![What it's like to not configure health checks](tsm-gns-6.png)
 
 
 ### Configuration Summary
 
+![Acknowledge prior configuration choices and finish](tsm-gns-7.png)
 
-Profit!
+
+### Make use of GNS domain in console-availability-client
+
+Whew! You'd think you were done by now.
+
+For the _primes_ app, since it's a simple micro-service application, so you are done with that one.  But the _console availability_ application consists of two micro-services: a _client_ and a _server_.  The _client_ to this point has been [configured](https://github.com/pacphi/k8s-manifests/blob/main/com/vmware/console-availability/client/apps/values.yml#L7) to interact with the _server_ via a [cluster local DNS service name](https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-aaaa-records).
+
+
+To leverage service discovery within the mesh, and to facilitate failover in case of a pod or cluster failure
+(where a server instance would become unavailable), we'll want to update the configuration of the client to employ the GNS domain.
+
+So, let's update the App CR for the `console-availability-client`.
+
+```
+kubectl edit app console-availability-client -n apps
+```
+
+Look for `spec.fetch.git.ref` and update the value to be `origin/mesh`.
+> When you forked either of https://github.com/pacphi/k8s-manifests or https://github.com/pacphi/k8s-manifests-private you acquired this branch.
+
+Then save your changes and exit from the editor.  (If you're relying on `vi`, type `:wq`)
+
+Guess what? You're still not done. You need to rinse-and-repeat the above edit targeting your other cluster to be truly resilient.  Do that now.
+
+Congratulations! You've just completed multi-cluster, high-availability deployments of two applications.
+
+Here's what things should look like now...
+
+![A healthy footprint within your mesh](tsm-healthy.png)
+
+
+## Validating Route53
+
+You should see some new records in the hosted zone(s) you permitted Tanzu Service Mesh to access and write to.
+
+![Route53 Hosted Zone example](tsm-aws-hosted-zone-records-added.png)
+
+
+## Testing access to a public service
+
+Let's test that we can interact with the service we exposed.
+
+```
+curl http://primes.lab.zoolabs.me/primes/1/50 | jq
+```
+> Your domain may be different than what's in the example above.
+
+Sample output
+
+```
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100    72    0    72    0     0    545      0 --:--:-- --:--:-- --:--:--   545
+{
+  "end": 50,
+  "primes": [
+    2,
+    3,
+    5,
+    7,
+    11,
+    13,
+    17,
+    19,
+    23,
+    29,
+    31,
+    37,
+    41,
+    43,
+    47
+  ],
+  "start": 1
+}
+```
+
+## Configuring failover
+
+Start by targeting a cluster.
+
+We're going to simulate application failure by reconfiguring the _liveness probe_ of an application in a cluster.  Because we have configured continuous deployment we can't just _edit_ or _patch_ an existing _deployment_.  Instead, we will create a branch on the git repository (where the deployment manifests are maintained) and make an update to the manifest like so:
+
+```
+git branch broken
+git checkout broken
+cd com/vmware/console-availability/server/apps
+sed -i '0,/health/{s/health/broken/}' config.yml
+```
+> Assumes you've checked out and have been working with a fork of source from either https://github.com/pacphi/k8s-manifests or https://github.com/pacphi/k8s-manifests-private.
+
+Commit and push the update.
+
+```
+git add .
+git commit -m "Intentionally break liveness probe"
+git push -u origin broken
+```
+
+It's not enough to have made the update to the manifest on the branch to trigger a deployment.  Why? Because the [original App CR](OBSERVABILITY.md#server-1) was configured to watch for updates on `origin/main`.
+
+So we need to update the App CR as well to have it point to our new branch.  The easiest way to do this is to
+
+```
+kubectl edit app primes-dev -n apps
+```
+
+Look for `spec.fetch.git.ref` and update the value to be `origin/broken`.
+
+Then save your changes and exit from the editor.  (If you're relying on `vi`, type `:wq`)
+
+After a few moments, go have another look the GNS Topology view.  You should see that clients in both clusters failover to the available server instance in one cluster.
+
+Pretty neat, huh?

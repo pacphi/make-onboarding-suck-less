@@ -166,48 +166,55 @@ Create policy
 ```
 cat > subdomain-owner-policy.json <<EOF
 {
- "Version": "2012-10-17",
- "Statement": [
-   {
-     "Effect": "Allow",
-     "Action": [
-       "route53:ChangeResourceRecordSets",
-       "route53:CreateTrafficPolicy",
-       "route53:DeleteTrafficPolicy",
-       "route53:CreateTrafficPolicyInstance",
-       "route53:CreateTrafficPolicyVersion",
-       "route53:UpdateTrafficPolicyInstance",
-       "route53:UpdateTrafficPolicyComment",
-       "route53:DeleteTrafficPolicyInstance",
-       "route53:CreateHealthCheck",
-       "route53:UpdateHealthCheck",
-       "route53:DeleteHealthCheck",
-       "route53:ChangeTagsForResource",
-       "route53:List*",
-       "route53:Get*"
-     ],
-     "Resource": [
-       "arn:aws:route53:::hostedzone/*"
-     ]
-   },
-   {
-     "Effect": "Allow",
-     "Action": [
-       "route53:ListHostedZones",
-       "route53:ListResourceRecordSets"
-     ],
-     "Resource": [
-       "*"
-     ]
-   }
- ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid" : "AllowTanzuServiceMeshPermissions",
+            "Effect": "Allow",
+            "Action": [
+                "route53:ListHostedZones",
+                "route53:ListHostedZonesByName",
+                "route53:ListResourceRecordSets",
+                "route53:ChangeResourceRecordSets",
+                "route53:ListHealthChecks",
+                "route53:CreateHealthCheck",
+                "route53:DeleteHealthCheck",
+                "route53:GetHealthCheckStatus",
+                "route53:ChangeTagsForResource",
+                "route53:ListTagsForResource"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid" : "AllowTanzuServiceMeshPermissions2",
+            "Effect": "Allow",
+            "Action": [
+                "route53:ListHostedZones",
+                "route53:ListHostedZonesByName",
+                "route53:ListResourceRecordSets",
+                "route53:ChangeResourceRecordSets",
+                "route53:ListHealthChecks",
+                "route53:CreateHealthCheck",
+                "route53:DeleteHealthCheck",
+                "route53:GetHealthCheckStatus",
+                "route53:ChangeTagsForResource",
+                "route53:ListTagsForResource"
+            ],
+            "Resource": "arn:aws:route53:::hostedzone/{hosted-zone-name}"
+        }
+    ]
 }
-
 EOF
+```
+> Replace `{hosted-zone-name}` above with your own hosted zone name.
 
+Then
+
+```
 aws iam create-policy --policy-name subdomain-owner-access --policy-document file://subdomain-owner-policy.json
 ```
 > Make a note of the `Arn` value in the output
+
 
 ### Create account, attach policy, and obtain credentials
 
