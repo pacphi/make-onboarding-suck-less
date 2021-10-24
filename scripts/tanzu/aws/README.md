@@ -3,6 +3,7 @@
 * [Create and destroy clusters](TKG.md)
 * [Upgrade a cluster](UPGRADE.md)
 * [Trust Custom CA Certificates](CERT.md)
+* [Customizing Clusters and Plans with ytt Overlays](TKG-OVERLAYS.md)
 * [Install Harbor](HARBOR.md)
 * [Install Tanzu Build Service](TBS.md)
 * Deploy an application
