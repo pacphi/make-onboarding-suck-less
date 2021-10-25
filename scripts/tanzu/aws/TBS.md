@@ -1,6 +1,6 @@
 # Installing Tanzu Build Service
 
-This is the shortest path to install [Tanzu Build Service](https://docs.pivotal.io/build-service/1-2/installing.html) integrated with [Harbor](HARBOR.md) on a TKG workload cluster on AWS.
+This is the shortest path to install [Tanzu Build Service](https://docs.vmware.com/en/Tanzu-Build-Service/1.3/vmware-tanzu-build-service-v13/GUID-installing.html) integrated with [Harbor](HARBOR.md) on a TKG workload cluster on AWS.
 
 Fetch documentation and scripts
 
@@ -14,7 +14,7 @@ directories:
   - path: .
     git:
       url: https://github.com/pacphi/tf4k8s
-      ref: ba2dadd736b47a3e9197167500f182db483c9480
+      ref: 5176c2200759321640fa41f0fe74c35cdf9dff40
     includePaths:
     - experiments/k8s/tbs/*.sh
 EOF
@@ -35,7 +35,7 @@ You've got the scripts!  Follow the instructions.
 
 ## Post-installation steps
 
-### Create [secret](https://docs.pivotal.io/build-service/1-2/managing-secrets.html#registry-secret) and [synced secret](https://docs.pivotal.io/build-service/1-2/synced-secrets.html)
+### Create [secret](https://docs.vmware.com/en/Tanzu-Build-Service/1.3/vmware-tanzu-build-service-v13/GUID-managing-secrets.html#create-an-artifactory-harbor-or-acr-registry-secret) and [synced secret](https://docs.vmware.com/en/Tanzu-Build-Service/1.3/vmware-tanzu-build-service-v13/GUID-synced-secrets.html)
 
 ```
 kp secret create registry-credentials --registry {registry-domain} --registry-user {registry-username}
