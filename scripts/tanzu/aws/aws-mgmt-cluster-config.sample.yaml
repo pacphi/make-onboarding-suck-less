@@ -2,7 +2,6 @@ CLUSTER_NAME: zoolabs-mgmt
 CLUSTER_PLAN: prod
 INFRASTRUCTURE_PROVIDER: aws
 ENABLE_CEIP_PARTICIPATION: false
-TMC_REGISTRATION_URL: "https://westtanzuseamericas.tmc.cloud.vmware.com/installer?id=44611631e6db440751266e076e81131f43005677b54ce840e4fdf6e10ef1d429&source=registration&type=tkgm"
 ENABLE_AUDIT_LOGGING: false
 CLUSTER_CIDR: 100.96.0.0/11
 SERVICE_CIDR: 100.64.0.0/13
