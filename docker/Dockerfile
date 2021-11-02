@@ -154,9 +154,6 @@ RUN mkdir downloads && cd downloads && \
     sudo chown -R docker /usr/local/lib/node_modules && \
     sudo chgrp -R docker /usr/local/lib/node_modules
 
-# USER docker
-
-# WORKDIR /home/docker
 WORKDIR /root
 COPY dist/ /root/
 
