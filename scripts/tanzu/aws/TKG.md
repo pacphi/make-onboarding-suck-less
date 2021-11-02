@@ -7,7 +7,7 @@ On your workstation or laptop ensure you have Docker Desktop installed.
 Use a pre-built [Docker container image](../../../docker/README.md) to create the Cloud Formation Stack.
 
 ```
-docker run --rm -it tanzu/k8s-toolkit /bin/bash
+docker run -it tanzu/k8s-toolkit /bin/bash
 export AWS_REGION=us-west-2
 export AWS_PAGER=
 export AWS_ACCESS_KEY_ID=xxx
@@ -64,14 +64,47 @@ Here's the shortest path to take:
   ```
   > Replace `{AMI_ID}` above with the AMI ID of the image you're hosting in your AWS account and region.  Use the same `{KEY_NAME}` you created earlier for the SSH key. And replace `{SECURITY_GROUP_ID}` with the id of a security group that has an inbound rule that allows for SSH access (preferably restricted to single IP address).
 
+If you exited your Docker container without first copying the private/public keys, then you can:
+
+```
+docker ps -a
+```
+> Look for the container image id of the stopped container.
+
+
+Restart the container with
+
+```
+docker container restart {IMAGE_ID}
+```
+> Replace `{IMAGE_ID}` with container image id of the restarted container image process.
+
+Execute commands
+
+```
+docker container exec {IMAGE_ID} ls -la /home/docker/.ssh
+```
+> Replace `{IMAGE_ID}` with container image id of the restarted container image process.
+
+You could emit or copy the contents with
+
+```
+docker container exec {IMAGE_ID} cat /home/docker/.ssh/{KEY_NAME} > $HOME/.ssh/{KEY_NAME}
+```
+> Replace `{IMAGE_ID}` and `{KEY_NAME}` as appropriate.
+
 
 ## Connect to EC2 toolset instance
+
+Exit the Docker container before executing the following step.
 
 * SSH into instance
   ```
   ssh -i $HOME/.ssh/{KEY_NAME} ubuntu@{EC2_INSTANCE_PUBLIC_IP_ADDRESS}.{AWS_REGION}.compute.amazonaws.com
   ```
   > Use the same `{KEY_NAME}` you created earlier for the SSH key.  Replace `{AWS_REGION}` and `{EC2_INSTANCE_PUBLIC_IP_ADDRESS}` with appropriate values.
+
+At this point you should be connected to your EC2 instance.  Let's install some plugins that the `tanzu` CLI will use.
 
 * Install Tanzu CLI plugins
   ```
@@ -86,7 +119,7 @@ Here's the shortest path to take:
 We'll create a reusable bootstrap cluster, first:
 
 ```
-cat >bootstrap-config.yml <<EOF
+cat > bootstrap-config.yml <<EOF
 # a cluster with 3 control-plane nodes and 3 workers
 kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
