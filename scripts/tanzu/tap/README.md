@@ -1,10 +1,11 @@
 # Tanzu Application Platform Quickstart Guide
 
+> Note that Tanzu Application Platform is in Beta.  These instructions are based upon the Beta 3 release builds.
 ## Create a new workload cluster
 
 ```
-cat > zoolabs-tap.yml <<EOF
-CLUSTER_NAME: zoolabs-tap
+cat > zoolabs-app-platform.yml <<EOF
+CLUSTER_NAME: zoolabs-app-platform
 CLUSTER_PLAN: dev
 NAMESPACE: default
 CNI: antrea
@@ -25,25 +26,25 @@ SERVICE_CIDR: 100.64.0.0/13
 ENABLE_AUTOSCALER: false
 EOF
 
-tanzu cluster create --file zoolabs-tap.yml
+tanzu cluster create --file zoolabs-app-platform.yml
 
-tanzu cluster scale zoolabs-tap --worker-machine-count 3
+tanzu cluster scale zoolabs-app-platform --worker-machine-count 3
 ```
-> Replace occurrences of `zoolabs-tap` above with whatever name you'd like to give the workload cluster.  You'll also want to replace the value of `AWS_SSH_KEY_NAME` with your own SSH key.  Other property values may be updated as appropriate.
+> Replace occurrences of `zoolabs-app-platform` above with whatever name you'd like to give the workload cluster.  You'll also want to replace the value of `AWS_SSH_KEY_NAME` with your own SSH key.  Other property values may be updated as appropriate.
 
 
 Obtain the new workload cluster kubectl configuration.
 
 ```
-tanzu cluster kubeconfig get zoolabs-tap --admin
+tanzu cluster kubeconfig get zoolabs-app-platform --admin
 ```
-> Replace occurrence of `zoolabs-tap` above with name you gave the workload cluster.
+> Replace occurrence of `zoolabs-app-platform` above with name you gave the workload cluster.
 
 Sample output
 
 ```
-Credentials of cluster 'zoolabs-tap' have been saved
-You can now access the cluster by running 'kubectl config use-context zoolabs-tap-admin@zoolabs-tap'
+Credentials of cluster 'zoolabs-app-platform' have been saved
+You can now access the cluster by running 'kubectl config use-context zoolabs-app-platform-admin@zoolabs-app-platform'
 ```
 
 ## Upgrade kapp-controller
@@ -67,18 +68,18 @@ kubectl config use-context zoolabs-mgmt-admin@zoolabs-mgmt
 Apply this patch
 
 ```
-kubectl patch app/zoolabs-tap-kapp-controller -n default -p '{"spec":{"paused":true}}' --type=merge
+kubectl patch app/zoolabs-app-platform-kapp-controller -n default -p '{"spec":{"paused":true}}' --type=merge
 ```
-> Replace `zoolabs-tap` with your own workload cluster name.
+> Replace `zoolabs-app-platform` with your own workload cluster name.
 
 Login to workload cluster, teardown the existing kapp-controller deployment, and deploy a new version of kapp-controller.
 
 ```
-kubectl config use-context zoolabs-tap-admin@zoolabs-tap
+kubectl config use-context zoolabs-app-platform-admin@zoolabs-app-platform
 kubectl delete deployment kapp-controller -n tkg-system
 kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.29.0/release.yml
 ```
-> Replace occurrence of `zoolabs-tap-admin@zoolabs-tap` with your own workload cluster context.
+> Replace occurrence of `zoolabs-app-platform-admin@zoolabs-app-platform` with your own workload cluster context.
 
 
 ### Verify new release version installed
@@ -133,11 +134,11 @@ Add Tanzu Application Platform package repository to the cluster by running:
 
 ```
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.3.0-build.5 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.3.0-build.6 \
   --namespace tap-install
 ```
 
-Get the status of the Tanzu Application Platform package repository, and ensure the status updates to Reconcile succeeded by running:
+Get the status of the Tanzu Application Platform package repository, and ensure the status updates to `Reconcile succeeded` by running:
 
 ```
 tanzu package repository get tanzu-tap-repository --namespace tap-install
@@ -149,12 +150,20 @@ List the available packages by running:
 tanzu package available list --namespace tap-install
 ```
 
+List versions of available packages.  You'll want to copy and save the contents of the [list-available-packages.sh](list-available-packages.sh) to the machine where you had previously installed and used the `tanzu` CLI.
+
+Then run:
+
+```
+./list-available-packages.sh
+```
+
 ## Install a Tanzu Application Platform Profile
 
 To view possible configuration settings, run:
 
 ```
-tanzu package available get tap.tanzu.vmware.com/0.3.0-build.5 --values-schema --namespace tap-install
+tanzu package available get tap.tanzu.vmware.com/0.3.0-build.6 --values-schema --namespace tap-install
 ```
 > Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.0.3 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 
@@ -163,25 +172,43 @@ Let's create a sample tap-value.yml file:
 ```
 cat > tap-values.yml << EOF
 profile: full
+
 buildservice:
+  kp_default_repository: "{container-registry-domain}/platform/app"
+  kp_default_repository_username: "{container-registry-username}"
+  kp_default_repository_password: "{container-registry-password}"
   tanzunet_username: "{tanzu-network-username}"
   tanzunet_password: "{tanzu-network-password}"
-rw_app_registry:
-  server_repo: "{container-registry-domain}/apps"
-  username: "{container-registry-username}"
-  password: "{container-registry-password}"
+
 ootb_supply_chain_basic:
-  service_account: service-account
-learning_center:
+  registry:
+    server: "{container-registry-domain}"
+    repository: "{container-registry-domain}/platform/app"
+
+ootb_supply_chain_testing_scanning:
+  registry:
+    server: "{container-registry-domain}"
+    repository: "{container-registry-domain}/platform/app"
+
+ootb_supply_chain_testing:
+  registry:
+    server: "{container-registry-domain}"
+    repository: "{container-registry-domain}/platform/app"
+
+learningcenter:
+  # e.g. educates.example.com
   ingressDomain: "educates.{domain}"
+
+tap_gui:
+  service_type: LoadBalancer
 EOF
 ```
-> Replace curly-bracketed value-placeholders with real values.
+> Replace curly-bracketed value-placeholders with real values. The `buildservice.kp_default_repository` and `ootb_supply_chain_*.registry.repository` values should be the same.  If you're integrating with a Harbor registry then the convention is `{harbor-domain}/{project}/{repository}`.  The `{project}` must be created and exist before you attempt the `tanzu package install` below.  The `{repository}` will be created automatically if it doesn't already exist.
 
 Install the package by running:
 
 ```
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.3.0-build.5 --values-file tap-values.yml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.3.0-build.6 --values-file tap-values.yml -n tap-install
 ```
 
 Verify the package install by running:
@@ -195,3 +222,140 @@ Verify all the necessary packages in the profile are installed by running:
 ```
 tanzu package installed list -A
 ```
+
+Sample output
+
+```
+ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
+- Retrieving installed packages...
+  NAME                                PACKAGE-NAME                                         PACKAGE-VERSION        STATUS                                                                NAMESPACE
+  accelerator                         accelerator.apps.tanzu.vmware.com                    0.4.0                  Reconcile succeeded                                                   tap-install
+  api-portal                          api-portal.tanzu.vmware.com                          1.0.3                  Reconcile succeeded                                                   tap-install
+  appliveview                         appliveview.tanzu.vmware.com                         0.3.0-build6           Reconcile succeeded                                                   tap-install
+  buildservice                        buildservice.tanzu.vmware.com                        1.3.1                  Reconcile succeeded                                                   tap-install
+  cartographer                        cartographer.tanzu.vmware.com                        0.0.7                  Reconcile succeeded                                                   tap-install
+  cnrs                                cnrs.tanzu.vmware.com                                1.0.3                  Reconcile succeeded                                                   tap-install
+  conventions-controller              controller.conventions.apps.tanzu.vmware.com         0.4.2                  Reconcile succeeded                                                   tap-install
+  developer-conventions               developer-conventions.tanzu.vmware.com               0.3.0-build.1          Reconcile succeeded                                                   tap-install
+  grype                               grype.scanning.apps.tanzu.vmware.com                 1.0.0-beta.2           Reconcile succeeded                                                   tap-install
+  image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0-beta.1           Reconcile succeeded                                                   tap-install
+  learningcenter                      learningcenter.tanzu.vmware.com                      1.0.9-build.1          Reconcile succeeded                                                   tap-install
+  learningcenter-workshops            workshops.learningcenter.tanzu.vmware.com            1.0.5-build.1          Reconcile succeeded                                                   tap-install
+  ootb-supply-chain-basic             ootb-supply-chain-basic.tanzu.vmware.com             0.3.0-build.4          Reconcile succeeded                                                   tap-install
+  ootb-supply-chain-testing           ootb-supply-chain-testing.tanzu.vmware.com           0.3.0-build.4          Reconcile succeeded                                                   tap-install
+  ootb-supply-chain-testing-scanning  ootb-supply-chain-testing-scanning.tanzu.vmware.com  0.3.0-build.4          Reconcile succeeded                                                   tap-install
+  ootb-templates                      ootb-templates.tanzu.vmware.com                      0.3.0-build.4          Reconcile succeeded                                                   tap-install
+  scanning                            scanning.apps.tanzu.vmware.com                       1.0.0-beta.2           Reconcile succeeded                                                   tap-install
+  service-bindings                    service-bindings.labs.vmware.com                     0.5.0                  Reconcile succeeded                                                   tap-install
+  services-toolkit                    services-toolkit.tanzu.vmware.com                    0.4.0-rc.2             Reconcile succeeded                                                   tap-install
+  source-controller                   controller.source.apps.tanzu.vmware.com              0.1.2                  Reconcile succeeded                                                   tap-install
+  spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.1.2                  Reconcile succeeded                                                   tap-install
+  tap                                 tap.tanzu.vmware.com                                 0.3.0-build.6          Reconcile succeeded                                                   tap-install
+  tap-gui                             tap-gui.tanzu.vmware.com                             0.3.0-rc.4             Reconcile succeeded                                                   tap-install
+  antrea                              antrea.tanzu.vmware.com                              0.13.3+vmware.1-tkg.1  Reconcile succeeded                                                   tkg-system
+  metrics-server                      metrics-server.tanzu.vmware.com                      0.4.0+vmware.1-tkg.1   Reconcile succeeded                                                   tkg-system
+```
+
+
+To update all packages, run:
+
+```
+tanzu package installed update tap -v 0.3.0-build.6 --values-file tap-values.yml -n tap-install
+```
+> You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-values.yml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
+
+
+## Troubleshooting a Tanzu Application Platform Profile installation
+
+What would you do if you saw the following after executing `tanzu package installed list -A`?
+
+```
+buildservice                        buildservice.tanzu.vmware.com                        1.3.1                  Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
+```
+
+Start by getting more detail about the error by running:
+
+```
+tanzu package installed get buildservice -n tap-install
+```
+
+Sample output
+
+```
+ubuntu@ip-172-31-61-62:~$ tanzu package installed get buildservice -n tap-install
+/ Retrieving installation details for buildservice...
+NAME:                    buildservice
+PACKAGE-NAME:            buildservice.tanzu.vmware.com
+PACKAGE-VERSION:         1.3.1
+STATUS:                  Reconcile failed: Error (see .status.usefulErrorMessage for details)
+CONDITIONS:              [{ReconcileFailed True  Error (see .status.usefulErrorMessage for details)}]
+USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupdater/dependency-updater (buildservice.tanzu.vmware.com/v1alpha1) namespace: build-service:
+  Finished unsuccessfully (Encountered failure condition Ready == False: CannotImportDescriptor (message:  "default" not ready: Get "https://harbor.lab.zoolabs.me/v2/": x509: certificate signed by unknown authority))
+```
+
+This is telling us that we're missing a CA.  What do we need to add to `tap-values.yml` then?
+
+```
+tanzu package available get buildservice.tanzu.vmware.com/1.3.1 --values-schema --namespace tap-install
+```
+
+Sample output
+
+```
+ubuntu@ip-172-31-61-62:~$ tanzu package available get buildservice.tanzu.vmware.com/1.3.1 --values-schema --namespace tap-install
+| Retrieving package details for buildservice.tanzu.vmware.com/1.3.1...
+  KEY                             DEFAULT  TYPE    DESCRIPTION
+  kp_default_repository           <nil>    string  docker repository (required)
+  kp_default_repository_password  <nil>    string  registry password (required)
+  kp_default_repository_username  <nil>    string  registry username (required)
+  tanzunet_password               <nil>    string  tanzunet registry password (required for dependency updater feature)
+  tanzunet_username               <nil>    string  tanzunet registry username (required for dependency updater feature)
+  ca_cert_data                    <nil>    string  tbs registry ca certificate (used for self signed registry)
+```
+
+So we'll need to add a child property key named `ca_cert_data:` and an associated multi-line value underneath `buildservice:`.
+
+Then run:
+
+```
+tanzu package installed update tap -v 0.3.0-build.6 --values-file tap-values.yml -n tap-install
+```
+
+## How to use Tanzu Application Platform
+
+Congratulations! You've managed to install TAP.  Now what?
+
+// TODO
+
+
+## Uninstall Tanzu Application Platform
+
+Delete the package install
+
+```
+tanzu package installed delete tap -n tap-install -y
+```
+> Be patient! This can take up to 10m or more.  It may even timeout.  Just wait a little longer.  Then verify that the only two packages remaining are: `antrea` and `metrics-server` by executing `tanzu package installed list -A`.
+
+Delete lingering resources
+
+```
+kubectl delete secret tap-tap-install-values -n tap-install
+kubectl delete sa tap-tap-install-sa -n tap-install
+kubectl delete clusterroles.rbac.authorization.k8s.io tap-tap-install-cluster-role
+kubectl delete clusterrolebindings.rbac.authorization.k8s.io tap-tap-install-cluster-rolebinding
+```
+
+Delete the package repository
+
+```
+tanzu package repository delete tanzu-tap-repository -n tap-install
+```
+
+## Teardown the cluster
+
+```
+tanzu cluster delete zoolabs-app-platform
+kubectl config delete-context zoolabs-app-platform-admin@zoolabs-app-platform
+```
+> Replace occurrences of `zoolabs-app-platform` and `zoolabs-app-platform-admin@zoolabs-app-platform` with your own workload cluster name and context.
