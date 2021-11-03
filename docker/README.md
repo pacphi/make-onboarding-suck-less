@@ -34,6 +34,14 @@ Execute
 docker run --rm -it tanzu/k8s-toolkit /bin/bash
 ```
 
+## Launching with ability to create TKG cluster
+
+In order to create TKG clusters we need to be able to use docker for the `kind` bootstrap process. Using the command below will set the network to `host` allowing the `kind` cluster's network to be acessible from the container, as well as mounting the docker socket to give access to the underlying host's docker daemon.
+
+```bash
+docker run -it -v /var/run/docker.sock:/var/run/docker.sock -v ${PWD}:/workspace  --network=host docker.io/tanzu/k8s-toolkit
+```
+
 
 ## Inventory
 
@@ -41,5 +49,5 @@ If you want an inventory of all the relevant tools installed
 
 ```
 cp ../scripts/inventory.sh .
-docker run --rm -v ${PWD}:/home/docker tanzu/k8s-toolkit /bin/bash /home/docker/inventory.sh
+docker run --rm -v ${PWD}:/root tanzu/k8s-toolkit /bin/bash /root/inventory.sh
 ```

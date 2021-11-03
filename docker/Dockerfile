@@ -36,6 +36,9 @@ RUN mkdir downloads && cd downloads && \
     apt update -y && \
     apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
     apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt-get update -y && apt install -y docker-ce-cli && \
     (curl -sSL "https://github.com/buildpacks/pack/releases/download/v${PACK_VERSION}/pack-v${PACK_VERSION}-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack) && \
     python3 -m pip install --user --upgrade pip && \
     python3 -m pip install --user virtualenv && \
@@ -151,12 +154,9 @@ RUN mkdir downloads && cd downloads && \
     sudo chown -R docker /usr/local/lib/node_modules && \
     sudo chgrp -R docker /usr/local/lib/node_modules
 
-USER docker
+WORKDIR /root
+COPY dist/ /root/
 
-WORKDIR /home/docker
-
-COPY dist/ /home/docker/
-
-RUN if [ -e "/home/docker/tanzu-cli-bundle-linux-amd64.tar" ]; then echo "docker" | sudo -S mv /home/docker/tanzu /usr/local/bin && tar xvf tanzu-cli-bundle-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && rm -Rf cli tanzu-cli-bundle-linux-amd64.tar; fi
+RUN if [ -e "/root/tanzu-cli-bundle-linux-amd64.tar" ]; then echo "docker" | sudo -S mv /root/tanzu /usr/local/bin && tar xvf tanzu-cli-bundle-linux-amd64.tar -C . && tanzu plugin clean && tanzu plugin install --local cli all && rm -Rf cli tanzu-cli-bundle-linux-amd64.tar; fi
 
 CMD [ "/bin/bash" ]
