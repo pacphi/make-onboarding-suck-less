@@ -327,8 +327,27 @@ tanzu package installed update tap -v 0.3.0-build.6 --values-file tap-values.yml
 
 Congratulations! You've managed to install TAP.  Now what?
 
-// TODO
+Well, the answer to that question is only going to be partially addressed here.  The `full` platform profile is comprised of a number of components collectively delivering capabilities designed to help you go from idea to deployment with alacrity.
 
+We'll touch on how to interact with a handful of those components here:
+
+* Cloud Native Runtimes
+  * [Verifying your Cloud Native Runtimes installation](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-verify-installation.html)
+    * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
+  * [Enabling Automatic TLS Certificate Provisioning for Cloud Native Runtimes for Tanzu](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-auto-tls.html)
+* Application Accelerator
+  * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
+  * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
+* [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-index.html)
+  * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-product-features.html)
+* Tanzu Application Platform GUI
+  * // TODO
+* Learning Center
+  * You can check the Training Portals available in your environment running the following command `kubectl get trainingportals`
+* API Portal
+  * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)
+
+A more detailed review of what capabilities a developer may leverage is forthcoming.  To whet your appetite please consult the section below entitled [For your consideration](#for-your-consideration).
 
 ## Uninstall Tanzu Application Platform
 
