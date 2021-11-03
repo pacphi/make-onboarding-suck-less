@@ -60,7 +60,7 @@ Here's the shortest path to take:
 
 * Create EC2 instance
   ```
-  aws ec2 run-instances --image-id {AMI_ID} --instance-type=m5x.large --key-name {KEY_NAME} --iam-instance-profile Name=control-plane.tkg.cloud.vmware.com --security-group-ids {SECURITY_GROUP_ID}
+  aws ec2 run-instances --image-id {AMI_ID} --instance-type=m5.xlarge --key-name {KEY_NAME} --iam-instance-profile Name=control-plane.tkg.cloud.vmware.com --security-group-ids {SECURITY_GROUP_ID}
   ```
   > Replace `{AMI_ID}` above with the AMI ID of the image you're hosting in your AWS account and region.  Use the same `{KEY_NAME}` you created earlier for the SSH key. And replace `{SECURITY_GROUP_ID}` with the id of a security group that has an inbound rule that allows for SSH access (preferably restricted to single IP address).
 
@@ -90,6 +90,8 @@ You could emit or copy the contents with
 
 ```
 docker container exec {IMAGE_ID} cat /home/docker/.ssh/{KEY_NAME} > $HOME/.ssh/{KEY_NAME}
+docker container exec {IMAGE_ID} cat /home/docker/.ssh/{KEY_NAME}.pub > $HOME/.ssh/{KEY_NAME}.pub
+chmod 400 $HOME/.ssh/{KEY_NAME}
 ```
 > Replace `{IMAGE_ID}` and `{KEY_NAME}` as appropriate.
 
@@ -133,8 +135,6 @@ nodes:
 EOF
 kind create cluster --config bootstrap-config.yml
 ```
-
-Obtain a Tanzu Mission Control registration URL by following the steps in [Register a Management Cluster with Tanzu Mission Control](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-EB507AAF-5F4F-400F-9623-BA611233E0BD.html).
 
 ### Create Management cluster
 
