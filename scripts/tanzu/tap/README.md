@@ -169,7 +169,7 @@ tanzu package available get tap.tanzu.vmware.com/0.3.0-build.6 --values-schema -
 ```
 > Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.0.3 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 
-Let's create a sample tap-value.yml file:
+Let's create a sample `tap-values.yml` file:
 
 ```
 cat > tap-values.yml << EOF
