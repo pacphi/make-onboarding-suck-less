@@ -2,9 +2,9 @@
 
 ## Prerequistes
 
-* [Docker](https://docs.docker.com/desktop/)
+* [Docker](https://docs.docker.com/desktop/) or [nerdctl](https://github.com/containerd/nerdctl)
 
-> Notice: [Subscription](https://www.docker.com/blog/updating-product-subscriptions/) is required for buisness use.
+> Notice: [Subscription](https://www.docker.com/blog/updating-product-subscriptions/) is required for business use.
 
 ## Preparation
 
@@ -25,6 +25,12 @@ If you want to build a portable container image, then execute
 docker build -t tanzu/k8s-toolkit .
 ```
 
+or
+
+```
+nerdctl build -t tanzu/k8s-toolkit .
+```
+
 
 ## Launching
 
@@ -34,9 +40,15 @@ Execute
 docker run --rm -it tanzu/k8s-toolkit /bin/bash
 ```
 
+or
+
+```
+nerdctl container run --rm -it tanzu/k8s-toolkit /bin/bash
+```
+
 ## Launching with ability to create TKG cluster
 
-In order to create TKG clusters we need to be able to use docker for the `kind` bootstrap process. Using the command below will set the network to `host` allowing the `kind` cluster's network to be acessible from the container, as well as mounting the docker socket to give access to the underlying host's docker daemon.
+In order to create TKG clusters we need to be able to use docker for the `kind` bootstrap process. Using the command below will set the network to `host` allowing the `kind` cluster's network to be accessible from the container, as well as mounting the docker socket to give access to the underlying host's docker daemon.
 
 ```bash
 docker run -it -v /var/run/docker.sock:/var/run/docker.sock -v ${PWD}:/workspace  --network=host docker.io/tanzu/k8s-toolkit
@@ -49,5 +61,16 @@ If you want an inventory of all the relevant tools installed
 
 ```
 cp ../scripts/inventory.sh .
+```
+
+Then
+
+```
 docker run --rm -v ${PWD}:/root tanzu/k8s-toolkit /bin/bash /root/inventory.sh
+```
+
+or
+
+```
+nerdctl run --rm -v ${PWD}:/root tanzu/k8s-toolkit /bin/bash /root/inventory.sh
 ```

@@ -15,6 +15,7 @@ brew install derailed/k9s/k9s
 brew install cloudfoundry/tap/bosh-cli
 brew install pivotal/tap/pivnet-cli
 brew install cloudfoundry/tap/cf-cli@7
+brew install kn
 brew tap argoproj/tap
 brew install argoproj/tap/argo
 brew install argoproj/tap/argocd

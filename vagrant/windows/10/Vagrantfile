@@ -154,7 +154,7 @@ Set-Variable OM_VERSION 7.3.2
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/pivotal-cf/om/releases/download/$OM_VERSION/om-windows-$OM_VERSION.exe", "$LOCAL_BIN_DIR/om-windows-$OM_VERSION.exe")
 Rename-Item -Path "$LOCAL_BIN_DIR/om-windows-$OM_VERSION.exe" -NewName "$LOCAL_BIN_DIR/om.exe"
 
-Set-Variable ARGOCD_VERSION 2.1.4
+Set-Variable ARGOCD_VERSION 2.1.6
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/argoproj/argo-cd/releases/download/v$ARGOCD_VERSION/argocd-windows-amd64.exe", "$LOCAL_BIN_DIR/argocd-windows-amd64.exe")
 Rename-Item -Path "$LOCAL_BIN_DIR/argocd-windows-amd64.exe" -NewName "$LOCAL_BIN_DIR/argocd.exe"
 
@@ -170,6 +170,9 @@ Set-Variable KREW_VERSION 0.4.1
 
 Set-Variable TMC_VERSION 0.4.0-21354296
 (New-Object System.Net.WebClient).DownloadFile("https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe", "$LOCAL_BIN_DIR/tmc.exe")
+
+Set-Variable KNATIVE_VERSION 1.0.0
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/knative/client/releases/download/knative-v$KNATIVE_VERSION/kn-windows-amd64.exe", "$LOCAL_BIN_DIR/kn.exe")
 
 Add-EnvPath -Path "$LOCAL_BIN_DIR" -Container "Machine"
 

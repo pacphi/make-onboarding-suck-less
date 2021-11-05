@@ -7,7 +7,7 @@ main() {
   # Manage software versions installed here
   TZ=America/Los_Angeles
   ARGO_VERSION=3.1.14
-  ARGOCD_VERSION=2.1.4
+  ARGOCD_VERSION=2.1.6
   BOSH_VERSION=6.4.7
   CF_VERSION=7.3.0
   CREDHUB_VERSION=2.9.0
@@ -22,6 +22,7 @@ main() {
   KIND_VERSION=0.11.1
   KWT_VERSION=0.0.6
   KUBECTL_VERSION=1.22.1
+  KNATIVE_VERSION=1.0.0
   LEFTOVERS_VERSION=0.62.0
   OM_VERSION=7.3.2
   PIVNET_VERSION=3.0.1
@@ -115,6 +116,11 @@ main() {
   curl -LO https://storage.googleapis.com/kubernetes-release/release/v${KUBECTL_VERSION}/bin/linux/amd64/kubectl
   chmod +x kubectl
   sudo mv kubectl /usr/local/bin
+
+  # Install Knative
+  curl -L -o kn https://github.com/knative/client/releases/download/knative-v${KNATIVE_VERSION}/kn-linux-amd64
+  chmod +x kn
+  sudo mv kn /usr/local/bin
 
   # Install krew
   curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/krew-linux_amd64.tar.gz"
