@@ -172,6 +172,7 @@ cat > subdomain-owner-policy.json <<EOF
             "Sid" : "AllowTanzuServiceMeshPermissions",
             "Effect": "Allow",
             "Action": [
+                "route53:GetChange",
                 "route53:ListHostedZones",
                 "route53:ListHostedZonesByName",
                 "route53:ListResourceRecordSets",
@@ -189,6 +190,7 @@ cat > subdomain-owner-policy.json <<EOF
             "Sid" : "AllowTanzuServiceMeshPermissions2",
             "Effect": "Allow",
             "Action": [
+                "route53:GetChange",
                 "route53:ListHostedZones",
                 "route53:ListHostedZonesByName",
                 "route53:ListResourceRecordSets",

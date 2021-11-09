@@ -2,7 +2,7 @@
 set -e
 
 if [ -z "$1" ]; then
-	echo "Usage: install-tap-plugins.sh {tanzu-network-api-token}"
+	echo "Usage: fetch-tap-gui-catalog.sh {tanzu-network-api-token}"
 	exit 1
 fi
 
@@ -18,19 +18,10 @@ fi
 TANZU_NETWORK_API_TOKEN="$1"
 pivnet login --api-token=$TANZU_NETWORK_API_TOKEN
 
-mkdir -p $HOME/tanzu
 cd /tmp
 TAP_VERSION="0.3.0"
-TAP_PRODUCT_FILE_ID=1080178
+TAP_PRODUCT_FILE_ID=1073909
 pivnet download-product-files --product-slug='tanzu-application-platform' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
-tar -xvf tanzu-framework-linux-amd64.tar -C $HOME/tanzu
+ls -la tap-gui-blank-catalog.tgz
 
-cd $HOME/tanzu
-#tanzu plugin delete imagepullsecret
-tanzu plugin delete package
-tanzu plugin install secret --local ./cli
-tanzu plugin install accelerator --local ./cli
-tanzu plugin install apps --local ./cli
-tanzu plugin install package --local ./cli
-tanzu plugin list
-tanzu version
+echo "Post-installation you may install this blank TAP GUI catalog."
