@@ -90,6 +90,35 @@ kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases
 kubectl get deployment kapp-controller -n kapp-controller -o yaml | grep kapp-controller.carvel.dev/version
 ```
 
+### How to undo patch to management cluster
+
+> This scenario only applies when you may have destroyed a workload cluster hosting TAP, then attempted to create a new workload cluster of the same name.
+
+You will need to undo the patch.  If you forget to do this then the workload cluster creation will stall.
+
+Check with:
+
+```
+kubectl get app zoolabs-app-platform-kapp-controller -n default
+```
+> Replace `zoolabs-app-platform` with your own workload cluster name.
+
+To fix:
+
+```
+kubectl config use-context zoolabs-mgmt-admin@zoolabs-mgmt
+kubectl patch app/zoolabs-app-platform-kapp-controller -n default -p '{"spec":{"paused":false}}' --type=merge
+```
+> Replace `zoolabs-mgmt` with your own management cluster name and replace `zoolabs-app-platform` with your own workload cluster name.
+
+After a few moments check in on the status of the cluster with:
+
+```
+tanzu cluster list
+```
+
+Your cluster should be up-and-running.
+
 ## Install secret-gen-controller
 
 ```
