@@ -111,7 +111,16 @@ You'll want to copy and save the contents of the [install-tap-plugins.sh](instal
 ```
 ./install-tap-plugins.sh {tanzu-network-api-token}
 ```
-> Replace `{tanzu-network-api-token}` with a valid VMWare Tanzu Network [API Token](https://network.pivotal.io/users/dashboard/edit-profile)
+> Replace `{tanzu-network-api-token}` with a valid VMWare Tanzu Network [API Token](https://network.pivotal.io/users/dashboard/edit-profile).
+
+Note: after you install the TAP plugins in this manner you will not be able to successfully complete `tanzu cluster create` with the `v0.10.0` `package` plugin.  You will need to revert back to the `v1.4.0` version.  To do that, run:
+
+```
+tanzu plugin delete package
+tanzu plugin install package --local {path-to-cli-directory}
+```
+> Replace `{path-to-cli-directory}` with a relative path to the `cli` directory that hosts the `v1.4.0` version.  If you're using a jump box, it's typically just `$HOME/cli`.
+
 
 ## Add the Tanzu Application Platform Package Repository
 
@@ -279,6 +288,14 @@ TAP already installed Contour into the `contour-external` namespace.  We can ver
 ```
 kubectl get svc -n contour-external
 ```
+
+#### Setting up an A record for a wildcard Domain
+
+The `envoy` service within the `contour-external` namespace references an ELB.  We'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
+
+A sample configuration...
+
+
 
 #### Install external-dns
 
@@ -506,6 +523,15 @@ Run this [script](uninstall-external-dns-package-for-tkg-on-aws.sh)
 ```
 ./uninstall-external-dns-package-for-tkg-on-aws.sh
 ```
+
+# Uninstall the Let's Encrypt managed certificate
+
+Run this [script](uninstall-letsencrypt-cert-for-tkg-on-aws.sh)
+
+```
+./uninstall-letsencrypt-cert-for-tkg-on-aws.sh
+```
+
 
 ## Teardown the cluster
 

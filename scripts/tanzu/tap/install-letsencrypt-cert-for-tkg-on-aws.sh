@@ -69,7 +69,7 @@ kubectl apply -f knative-tls.yaml
 echo "Waiting..."
 sleep 2m 30s
 
-## If the above worked, you should get back a secret named cert in the contour-external namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
+## If the above worked, you should get back a secret name starting with knative-tls in the contour-external namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
 ## Let's verify...
 
 kubectl get secret -n contour-external | grep knative-tls

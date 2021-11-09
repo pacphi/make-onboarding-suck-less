@@ -26,7 +26,6 @@ pivnet download-product-files --product-slug='tanzu-application-platform' --rele
 tar -xvf tanzu-framework-linux-amd64.tar -C $HOME/tanzu
 
 cd $HOME/tanzu
-#tanzu plugin delete imagepullsecret
 tanzu plugin delete package
 tanzu plugin install secret --local ./cli
 tanzu plugin install accelerator --local ./cli
