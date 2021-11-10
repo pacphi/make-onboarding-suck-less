@@ -1,6 +1,10 @@
 # Tanzu Application Platform Quickstart Guide
 
 > Note that Tanzu Application Platform is in Beta.  These instructions are based upon the Beta 3 release builds.
+
+![Tanzu Application Platfrom // Component Diagram // Deployment Footprint // K8s Runtime Support](tap.png)
+
+
 ## Create a new workload cluster
 
 We're going to do this on AWS.
@@ -213,10 +217,6 @@ Let's create a sample `tap-values.yml` file:
 cat > tap-values.yml << EOF
 profile: full
 
-appliveview:
-  connector_namespaces: [default]
-  service_type: LoadBalancer
-
 buildservice:
   kp_default_repository: "{container-registry-domain}/platform/app"
   kp_default_repository_username: "{container-registry-username}"
@@ -243,6 +243,10 @@ learningcenter:
   ingressDomain: "{domain}"
 
 tap_gui:
+  service_type: LoadBalancer
+
+appliveview:
+  connector_namespaces: [default]
   service_type: LoadBalancer
 EOF
 ```
@@ -308,8 +312,6 @@ tanzu package installed update tap -v 0.3.0 --values-file tap-values.yml -n tap-
 
 ### Setting up Ingress
 
-You will want to take a look at employing the setup script from [this](https://github.com/cpage-pivotal/tap-ingress) git repository.
-
 We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://cert-manager.io/docs/configuration/acme/dns01/route53/), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) with [Contour](https://projectcontour.io/getting-started/).
 
 TAP already installed Contour into the `contour-external` namespace.  We can verify that a `LoadBalancer` was created on your behalf by running:
@@ -318,13 +320,19 @@ TAP already installed Contour into the `contour-external` namespace.  We can ver
 kubectl get svc -n contour-external
 ```
 
-#### Setting up an A record for a wildcard Domain
+#### Setting up an A or CNAME record for a wildcard Domain
 
-The `envoy` service within the `contour-external` namespace references an ELB.  We'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
+The `envoy` service within the `contour-external` namespace references an ELB.
 
-A sample configuration...
+To add an A record we'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
 
+To add a CNAME record (e.g., when managing Route53 hosted zone record in a separate account)
 
+![Create a new record in a hosted zone for a domain you're managing in Route53](../aws/route53-hz-create-record.png)
+
+![Specifying a Wildcard domain where CNAME record references ELB](../aws/route53-hz-create-record-2.png)
+
+> Change the wildcard domain and ELB address above to suit your needs.
 
 #### Install external-dns
 
@@ -366,12 +374,31 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 ./install-letsencrypt-cert-for-tkg-on-aws.sh {email-address} {aws-access-key-id} {aws-secret-access-key} {aws-region} {domain} {hosted-zone-id}
 ```
 
-#### Update configuration
+#### Create mirror secret in educates namespace
 
-We're going to remove the last 6 lines of tap-values.yml that we created and used for the initial install of TAP, emitting a new file that we'll then append some updated configuration to.
+We will create a mirror of and sync the `knative-tls` secret that got created in the `contour-external` namespace by `cert-manager`.
 
 ```
-head -n -6 tap-values.yml > /tmp/tap-values-updated.yml
+cat > mirror-knative-tls.yml << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+ name: knative-tls
+ namespace: educates
+ annotations:
+   reflector.v1.k8s.emberstack.com/reflects: "contour-external/knative-tls"
+data:
+EOF
+
+kubectl apply -f mirror-knative-tls.yml
+```
+
+#### Update configuration
+
+We're going to remove the last 9 lines of `tap-values.yml` that we created and used for the initial install of TAP, emitting a new file that we'll then append some updated configuration to.
+
+```
+head -n -9 tap-values.yml > /tmp/tap-values-updated.yml
 ```
 
 ```
@@ -381,7 +408,12 @@ tap_gui:
   service_type: ClusterIP
   app-config:
     app:
-      baseUrl: http://tap-gui.{domain}
+      baseUrl: https://tap-gui.{domain}
+
+appliveview:
+  connector_namespaces: [default]
+  service_type: ClusterIP
+
 learningcenter:
   ingressDomain: "{domain}"
   ingressSecret:
@@ -418,6 +450,12 @@ EOF
 ./configure-ingress.sh
 ```
 > Replace `{domain}` above with the same domain you specified earlier.
+
+Unfortunately we need to kick the `server` pod in the `tap-gui` namespace order for the ingress update to be applied, so please run:
+
+```
+kubectl delete po -l component=backstage-server -n tap-gui
+```
 
 And finally we can execute:
 

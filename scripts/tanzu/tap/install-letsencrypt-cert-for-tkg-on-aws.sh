@@ -44,6 +44,10 @@ spec:
             key: aws-secret-access-key
 EOF
 
+## Install EmberStack's Reflector
+### Reflector can create mirrors (of configmaps and secrets) with the same name in other namespaces automatically
+
+kubectl -n kube-system apply -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.21/reflector.yaml
 
 ## Create the certificate in the contour-external namespace
 cat << EOF | tee knative-tls.yaml
@@ -53,6 +57,10 @@ metadata:
   name: knative-tls
   namespace: contour-external
 spec:
+  secretTemplate:
+    annotations:
+      reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "educates"
   secretName: knative-tls
   commonName: "*.${DOMAIN}"
   dnsNames:
@@ -75,9 +83,3 @@ sleep 2m 30s
 kubectl get secret -n contour-external | grep knative-tls
 kubectl describe challenges -n contour-external
 
-echo "Now you just need to add an A record to the Hosted Zone for ${DOMAIN} in Route53."
-echo "> Use this LoadBalancer address..."
-
-kubectl get svc -n contour-external
-
-echo "If you configured and installed the external-dns package, then you don't need to do this."
