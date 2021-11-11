@@ -577,7 +577,7 @@ Run this [script](uninstall-external-dns-package-for-tkg-on-aws.sh)
 ./uninstall-external-dns-package-for-tkg-on-aws.sh
 ```
 
-# Uninstall the Let's Encrypt managed certificate
+## Uninstall the Let's Encrypt managed certificate
 
 Run this [script](uninstall-letsencrypt-cert-for-tkg-on-aws.sh)
 
