@@ -373,25 +373,7 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 ```
 ./install-letsencrypt-cert-for-tkg-on-aws.sh {email-address} {aws-access-key-id} {aws-secret-access-key} {aws-region} {domain} {hosted-zone-id}
 ```
-
-#### Create mirror secret in educates namespace
-
-We will create a [mirror of and sync](https://github.com/emberstack/kubernetes-reflector) the `knative-tls` secret that got created in the `contour-external` namespace by `cert-manager`.
-
-```
-cat > mirror-knative-tls.yml << EOF
-apiVersion: v1
-kind: Secret
-metadata:
- name: knative-tls
- namespace: educates
- annotations:
-   reflector.v1.k8s.emberstack.com/reflects: "contour-external/knative-tls"
-data:
-EOF
-
-kubectl apply -f mirror-knative-tls.yml
-```
+> This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `knative-tls` secret in the `contour-external` namespace into the `educates` namespace.
 
 #### Update configuration
 
@@ -420,6 +402,7 @@ appliveview:
 
 learningcenter:
   ingressDomain: "{domain}"
+  ingressClass: contour-external
   ingressSecret:
     secretName: knative-tls
   server:
