@@ -286,7 +286,7 @@ ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
   developer-conventions               developer-conventions.tanzu.vmware.com               0.3.0                  Reconcile succeeded                                                   tap-install
   grype                               grype.scanning.apps.tanzu.vmware.com                 1.0.0-beta.2           Reconcile succeeded                                                   tap-install
   image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0-beta.1           Reconcile succeeded                                                   tap-install
-  learningcenter                      learningcenter.tanzu.vmware.com                      1.0.14-build.1          Reconcile succeeded                                                  tap-install
+  learningcenter                      learningcenter.tanzu.vmware.com                      1.0.14-build.1         Reconcile succeeded                                                  tap-install
   learningcenter-workshops            workshops.learningcenter.tanzu.vmware.com            1.0.7-build.1          Reconcile succeeded                                                   tap-install
   ootb-supply-chain-basic             ootb-supply-chain-basic.tanzu.vmware.com             0.3.0-build.5          Reconcile succeeded                                                   tap-install
   ootb-templates                      ootb-templates.tanzu.vmware.com                      0.3.0-build.5          Reconcile succeeded                                                   tap-install
@@ -376,7 +376,7 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 
 #### Create mirror secret in educates namespace
 
-We will create a mirror of and sync the `knative-tls` secret that got created in the `contour-external` namespace by `cert-manager`.
+We will create a [mirror of and sync](https://github.com/emberstack/kubernetes-reflector) the `knative-tls` secret that got created in the `contour-external` namespace by `cert-manager`.
 
 ```
 cat > mirror-knative-tls.yml << EOF
@@ -409,6 +409,10 @@ tap_gui:
   app-config:
     app:
       baseUrl: https://tap-gui.{domain}
+
+accelerator:
+  server:
+    service_type: ClusterIP
 
 appliveview:
   connector_namespaces: [default]
