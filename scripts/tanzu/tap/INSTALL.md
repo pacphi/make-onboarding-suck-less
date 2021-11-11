@@ -262,18 +262,21 @@ Install the package by running:
 ```
 tanzu package install tap -p tap.tanzu.vmware.com -v 0.3.0 --values-file tap-values.yml -n tap-install
 ```
+> This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
 Verify the package install by running:
 
 ```
 tanzu package installed get tap -n tap-install
 ```
+> Verify that the status for the installed package is "Reconcile succeeded".
 
 Verify all the necessary packages in the profile are installed by running:
 
 ```
 tanzu package installed list -A
 ```
+> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.
 
 Sample output
 
@@ -329,16 +332,6 @@ kubectl get svc -n contour-external
 
 The `envoy` service within the `contour-external` namespace references an ELB.
 
-To add an A record we'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
-
-To add a CNAME record (e.g., when managing Route53 hosted zone record in a separate account)
-
-![Create a new record in a hosted zone for a domain you're managing in Route53](../aws/route53-hz-create-record.png)
-
-![Specifying a Wildcard domain where CNAME record references ELB](../aws/route53-hz-create-record-2.png)
-
-> Change the wildcard domain and ELB address above to suit your needs.
-
 #### Install external-dns
 
 TKG clusters include `external-dns` as part of the `tanzu-package-repo-global` namespace.  To verify this you can run:
@@ -369,7 +362,19 @@ Let's install the external-dns package with a [script](install-external-dns-pack
 ```
 > This script simplifies the process of configuring and installing external-dns on your cluster hosted on AWS.  See step 6 [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html#aws-route-53-4).  You will need to have [created an IAM Policy](../aws/HARBOR.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone) with required permissions to interact with (a) target HostedZone(s) in Route53.
 
-> If you choose not to install `external-dns`, then you will have to [manually add](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html) a wildcard domain as an `A` or `CNAME` record to the HostedZone within Route53.
+#### Manual DNS
+
+If you chose not to install `external-dns`, then you will have to [manually add](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html) a wildcard domain as an `A` or `CNAME` record to the HostedZone within Route53.
+
+To add an A record we'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
+
+To add a CNAME record (e.g., when managing Route53 hosted zone record in a separate account)
+
+![Create a new record in a hosted zone for a domain you're managing in Route53](../aws/route53-hz-create-record.png)
+
+![Specifying a Wildcard domain where CNAME record references ELB](../aws/route53-hz-create-record-2.png)
+
+> Change the wildcard domain and ELB address above to suit your needs.
 
 #### Install a Let's Encrypt managed Certificate
 
@@ -435,11 +440,23 @@ EOF
 ```
 > Replace `{domain}` above with the same domain you specified earlier.
 
-Unfortunately we need to kick the `server` pod in the `tap-gui` namespace order for the ingress update to be applied, so please run:
+We're almost done!
 
-```
-kubectl delete po -l component=backstage-server -n tap-gui
-```
+Need to kick a couple resources to get them to behave.  (This is a beta release after all).
+
+* Delete the `server` pod in the `tap-gui` namespace
+
+  ```
+  kubectl delete po -l component=backstage-server -n tap-gui
+  ```
+* Delete the Learning Center `trainingportal` as it's stuck in a `Pending` state
+
+  ```
+  kubectl delete trainingportal educates-tutorials
+  ```
+
+> Don't worry both resources will automatically be re-created.
+
 
 And finally we can execute:
 
@@ -448,6 +465,16 @@ kubectl get httpproxy -A
 ```
 
 to see all of the HTTPS endpoints for the TAP components
+
+Sample output
+
+```
+ubuntu@ip-172-31-61-62:/tmp/tap-ingress$ kubectl get httpproxy -A
+NAMESPACE            NAME            FQDN                           TLS SECRET                     STATUS   STATUS DESCRIPTION
+accelerator-system   accelerator     accelerator.lab.zoolabs.me     contour-external/knative-tls   valid    Valid HTTPProxy
+app-live-view        app-live-view   app-live-view.lab.zoolabs.me   contour-external/knative-tls   valid    Valid HTTPProxy
+tap-gui              tap-gui         tap-gui.lab.zoolabs.me         contour-external/knative-tls   valid    Valid HTTPProxy
+```
 
 ### Installing the Visual Studio Code TAP Extension
 
@@ -552,7 +579,7 @@ Delete the package install
 ```
 tanzu package installed delete tap -n tap-install -y
 ```
-> Be patient! This can take up to 10m or more.  It may even timeout.  Just wait a little longer.  Then verify that the only two packages remaining are: `antrea` and `metrics-server` by executing `tanzu package installed list -A`.
+> Be patient! This can take up to 10m or more.  It may even timeout.  Just wait a little longer.  Then verify that the only two packages remaining are: `antrea`, `external-dns` and `metrics-server` by executing `tanzu package installed list -A`.
 
 Delete lingering resources
 
