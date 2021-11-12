@@ -1,5 +1,18 @@
 # Tanzu Application Platform Quickstart Usage Guide
 
+## Prerequisites
+
+As a developer you're going to want to have a few tools installed on your workstation.  At a minimum:
+
+* [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) CLI
+  * Your kubeconfig context is set to the prepared cluster `kubectl config use-context {CONTEXT_NAME}`.  Replace `{CONTEXT_NAME}` with the context for the cluster you wish to target.
+  * By the way, that cluster should have the Tanzu Application Platform installed on it.
+* [tanzu](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html#download-and-unpack-the-tanzu-cli-and-kubectl-1) CLI
+  * The `apps` plugin is installed. See the [Apps Plugin Overview](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-cli-plugins-apps-overview-installation.html#Installation).
+* This Visual Studio Code [extension](INSTALL.md#installing-the-visual-studio-code-tap-extension)
+* Ask your platform operator to create a new namespace on the target cluster for your workloads to run within.
+  * This handy [script](setup-developer-namespace.sh) must be run in advance.  Or refer to these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-install-components.html#set-up-developer-namespaces-to-use-installed-packages-30).
+
 ## Accelerators, increasing development velocity
 
 What are accelerators?  An accelerator is essentially comprised of a _template_ (e.g., initial source code and configuration) for creating a cloud-native application compliant with an enterprise's governance standards and a _workload_ custom resource definition for interfacing with Tanzu Application Platform.  This allows developers to ignore Dockerfiles or other Kubernetes resources that have dependencies on the target application infrastructure.
@@ -215,16 +228,52 @@ To watch the progress of your request:
 ```
 tanzu apps workload tail my-java-web-app --since 10m --timestamp
 ```
-
-// FIXME Need to figure out how to pass credentials for publishing image to Harbor private registry.
-
+> Type `Ctrl+c` to exit.
 
 Congratulations! Your first workload has been built, packaged as a container image, published to Harbor, then deployed to a target cluster.
 
-// TODO Document other use cases
+> This should get you asking the question: "Could I migrate an existing application?"
 
-* How to update existing workloads
-* Inner loop development with Tanzu Developer Tools
-* How to make use of Tanzu Application Platform GUI
-* How to make use of Application Live View
-* A tidbit on how to provision/onboard Educates workshops
+
+## List workloads
+
+```
+tanzu apps workload list
+```
+
+
+## Update workload
+
+```
+tanzu app workload update --help
+```
+> Gets you help for all the options available to you for updating your workload.
+
+## Delete workload(s)
+
+```
+tanzu apps workload delete --all -n {namespace}
+```
+> Delete all workloads within the `{namespace}`.  Replace `{namespace}` with an actual namespace name.
+
+Sample interaction
+
+```
+$ tanzu apps workload delete --all -n default
+? Really delete all workloads in the namespace "default"? Yes
+
+Deleted workloads in namespace "default"
+```
+
+```
+tanzu apps workload delete -f {path-to-workload-yaml-file}
+```
+> Deletes a single workload.  Replace `{path-to-workload-yaml-file}` with an actual path to a `workload.yaml` file.
+
+
+## To do
+
+[ ] Inner loop development with Tanzu Developer Tools Visual Studio Code extension
+[ ] How to make use of Tanzu Application Platform GUI
+[ ] How to make use of Application Live View
+[ ] A tidbit on how to provision/onboard Educates workshops

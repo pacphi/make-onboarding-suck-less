@@ -486,6 +486,10 @@ You may use the convenience script to download a `.vsix` file for installation a
 > Replace `{tanzu-network-api-token}` with a valid VMWare Tanzu Network [API Token](https://network.pivotal.io/users/dashboard/edit-profile)
 
 
+## Prepare Tanzu Application Platform for first use
+
+
+
 ## Troubleshooting a Tanzu Application Platform Profile installation
 
 What would you do if you saw the following after executing `tanzu package installed list -A`?
@@ -555,10 +559,12 @@ We'll touch on how to interact with a handful of those components here:
     * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
   * [Enabling Automatic TLS Certificate Provisioning for Cloud Native Runtimes for Tanzu](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-auto-tls.html)
 * Application Accelerator
+  * Visit `https://acclerator.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
   * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
   * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-acc-cli.html#accelerator-commands-2)
   * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
 * [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-index.html)
+  * Visit `https://app-live-view.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
   * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-product-features.html)
 * Tanzu Application Platform GUI
   * Visit `https://tap-gui.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
@@ -569,7 +575,7 @@ We'll touch on how to interact with a handful of those components here:
 * API Portal
   * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)
 
-A more detailed review of what capabilities a developer may leverage may be found [here](USAGE.md).  To whet your appetite please consult the section below entitled [For your consideration](#for-your-consideration).
+A more detailed review of what capabilities a developer may leverage may be found [here](USAGE.md).  Also, to whet your appetite, please consult the section below entitled [For your consideration](#for-your-consideration).
 
 
 ## Uninstall Tanzu Application Platform
