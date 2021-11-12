@@ -196,7 +196,7 @@ git push -u origin main
 How do we build, package and deploy this application? I'm glad you asked.
 
 ```
-tanzu apps workload create my-java-web-app --git-repo https://github.com/pacphi/my-java-web-app --git-branch main
+tanzu apps workload create my-java-web-app --git-repo https://github.com/pacphi/my-java-web-app --git-branch main --type web
 ```
 > Replace the values for the parameters `--git-repo` and `--git-branch` above with your own.
 
@@ -234,6 +234,24 @@ Congratulations! Your first workload has been built, packaged as a container ima
 
 > This should get you asking the question: "Could I migrate an existing application?"
 
+
+## Troubleshooting stalled workload deployments
+
+The first place you may want to look is the `pod` where the build is happening. If you were attempting to deploy `my-java-web-app`, then you could execute:
+
+```
+kubectl describe po -l image.kpack.io/image=my-java-web-app
+```
+
+If you see something like...
+
+```
+Warning  Failed     4m40s (x3 over 5m21s)  kubelet            Failed to pull image "harbor.lab.zoolabs.me/platform/app:clusterbuilder-default@sha256:03925d11c7b1d5ea66079101edc153dfb645d1f13e837196eb9b211ff9064da3": rpc error: code = Unknown desc = failed to pull and unpack image "harbor.lab.zoolabs.me/platform/app@sha256:03925d11c7b1d5ea66079101edc153dfb645d1f13e837196eb9b211ff9064da3": failed to resolve reference "harbor.lab.zoolabs.me/platform/app@sha256:03925d11c7b1d5ea66079101edc153dfb645d1f13e837196eb9b211ff9064da3": failed to do request: Head "https://harbor.lab.zoolabs.me/v2/platform/app/manifests/sha256:03925d11c7b1d5ea66079101edc153dfb645d1f13e837196eb9b211ff9064da3": x509: certificate signed by unknown authority
+```
+
+...in the output, then you need to talk to your platform operator.  Some configuration needs to be addressed in the Tanzu Application Platform installation.
+
+> This is a known issue in Beta 3 and will be addressed in Beta 4.  If your platform operator had provisioned a workload cluster to [trust a custom CA](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-cluster-lifecycle-secrets.html#custom-ca), then you will run into this problem.
 
 ## List workloads
 
@@ -273,7 +291,8 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 
 ## To do
 
-[ ] Inner loop development with Tanzu Developer Tools Visual Studio Code extension
-[ ] How to make use of Tanzu Application Platform GUI
-[ ] How to make use of Application Live View
-[ ] A tidbit on how to provision/onboard Educates workshops
+* [ ] Inner loop development with Tanzu Developer Tools Visual Studio Code extension
+* [ ] How to make use of Tanzu Application Platform GUI
+* [ ] How to make use of Application Live View
+* [ ] How to work with service bindings
+* [ ] A tidbit on how to provision/onboard Educates workshops

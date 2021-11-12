@@ -227,17 +227,17 @@ buildservice:
 ootb_supply_chain_basic:
   registry:
     server: "{container-registry-domain}"
-    repository: "{container-registry-domain}/platform/app"
+    repository: "platform/app"
 
 ootb_supply_chain_testing_scanning:
   registry:
     server: "{container-registry-domain}"
-    repository: "{container-registry-domain}/platform/app"
+    repository: "platform/app"
 
 ootb_supply_chain_testing:
   registry:
     server: "{container-registry-domain}"
-    repository: "{container-registry-domain}/platform/app"
+    repository: "platform/app"
 
 learningcenter:
   ingressDomain: "{domain}"
