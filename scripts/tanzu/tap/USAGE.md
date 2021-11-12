@@ -223,6 +223,7 @@ Congratulations! Your first workload has been built, packaged as a container ima
 
 // TODO Document other use cases
 
+* How to update existing workloads
 * Inner loop development with Tanzu Developer Tools
 * How to make use of Tanzu Application Platform GUI
 * How to make use of Application Live View
