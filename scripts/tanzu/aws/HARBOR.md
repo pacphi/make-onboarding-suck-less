@@ -21,38 +21,6 @@ export AWS_PAGER=
 > Replace the curl-bracketed values above with actual valid values as appropriate.
 
 
-## Install CA
-
-Follow instructions for trusting [Custom CA Certificates on Tanzu Kubernetes Grid Cluster Nodes](CERT.md).
-
-Next let's create key file and cert file for wildcard subdomains.
-
-```
-mkcert -key-file key.pem -cert-file cert.pem {DOMAIN} {SUBDOMAIN} *.{SUBDOMAIN} localhost 127.0.0.1 ::1
-```
-
-For example
-
-```
-ubuntu@ip-172-31-61-62:~$ mkcert -key-file key.pem -cert-file cert.pem zoolabs.me lab.zoolabs.me *.lab.zoolabs.me localhost 127.0.0.1 ::1
-
-Created a new certificate valid for the following names 📜
- - "zoolabs.me"
- - "lab.zoolabs.me"
- - "*.lab.zoolabs.me"
- - "localhost"
- - "127.0.0.1"
- - "::1"
-
-Reminder: X.509 wildcards only go one level deep, so this won't match a.b.lab.zoolabs.me ℹ️
-
-The certificate is at "cert.pem" and the key at "key.pem" ✅
-
-It will expire on 19 December 2023 🗓
-```
-> Make note of file names.  We're going to use these later.  They are located in the directory you executed the command from.
-
-
 ## Create a dedicated workload cluster
 
 Follow instructions for [creating a workload cluster](README.md#create-workload-cluster).
@@ -85,6 +53,7 @@ ENABLE_AUTOSCALER: false
 EOF
 
 tanzu cluster create --file zoolabs-harbor.yaml
+tanzu cluster kubeconfig get zoolabs-harbor --admin
 ```
 
 
@@ -107,6 +76,7 @@ tl;dr
 ```
 tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager --create-namespace
 ```
+
 
 ## Install Contour
 
@@ -367,6 +337,57 @@ To be safe we'll want to clear the bash history
 rm -f ~/.bash_history
 echo 'history -c' >> ~/.bash_logout
 ```
+
+
+## Install CA
+
+### Option 1: Local trust with mkcert
+
+Follow instructions for trusting [Custom CA Certificates on Tanzu Kubernetes Grid Cluster Nodes](CERT.md).
+
+Next let's create key file and cert file for wildcard subdomains.
+
+```
+mkcert -key-file key.pem -cert-file cert.pem {DOMAIN} {SUBDOMAIN} *.{SUBDOMAIN} localhost 127.0.0.1 ::1
+```
+
+For example
+
+```
+ubuntu@ip-172-31-61-62:~$ mkcert -key-file key.pem -cert-file cert.pem zoolabs.me lab.zoolabs.me *.lab.zoolabs.me localhost 127.0.0.1 ::1
+
+Created a new certificate valid for the following names 📜
+ - "zoolabs.me"
+ - "lab.zoolabs.me"
+ - "*.lab.zoolabs.me"
+ - "localhost"
+ - "127.0.0.1"
+ - "::1"
+
+Reminder: X.509 wildcards only go one level deep, so this won't match a.b.lab.zoolabs.me ℹ️
+
+The certificate is at "cert.pem" and the key at "key.pem" ✅
+
+It will expire on 19 December 2023 🗓
+```
+> Make note of file names.  We're going to use these later.  They are located in the directory you executed the command from.
+
+
+### Option 2: Trust with Let's Encrypt
+
+We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
+
+```
+./install-letsencrypt-cert-for-tkg-on-aws.sh {email-address} {aws-access-key-id} {aws-secret-access-key} {aws-region} {domain} {hosted-zone-id}
+```
+
+Extract the _private key_ and _certificate_ from the `harbor-tls-le` secret that got generated.
+
+```
+kubectl get secret harbor-tls-le -n tanzu-system-registry -o "jsonpath={.data.tls\.crt}" | base64 -d > cert.pem
+kubectl get secret harbor-tls-le -n tanzu-system-registry -o "jsonpath={.data.tls\.key}" | base64 -d > key.pem
+```
+> Make note of file names.  We're going to use these later.  They are located in the directory you executed the command from.
 
 
 ## Install external-dns
