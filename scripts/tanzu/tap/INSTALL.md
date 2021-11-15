@@ -616,6 +616,7 @@ Delete the package repository
 tanzu package repository delete tanzu-tap-repository -n tap-install
 ```
 
+
 ## Uninstall external-dns
 
 Run this [script](uninstall-external-dns-package-for-tkg-on-aws.sh)
@@ -624,12 +625,21 @@ Run this [script](uninstall-external-dns-package-for-tkg-on-aws.sh)
 ./uninstall-external-dns-package-for-tkg-on-aws.sh
 ```
 
+
 ## Uninstall the Let's Encrypt managed certificate
 
 Run this [script](uninstall-letsencrypt-cert-for-tkg-on-aws.sh)
 
 ```
 ./uninstall-letsencrypt-cert-for-tkg-on-aws.sh
+```
+
+## Uninstalll mkcert managed certificate
+
+Run this [script](uninstall-mkcert-for-tkg-on-aws.sh)
+
+```
+./uninstall-mk-cert-for-tkg-on-aws.sh
 ```
 
 

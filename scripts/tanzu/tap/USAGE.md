@@ -251,7 +251,7 @@ Warning  Failed     4m40s (x3 over 5m21s)  kubelet            Failed to pull ima
 
 ...in the output, then you need to talk to your platform operator.  Some configuration needs to be addressed in the Tanzu Application Platform installation.
 
-> If your platform operator had provisioned a workload cluster to [trust a custom CA](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-cluster-lifecycle-secrets.html#custom-ca) then if there are any discrepancies between CA for your container registry you may run into this problem.  Typically a problem you're attempting to employ a self-signed certificate.
+> If your platform operator had provisioned a workload cluster to [trust a custom CA](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-cluster-lifecycle-secrets.html#custom-ca) then if there are any discrepancies between CA for your container registry you may run into this problem.  Typically a problem when employing a self-signed certificate.
 
 ## List workloads
 
