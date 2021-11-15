@@ -1,4 +1,4 @@
-#!/usr/bin env bash
+#!/bin/bash
 set -e
 
 # Remove Let's Encrypt managed Certificate plus Secret and ClusterIssuer
