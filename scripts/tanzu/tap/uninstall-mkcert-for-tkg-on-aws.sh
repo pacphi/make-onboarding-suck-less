@@ -7,7 +7,7 @@ set -e
 kubectl delete clusterissuer mkcert -n cert-manager
 
 ## Delete Certificate
-kubectl delete cert knative-cert -n contour-external
+kubectl delete cert knative-tls -n contour-external
 
 ## Delete Secrets
 kubectl delete secret mkcert-secret -n cert-manager

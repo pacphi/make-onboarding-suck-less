@@ -7,7 +7,7 @@ set -e
 kubectl delete clusterissuer letsencrypt-prod -n cert-manager
 
 ## Delete Certificate
-kubectl delete cert knative-cert -n contour-external
+kubectl delete cert knative-tls -n contour-external
 
 ## Delete Secrets
 kubectl delete secret route53-credentials-secret -n cert-manager

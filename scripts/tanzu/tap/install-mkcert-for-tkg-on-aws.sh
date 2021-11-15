@@ -43,7 +43,7 @@ cat << EOF | tee knative-tls.yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: knative-cert
+  name: knative-tls
   namespace: contour-external
 spec:
   secretTemplate:
