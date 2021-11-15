@@ -1,17 +1,16 @@
 #!/usr/bin env bash
 set -e
 
-# Remove Let's Encrypt managed Certificate plus Secret and ClusterIssuer
+# Remove mkcert managed Certificate plus Secret and ClusterIssuer
 
 ## Delete ClusterIssuer
-kubectl delete clusterissuer letsencrypt-prod -n cert-manager
+kubectl delete clusterissuer mkcert -n cert-manager
 
 ## Delete Certificate
 kubectl delete cert knative-cert -n contour-external
 
 ## Delete Secrets
-kubectl delete secret route53-credentials-secret -n cert-manager
-kubectl delete secret letsencrypt-prod -n cert-manager
+kubectl delete secret mkcert-secret -n cert-manager
 kubectl delete secret knative-tls -n contour-external
 kubectl delete secret knative-tls -n educates
 

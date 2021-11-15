@@ -376,7 +376,21 @@ To add a CNAME record (e.g., when managing Route53 hosted zone record in a separ
 
 > Change the wildcard domain and ELB address above to suit your needs.
 
+#### Install a mkcert managed Certificate
+
+> Recommended option if you've been following the Tanzu Advanced evaluation guide to this point.
+
+We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
+
+```
+./install-mkcert-for-tkg-on-aws.sh {domain} {path-to-cert-pem-filename} {path-to-key-pem-filename}
+```
+
+> The `.pem` files mentioned above should already exist if you had followed the instructions [here](../aws/HARBOR.md#install-ca).
+
 #### Install a Let's Encrypt managed Certificate
+
+> Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Let's Encrypt.
 
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
 
