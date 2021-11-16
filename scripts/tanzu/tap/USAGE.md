@@ -260,6 +260,34 @@ tanzu apps workload list
 ```
 
 
+## Get details for a workload
+
+```
+tanzu app workload get {app-name}
+```
+
+Sample interaction
+
+```
+$ tanzu apps workload get my-java-web-app
+
+# my-java-web-app: Ready
+---
+lastTransitionTime: "2021-11-16T19:27:43Z"
+message: ""
+reason: Ready
+status: "True"
+type: Ready
+
+Workload pods
+NAME                                STATE       AGE
+my-java-web-app-build-1-build-pod   Succeeded   8m34s
+
+Workload Knative Services
+NAME              READY   URL
+my-java-web-app   Ready   http://my-java-web-app-default.klu.zoolabs.me
+```
+
 ## Update workload
 
 ```
