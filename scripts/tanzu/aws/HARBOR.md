@@ -74,7 +74,8 @@ Consult the instructions [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernet
 tl;dr
 
 ```
-tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager --create-namespace
+kubectl create namespace cert-manager
+tanzu package install cert-manager --package-name cert-manager.tanzu.vmware.com --version 1.1.0+vmware.1-tkg.2 --namespace cert-manager
 ```
 
 
@@ -119,7 +120,8 @@ certificates:
  renewBefore: 360h
 EOF
 
-tanzu package install contour --package-name contour.tanzu.vmware.com --version 1.17.1+vmware.1-tkg.1 --namespace contour --values-file contour-data-values.yaml --create-namespace
+kubectl create namespace contour
+tanzu package install contour --package-name contour.tanzu.vmware.com --version 1.17.1+vmware.1-tkg.1 --namespace contour --values-file contour-data-values.yaml
 ```
 
 
@@ -378,6 +380,7 @@ It will expire on 19 December 2023 🗓
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
 
 ```
+kubectl create namespace tanzu-system-registry
 ./install-letsencrypt-cert-for-tkg-on-aws.sh {email-address} {aws-access-key-id} {aws-secret-access-key} {aws-region} {domain} {hosted-zone-id}
 ```
 
@@ -458,7 +461,7 @@ Install the package
 tanzu package install external-dns \
   --package-name external-dns.tanzu.vmware.com \
   --version 0.8.0+vmware.1-tkg.1 \
-  --values-file external-dns-data-values.yaml
+  --values-file external-dns-data-values.yaml \
   --namespace tanzu-system-service-discovery
 ```
 
@@ -550,9 +553,9 @@ kubectl -n tanzu-system-registry annotate packageinstalls harbor ext.packaging.c
 The harbor-notary-signer pod might be stuck in a CrashLoopBackoff state.  If this is the case, execute
 
 ```
-kubectl delete pod harbor-notary-signer-xxxxxxxxxx-xxxxx -n tanzu-system-registry
+kubectl get po -l app=harbor -l component=notary-signer -n tanzu-system-registry
+kubectl delete pod -l app=harbor -l component=notary-signer -n tanzu-system-registry
 ```
-> Replace the "xxxxxxxxxx-xxxxx" suffix of the pod name above with the real suffix you see from having executed `kubectl get pod -n tanzu-system-registry`
 
 Lastly, we need to restart contour
 

@@ -12,7 +12,7 @@ AWS_NODE_AZ: "us-west-2a"
 AWS_NODE_AZ_1: "us-west-2b"
 AWS_NODE_AZ_2: "us-west-2c"
 AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2"
-BASTION_HOST_ENABLED: true
+BASTION_HOST_ENABLED: false
 ENABLE_MHC: true
 MHC_UNKNOWN_STATUS_TIMEOUT: 5m
 MHC_FALSE_STATUS_TIMEOUT: 12m

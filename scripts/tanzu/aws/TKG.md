@@ -147,6 +147,13 @@ tanzu management-cluster create --file aws-mgmt-cluster-config.sample.yaml --use
 > Feel free to copy, rename and/or replace the `--file` filename argument above.  If you followed the sample configuration it'll take ~20 minutes to provision the supporting infrastructure.
 
 
+Get credentials and set context
+
+```
+tanzu management-cluster kubeconfig get zoolabs-manager --admin
+kubectl config use-context zoolabs-manager-admin@zoolabs-manager
+```
+
 ### Create Workload cluster
 
 Consult the [sample config](aws-workload-cluster-config.sample.yaml) and add and/or update [property values](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.3/vmware-tanzu-kubernetes-grid-13/GUID-tanzu-config-reference.html) as per your specific needs.  Create a file based on these contents using an editor of your choice (e.g., nano, vi).
