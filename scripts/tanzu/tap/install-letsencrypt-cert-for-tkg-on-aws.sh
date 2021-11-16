@@ -61,7 +61,7 @@ spec:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "educates"
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "educates,educates-tutorials-ui"
   secretName: knative-tls
   commonName: "*.${DOMAIN}"
   dnsNames:
