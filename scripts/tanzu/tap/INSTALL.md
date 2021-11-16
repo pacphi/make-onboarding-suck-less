@@ -408,7 +408,7 @@ head -n -6 tap-values.yml > /tmp/tap-values-updated.yml
 ```
 
 ```
-cat <<EOT >> tap-values-updated.yml
+cat <<EOT >> /tmp/tap-values-updated.yml
 tap_gui:
   namespace: tap-gui
   service_type: ClusterIP
@@ -498,10 +498,6 @@ You may use the convenience script to download a `.vsix` file for installation a
 ./fetch-tap-vscode-extension.sh {tanzu-network-api-token}
 ```
 > Replace `{tanzu-network-api-token}` with a valid VMWare Tanzu Network [API Token](https://network.pivotal.io/users/dashboard/edit-profile)
-
-
-## Prepare Tanzu Application Platform for first use
-
 
 
 ## Troubleshooting a Tanzu Application Platform Profile installation
