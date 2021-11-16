@@ -319,6 +319,7 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 
 ## To do
 
+* [ ] Build, containerize and deploy an existing Dotnet Core sample project
 * [ ] Inner loop development with Tanzu Developer Tools Visual Studio Code extension
 * [ ] How to make use of Tanzu Application Platform GUI
 * [ ] How to make use of Application Live View
