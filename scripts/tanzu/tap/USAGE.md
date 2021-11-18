@@ -288,6 +288,9 @@ NAME              READY   URL
 my-java-web-app   Ready   http://my-java-web-app-default.klu.zoolabs.me
 ```
 
+> Go visit that URL in your favorite browser.  Notice that the first request takes a little more time to return a response.  This is is because the app instance, when not receiving requests, will scale to zero.  This is an in-built benefit of [KNative serving](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) and [Cloud Native Runtimes](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-cnr-overview.html).
+
+
 ## Update workload
 
 ```
@@ -324,4 +327,5 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 * [ ] How to make use of Tanzu Application Platform GUI
 * [ ] How to make use of Application Live View
 * [ ] How to work with service bindings
+* [ ] How to disable scale to zero
 * [ ] How to provision/onboard Educates workshops
