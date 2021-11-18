@@ -324,4 +324,4 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 * [ ] How to make use of Tanzu Application Platform GUI
 * [ ] How to make use of Application Live View
 * [ ] How to work with service bindings
-* [ ] A tidbit on how to provision/onboard Educates workshops
+* [ ] How to provision/onboard Educates workshops

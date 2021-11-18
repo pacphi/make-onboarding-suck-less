@@ -583,6 +583,7 @@ We'll touch on how to interact with a handful of those components here:
   * You can check the Training Portals available in your environment running the following command `kubectl get trainingportals`
   * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-learning-center-about.html)
 * API Portal
+  * Visit `https://api-portal.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
   * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)
 
 A more detailed review of what capabilities a developer may leverage may be found [here](USAGE.md).  Also, to whet your appetite, please consult the section below entitled [For your consideration](#for-your-consideration).
