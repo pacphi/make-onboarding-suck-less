@@ -56,7 +56,7 @@ harbor login --username {harbor-username} --password '{harbor-password}' --api {
 cat > hp.json <<EOF
 { "projectName": "apps", "public": false }
 EOF
-harbor project create --project apps.json
+harbor project create --project hp.json
 harbor project list --name apps
 ```
 
