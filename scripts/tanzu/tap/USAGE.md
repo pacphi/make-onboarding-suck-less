@@ -320,6 +320,11 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 > Deletes a single workload.  Replace `{path-to-workload-yaml-file}` with an actual path to a `workload.yaml` file.
 
 
+## Other examples
+
+* [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
+  * Deploy with `tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web`
+
 ## To do
 
 * [ ] Build, containerize and deploy an existing Dotnet Core sample project
