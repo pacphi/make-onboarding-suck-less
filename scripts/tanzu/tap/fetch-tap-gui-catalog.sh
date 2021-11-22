@@ -24,4 +24,4 @@ TAP_PRODUCT_FILE_ID=1073909
 pivnet download-product-files --product-slug='tanzu-application-platform' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
 ls -la tap-gui-blank-catalog.tgz
 
-echo "Post-installation you may install this blank TAP GUI catalog."
+echo "Unpack the contents of this file, initialize a Git repository, commit the source and push to a repisitory of record (e.g., Github)."

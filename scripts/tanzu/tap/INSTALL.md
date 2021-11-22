@@ -83,7 +83,7 @@ Login to workload cluster, teardown the existing kapp-controller deployment, and
 ```
 kubectl config use-context zoolabs-app-platform-admin@zoolabs-app-platform
 kubectl delete deployment kapp-controller -n tkg-system
-kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.29.0/release.yml
+kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.30.0/release.yml
 ```
 > Replace occurrence of `zoolabs-app-platform-admin@zoolabs-app-platform` with your own workload cluster context.
 
@@ -126,7 +126,7 @@ Your cluster should be up-and-running.
 ## Install secret-gen-controller
 
 ```
-kapp deploy -y -a sg -f https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/download/v0.6.0/release.yml
+kapp deploy -y -a sg -f https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/download/v0.7.1/release.yml
 ```
 
 Verify install
@@ -399,6 +399,31 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `knative-tls` secret in the `contour-external` namespace into the `educates` namespace.
 
+#### Create a new Tanzu Application Platform GUI catalog
+
+We're going to fetch some [baseline configuration](https://network.pivotal.io/products/tanzu-application-platform/#/releases/992949/file_groups/5756) for a _blank catalog_ from the Tanzu Network.
+
+```
+./fetch-tap-gui-catalog.sh {tanzu-network-api-token}
+```
+> Replace `{tanzu-network-api-token}` with a valid VMware Tanzu Network account [API Token](https://network.pivotal.io/users/dashboard/edit-profile).
+
+Then we'll create a new Git repository to host the catalog.  (In this example we'll use Github, but you could target any git-compatible repository provider).
+
+```
+cd /tmp
+tar xvf tap-gui-blank-catalog.tgz
+cd blank
+git init
+gh repo create tap-gui-catalog
+git branch -m master main
+git add .
+git status
+git commit -m "Initial commit"
+git push -u origin main --force
+```
+
+
 #### Update configuration
 
 We're going to remove the last 6 lines of `tap-values.yml` that we created and used for the initial install of TAP, emitting a new file that we'll then append some updated configuration to.
@@ -415,6 +440,18 @@ tap_gui:
   app-config:
     app:
       baseUrl: https://tap-gui.{domain}
+    integrations:
+      github:
+        - host: github.com
+          token: {git-personal-access-token}
+    catalog:
+      locations:
+        - type: url
+          target: {git-repo}/catalog-info.yaml  # e.g., https://github.com/pacphi/tap-gui-catalog/blob/main/catalog-info.yaml
+    backend:
+        baseUrl: https://tap-gui.{domain}
+        cors:
+            origin: https://tap-gui.{domain}
 
 accelerator:
   server:

@@ -320,14 +320,59 @@ tanzu apps workload delete -f {path-to-workload-yaml-file}
 > Deletes a single workload.  Replace `{path-to-workload-yaml-file}` with an actual path to a `workload.yaml` file.
 
 
+## Getting your app to appear in the Tanzu Application Platform GUI Catalog
+
+Visit the Git repository containing the contents of the _blank catalog_ you [created earlier](INSTALL.md#create-a-new-tanzu-application-platform-gui-catalog) using your favorite browser.
+
+You'll want to edit and add an entry to `catalog-info.yaml` for each application deployed with `tanzu apps workload create`.
+
+Have a look at this sample repository's [catalog-info.yaml](https://github.com/pacphi/tap-gui-catalog/blob/main/catalog-info.yaml) file for an example of what an entry looks like.
+
+> The default catalog refresh is 200 seconds.  After your catalog refreshes you can see the entry in the catalog and interact with it.
+
+
 ## Other examples
 
 * [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
-  * Deploy with `tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web`
+  * Deploy with
+
+    ```
+    tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
+    ```
+* [Ruby](https://github.com/paketo-buildpacks/samples/tree/main/ruby/puma)
+  * Deploy with
+
+    ```
+    cd /tmp
+    git clone https://github.com/paketo-buildpacks/samples
+    samples/ruby/puma
+    pack build puma --buildpack gcr.io/paketo-buildpacks/ruby --builder paketobuildpacks/builder:base
+    docker tag puma {harbor-domain}/platform/app/puma:1.0
+    docker push {harbor-domain}/platform/app/puma:1.0
+    tanzu apps workload create puma --image {harbor-domain}/platform/app/puma:1.0 --type web
+    ```
+
+## Known Issues
+
+Cannot deploy an application with `--image` flag
+
+```
+$ tanzu apps workload get puma
+
+# puma: TemplateStampFailure
+---
+lastTransitionTime: "2021-11-22T05:37:00Z"
+message: "unable to stamp object for resource 'source-provider': unable to apply ytt
+  template: ytt: Error: \n- struct has no .source field or method\n    in <toplevel>\n
+  \     stdin.yml:3 | #@ if hasattr(data.values.workload.spec.source, \"git\"):\n"
+reason: TemplateStampFailure
+status: "False"
+type: Ready
+```
+
 
 ## To do
 
-* [ ] Build, containerize and deploy an existing Dotnet Core sample project
 * [ ] Inner loop development with Tanzu Developer Tools Visual Studio Code extension
 * [ ] How to make use of Tanzu Application Platform GUI
 * [ ] How to make use of Application Live View
