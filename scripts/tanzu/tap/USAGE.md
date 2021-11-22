@@ -339,17 +339,52 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     ```
     tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
     ```
-* [Ruby](https://github.com/paketo-buildpacks/samples/tree/main/ruby/puma)
+* [Ruby](https://github.com/mhartl/sample_app_6th_ed)
+  * Tanzu Application Platform does not ship with commercial support for _Ruby_, but we can
+    * (a) install OSS _buildpack_
+
+      ```
+      kp clusterstore add default -b gcr.io/paketo-buildpacks/ruby
+      ```
+
+    * (b) install a custom _clusterbuilder_
+
+      ```
+      kubectl apply -f custom-cb.yaml
+      ```
+      > See [custom-cb.yaml](custom-cb.yaml)
+
+    * (c) update configuration in `/tmp/tap-values-updated.yaml`
+
+      replacing
+
+      ```
+      ootb_supply_chain_basic:
+        registry:
+          server: "harbor.{domain}"
+          repository: "platform/app"
+      ```
+
+      with
+
+      ```
+      ootb_supply_chain_basic:
+        cluster_builder: custom
+        registry:
+          server: "harbor.{domain}"
+          repository: "platform/app"
+      ```
+
+    * (d) Update the installed package
+
+      ```
+      tanzu package installed update tap -v 0.3.0 --values-file /tmp/tap-values-updated.yml -n tap-install
+      ```
+
   * Deploy with
 
     ```
-    cd /tmp
-    git clone https://github.com/paketo-buildpacks/samples
-    samples/ruby/puma
-    pack build puma --buildpack gcr.io/paketo-buildpacks/ruby --builder paketobuildpacks/builder:base
-    docker tag puma {harbor-domain}/platform/app/puma:1.0
-    docker push {harbor-domain}/platform/app/puma:1.0
-    tanzu apps workload create puma --image {harbor-domain}/platform/app/puma:1.0 --type web
+    tanzu apps workload create puma --git-repo https://github.com/pacphi/puma-sample --git-branch main --type web
     ```
 
 ## Known Issues

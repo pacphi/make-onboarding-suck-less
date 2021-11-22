@@ -695,7 +695,7 @@ Run this [script](uninstall-letsencrypt-cert-for-tkg-on-aws.sh)
 ./uninstall-letsencrypt-cert-for-tkg-on-aws.sh
 ```
 
-## Uninstalll mkcert managed certificate
+## Uninstall mkcert managed certificate
 
 Run this [script](uninstall-mkcert-for-tkg-on-aws.sh)
 
