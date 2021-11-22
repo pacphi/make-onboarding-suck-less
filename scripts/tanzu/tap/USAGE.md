@@ -339,7 +339,7 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     ```
     tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
     ```
-* [Ruby](https://github.com/mhartl/sample_app_6th_ed)
+* [Ruby](https://github.com/pacphi/puma-sample)
   * Tanzu Application Platform does not ship with commercial support for _Ruby_, but we can
     * (a) install OSS _buildpack_
 
@@ -392,7 +392,8 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 Cannot deploy an application with `--image` flag
 
 ```
-$ tanzu apps workload get puma
+  tanzu apps workload create {workload-name} --image harbor.{domain}/platform/app/{workload-name}:{version}
+$ tanzu apps workload get {workload-name}
 
 # puma: TemplateStampFailure
 ---
