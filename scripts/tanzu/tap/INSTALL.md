@@ -539,6 +539,8 @@ You may use the convenience script to download a `.vsix` file for installation a
 
 ## Troubleshooting a Tanzu Application Platform Profile installation
 
+### Problem with build-service
+
 What would you do if you saw the following after executing `tanzu package installed list -A`?
 
 ```
@@ -592,6 +594,31 @@ Then run:
 ```
 tanzu package installed update tap -v 0.3.0 --values-file tap-values.yml -n tap-install
 ```
+
+### Problem with tap-gui
+
+Maybe you notice that the _Tanzu Application Platform GUI_ is missing an entry for the application you just deployed?
+
+* Did you [install the blank catalog](#create-a-new-tanzu-application-platform-gui-catalog)?
+* Did you [add an entry to catalog-info.yaml](USAGE.md#getting-your-app-to-appear-in-the-tanzu-application-platform-gui-catalog)?
+* Is your entry referencing the correct branch and file? (e.g., a Github URL might look like `https://github.com/{owner-or-organization}/{project}/blob/{branch}/{filename}`)
+
+Verify that the _app-config_ version has your updates.
+
+```
+kubectl get secrets -n tap-gui
+kubectl get secret app-config-ver-{version} -n tap-gui -o "jsonpath={.data.app-config\.yaml}" | base64 -d
+```
+> Replace `{version}` above with the latest version of the secret available
+
+If not, try
+
+```
+kubectl delete po -l component=backstage-server -n tap-gui
+```
+
+Then wait ~ 2 minutes and re-verify.
+
 
 ## How to use Tanzu Application Platform
 
