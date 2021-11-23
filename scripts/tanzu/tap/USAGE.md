@@ -20,7 +20,7 @@ What are accelerators?  An accelerator is essentially comprised of a _template_ 
 Let's see what accelerators are available:
 
 ```
-tanzu accelerators list
+tanzu accelerator list
 ```
 
 Sample output
@@ -385,6 +385,13 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 
     ```
     tanzu apps workload create puma --git-repo https://github.com/pacphi/puma-sample --git-branch main --type web
+    ```
+
+* [Go](https://github.com/pacphi/go-gin-web-server)
+  * Deploy with
+
+    ```
+    tanzu apps workload create go-sample --git-repo https://github.com/pacphi/go-gin-web-server --git-branch master --type web
     ```
 
 ## Known Issues
