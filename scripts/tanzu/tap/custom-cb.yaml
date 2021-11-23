@@ -13,7 +13,11 @@ spec:
   - group:
     - id: tanzu-buildpacks/python
   - group:
+    - id: tanzu-buildpacks/php
+  - group:
     - id: tanzu-buildpacks/nginx
+  - group:
+    - id: tanzu-buildpacks/httpd
   - group:
     - id: tanzu-buildpacks/java-native-image
   - group:
@@ -27,11 +31,11 @@ spec:
     namespace: kpack
   stack:
     kind: ClusterStack
-    name: base
+    name: full
   store:
     kind: ClusterStore
     name: default
-  tag: harbor.klu.zoolabs.me/platform/app:clusterbuilder-default
+  tag: harbor.klu.zoolabs.me/platform/app:clusterbuilder-full
 status:
   builderMetadata:
   - homepage: https://github.com/paketo-buildpacks/bellsoft-liberica
@@ -45,6 +49,8 @@ status:
   - homepage: https://github.com/pivotal-cf/tanzu-cpython
     id: tanzu-buildpacks/cpython
     version: 0.2.0
+  - id: tanzu-buildpacks/php-dist
+    version: 0.2.2
   - id: tanzu-buildpacks/dotnet-core-sdk
     version: 0.2.2
   - id: tanzu-buildpacks/node-engine
@@ -55,6 +61,9 @@ status:
   - homepage: https://github.com/pivotal-cf/tanzu-appdynamics
     id: tanzu-buildpacks/appdynamics
     version: 3.11.0
+  - homepage: https://github.com/pivotal-cf/tanzu-appdynamics
+    id: tanzu-buildpacks/appdynamics
+    version: 3.10.0
   - homepage: https://github.com/paketo-buildpacks/gradle
     id: paketo-buildpacks/gradle
     version: 5.8.0
@@ -69,6 +78,9 @@ status:
   - homepage: https://github.com/pivotal-cf/tanzu-new-relic
     id: tanzu-buildpacks/new-relic
     version: 3.15.2
+  - homepage: https://github.com/pivotal-cf/tanzu-new-relic
+    id: tanzu-buildpacks/new-relic
+    version: 3.13.0
   - homepage: https://github.com/pivotal-cf/tanzu-overops
     id: tanzu-buildpacks/overops
     version: 3.11.0
@@ -94,6 +106,9 @@ status:
   - homepage: https://github.com/pivotal-cf/tanzu-riverbed
     id: tanzu-buildpacks/riverbed
     version: 3.4.0
+  - homepage: https://docs.pivotal.io/tanzu-buildpacks/httpd/httpd-buildpack.html
+    id: tanzu-buildpacks/httpd
+    version: 0.2.3
   - homepage: https://docs.pivotal.io/tanzu-buildpacks/nginx/nginx-buildpack.html
     id: tanzu-buildpacks/nginx
     version: 0.3.1
@@ -117,6 +132,10 @@ status:
   - homepage: https://github.com/pivotal-cf/tanzu-yourkit
     id: tanzu-buildpacks/yourkit
     version: 3.7.1
+  - id: tanzu-buildpacks/php-web
+    version: 0.1.2
+  - id: tanzu-buildpacks/php-composer
+    version: 0.1.6
   - id: tanzu-buildpacks/yarn
     version: 0.3.1
   - homepage: https://github.com/pivotal-cf/tanzu-dynatrace
@@ -211,6 +230,9 @@ status:
     version: 3.2.2
   - homepage: https://github.com/paketo-buildpacks/image-labels
     id: paketo-buildpacks/image-labels
+    version: 3.2.2
+  - homepage: https://github.com/paketo-buildpacks/image-labels
+    id: paketo-buildpacks/image-labels
     version: 3.2.3
   - homepage: https://github.com/pivotal-cf/tanzu-java
     id: tanzu-buildpacks/java
@@ -229,10 +251,13 @@ status:
     version: 1.10.2
   - id: tanzu-buildpacks/python
     version: 1.1.2
+  - homepage: https://docs.pivotal.io/tanzu-buildpacks/php/php-buildpack.html
+    id: tanzu-buildpacks/php
+    version: 0.4.4
   - homepage: https://github.com/paketo-buildpacks/ruby
     id: paketo-buildpacks/ruby
     version: 0.9.1
-  latestImage: harbor.klu.zoolabs.me/platform/app:clusterbuilder-default@sha256:649ce8ec521b81a1a8924f8c1ab44fe6feaed62a0bfa66f0994b2dd40a01ca88
+  latestImage: harbor.klu.zoolabs.me/platform/app:clusterbuilder-full@sha256:2ddba9cce8fa70083ac127ef9ed2a32d6304a19ad31ade949dc3e0581945bf51
   order:
   - group:
     - id: tanzu-buildpacks/dotnet-core
@@ -247,8 +272,14 @@ status:
     - id: tanzu-buildpacks/python
       version: 1.1.2
   - group:
+    - id: tanzu-buildpacks/php
+      version: 0.4.4
+  - group:
     - id: tanzu-buildpacks/nginx
       version: 0.3.1
+  - group:
+    - id: tanzu-buildpacks/httpd
+      version: 0.2.3
   - group:
     - id: tanzu-buildpacks/java-native-image
       version: 4.11.0
@@ -264,4 +295,4 @@ status:
   os: linux
   stack:
     id: io.buildpacks.stacks.bionic
-    runImage: harbor.klu.zoolabs.me/platform/app@sha256:53e900797c8da768c2a254aca3ec1f3f4b5afd131d62787323e4f0374a6e7ad0
+    runImage: harbor.klu.zoolabs.me/platform/app@sha256:33e114110948b0b66dc86e2e244f435838f48cbf750191ee01ced2ccbb9b389c

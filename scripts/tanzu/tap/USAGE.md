@@ -333,13 +333,16 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 
 ## Other examples
 
-* [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
+Examples with an [x] below are known to work.  The others are research projects.
+
+
+* [x] [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
   * Deploy with
 
     ```
     tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
     ```
-* [Ruby](https://github.com/pacphi/puma-sample)
+* [x] [Ruby](https://github.com/pacphi/puma-sample)
   * Tanzu Application Platform does not ship with commercial support for _Ruby_, but we can
     * (a) install OSS _buildpack_
 
@@ -347,10 +350,11 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
       kp clusterstore add default -b gcr.io/paketo-buildpacks/ruby
       ```
 
-    * (b) install a custom _clusterbuilder_
+    * (b) install and verify a custom _clusterbuilder_
 
       ```
       kubectl apply -f custom-cb.yaml
+      kp clusterbuilder status custom
       ```
       > See [custom-cb.yaml](custom-cb.yaml)
 
@@ -387,12 +391,42 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     tanzu apps workload create puma --git-repo https://github.com/pacphi/puma-sample --git-branch main --type web
     ```
 
-* [Go](https://github.com/pacphi/go-gin-web-server)
+* [x] [Go](https://github.com/pacphi/go-gin-web-server)
   * Deploy with
 
     ```
     tanzu apps workload create go-sample --git-repo https://github.com/pacphi/go-gin-web-server --git-branch master --type web
     ```
+
+* [ ] [Python](https://github.com/matthewmuccio/BlockNet)
+  * Deploy with
+
+    ```
+    tanzu apps workload create blocknet --git-repo https://github.com/matthewmuccio/BlockNet --git-branch master --type web
+    ```
+
+* [ ] [PHP](https://github.com/sblondeau/tetris)
+  * Deploy with
+
+    ```
+    tanzu apps workload create tetris --git-repo https://github.com/sblondeau/tetris --git-branch master --type web
+    ```
+
+* NodeJS
+  * [ ] [Vlackjack](https://github.com/kevinleedrum/vlackjack)
+    * Deploy with
+
+      ```
+      tanzu apps workload create black-jack --git-repo https://github.com/kevinleedrum/vlackjack --git-branch master --type web
+      ```
+
+  * [ ] [Guessing Game](https://github.com/marccorpus/guessing-game-using-options-api)
+    * Deploy with
+
+      ```
+      tanzu apps workload create guessing-game --git-repo https://github.com/marccorpus/guessing-game-using-options-api --git-branch master --type web
+      ```
+
 
 ## Known Issues
 
