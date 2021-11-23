@@ -333,8 +333,12 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 
 ## Other examples
 
-Examples with an [x] below are known to work.  The others are research projects.
+### Legend
 
+* [x] Known to work
+* [ ] Research project 
+
+### Source
 
 * [x] [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
   * Deploy with
