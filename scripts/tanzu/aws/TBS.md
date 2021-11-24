@@ -14,7 +14,7 @@ directories:
   - path: .
     git:
       url: https://github.com/pacphi/tf4k8s
-      ref: 6e8e0a1f34707dfbdb59b4dd2b6fcac588014844
+      ref: 4e45c767ba4ed0d4fa1218cc6626b4aec329e559
     includePaths:
     - experiments/k8s/tbs/*.sh
 EOF
