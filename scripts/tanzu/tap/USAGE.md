@@ -336,7 +336,7 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 ### Legend
 
 * [x] Known to work
-* [ ] Research project 
+* [ ] Research project
 
 ### Source
 
