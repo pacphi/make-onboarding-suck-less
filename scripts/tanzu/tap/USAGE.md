@@ -402,11 +402,11 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     tanzu apps workload create go-sample --git-repo https://github.com/pacphi/go-gin-web-server --git-branch master --type web
     ```
 
-* [ ] [Python](https://github.com/matthewmuccio/BlockNet)
+* [x] [Python](https://github.com/SaiJeevanPuchakayala/CryptoCurrency-Screener)
   * Deploy with
 
     ```
-    tanzu apps workload create blocknet --git-repo https://github.com/matthewmuccio/BlockNet --git-branch master --type web
+    tanzu apps workload create crypto-screener --git-repo https://github.com/SaiJeevanPuchakayala/CryptoCurrency-Screener --git-branch main --type web
     ```
 
 * [ ] [PHP](https://github.com/sblondeau/tetris)
