@@ -409,11 +409,11 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     tanzu apps workload create crypto-screener --git-repo https://github.com/SaiJeevanPuchakayala/CryptoCurrency-Screener --git-branch main --type web
     ```
 
-* [ ] [PHP](https://github.com/sblondeau/tetris)
+* [x] [PHP](https://github.com/pacphi/tetris)
   * Deploy with
 
     ```
-    tanzu apps workload create tetris --git-repo https://github.com/sblondeau/tetris --git-branch master --type web
+    tanzu apps workload create tetris --git-repo https://github.com/pacphi/tetris --git-branch main --type web
     ```
 
 * NodeJS
