@@ -6,6 +6,7 @@
 .vagrant
 
 # Miscellaneous
+iam-config.sh
 creds.tmp
 dist
 

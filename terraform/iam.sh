@@ -28,6 +28,8 @@ case "$IAAS" in
       AWS_SECRET_KEY=$(cat key.txt | jq -r ".AccessKey.SecretAccessKey")
       rm -rf key.txt
 
+      echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY"
+      echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_KEY"
       ;;
 
   azure)
@@ -42,8 +44,10 @@ case "$IAAS" in
       # @see https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-cli
       az role assignment create --assignee "$AZ_CLIENT_ID" --role "Owner" --subscription "$AZ_SUBSCRIPTION_ID"
 
-      az storage account create -n $AZ_STORAGE_ACCOUNT_NAME -g $AZ_RESOURCE_GROUP -l $AZ_REGION --sku Standard_LRS
+      az storage account create -n $AZ_STORAGE_ACCOUNT_NAME -g $AZ_RESOURCE_GROUP -l "$AZ_REGION" --sku Standard_LRS
       az storage account blob-service-properties update --enable-versioning -n $AZ_STORAGE_ACCOUNT_NAME -g $AZ_RESOURCE_GROUP
+
+      echo "AZ_CLIENT_ID is $AZ_CLIENT_ID"
       ;;
 
   gcp)
@@ -51,6 +55,8 @@ case "$IAAS" in
       gcloud iam service-accounts create $GCP_SERVICE_ACCOUNT
       gcloud projects add-iam-policy-binding $GCP_PROJECT --member="serviceAccount:$GCP_SERVICE_ACCOUNT@$GCP_PROJECT.iam.gserviceaccount.com" --role="roles/owner"
       gcloud iam service-accounts keys create $GCP_SERVICE_ACCOUNT.$GCP_PROJECT.json --iam-account=$GCP_SERVICE_ACCOUNT@$GCP_PROJECT.iam.gserviceaccount.com
+
+      echo "Service account key file location:  $PWD/$GCP_SERVICE_ACCOUNT.$GCP_PROJECT.json"
       ;;
 
   *)
