@@ -1,0 +1,13 @@
+aks_resource_group = "tap"
+enable_logs = false
+ssh_public_key = "~/.tf4k8s/azure/az_rsa.pub"
+az_subscription_id = "why-would-i-share-this-with-you"
+az_tenant_id = "why-would-i-share-this-with-you"
+az_client_id = "why-would-i-share-this-with-you"
+az_client_secret = "why-would-i-share-this"
+aks_region = "West US 2"
+aks_name = "tap-dev"
+aks_nodes = 3
+aks_node_type = "Standard_D4s_v3"
+aks_pool_name = "tapdevpool" # must start with a lowercase letter, have max length of 12, and only have characters a-z0-9
+aks_node_disk_size = 30
