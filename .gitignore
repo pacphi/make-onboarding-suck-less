@@ -1,4 +1,28 @@
-.history
+# IDE
+.vscode/
+.history/
+
+# Vagrant
 .vagrant
+
+# Miscellaneous
 creds.tmp
 dist
+
+# Terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+.terraformrc
+.terraform/
+terraform.tfstate.*
+terraform.tfstate
+terraform.plan
+terraform.rc
+*.tfvars
+*.tfvars.backup
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+*.log
+graph.svg

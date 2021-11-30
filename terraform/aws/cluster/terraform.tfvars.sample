@@ -1,0 +1,9 @@
+eks_name = "tap-dev"
+desired_nodes = 3
+min_nodes = 2
+max_nodes = 10
+kubernetes_version = "1.21.2-1-amazon2"
+region = "us-west-2"
+availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
+ssh_key_name = "tap-key-us-west-2"
+node_pool_instance_type = "m5a.xlarge"
