@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+## IAAS must be set to one of [ aws, azure, gcp ]
+IAAS="REPLACE_ME"
+
+SERVICE_ACCOUNT_NAME="tap-admin"
+
+
+## AKS specific
+
+AZ_REGION="West US 2"
+AZ_SUBSCRIPTION_ID="REPLACE_ME"
+AZ_TENANT_ID="REPLACE_ME"
+AZ_APP_NAME="$SERVICE_ACCOUNT_NAME"
+# Secret you select here must adhere to Azure's password policy
+AZ_CLIENT_SECRET="REPLACE_ME"
+# An existing resource group
+AZ_RESOURCE_GROUP="REPLACE_ME"
+AZ_STORAGE_ACCOUNT_NAME="REPLACE_ME"
+
+
+## EKS specific
+
+AWS_SERVICE_ACCOUNT="$SERVICE_ACCOUNT_NAME"
+# @see https://aws.amazon.com/blogs/security/aws-iam-introduces-updated-policy-defaults-for-iam-user-passwords/
+AWS_SERVICE_ACCOUNT_PASSWORD="REPLACE_ME"
+AWS_REGION="us-west-2"
+
+# Supply existing administrator credentials here (must have iam:CreateUser)
+# We'll create a new service account that will itself have administrator privileges
+# Values here will be replaced with those of the service account
+AWS_ACCESS_KEY="REPLACE_ME"
+AWS_SECRET_KEY="REPLACE_ME"
+
+
+## GKE specific
+
+GCP_PROJECT="REPLACE_ME"
+GCP_SERVICE_ACCOUNT="$SERVICE_ACCOUNT_NAME"
+GCP_REGION="us-west1"
