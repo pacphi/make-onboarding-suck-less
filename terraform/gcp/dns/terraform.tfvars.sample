@@ -1,0 +1,5 @@
+project = "my-project"
+gcp_service_account_credentials = "~/.tf4k8s/gcp/terraform-my-project-service-account-credentials.json"
+root_zone_name = "some-zone"
+environment_name = "foo"
+dns_prefix = "prefix"

@@ -1,0 +1,3 @@
+project = "my-project"
+location = "us"
+gcp_service_account_credentials = "~/.tf4k8s/gcp/terraform-my-project-service-account-credentials.json"

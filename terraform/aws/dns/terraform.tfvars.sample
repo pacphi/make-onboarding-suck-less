@@ -1,0 +1,3 @@
+base_hosted_zone_id = "why-would-i-share-this-with-you"
+domain_prefix = "tiger"
+region = "us-west-2"

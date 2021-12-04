@@ -14,7 +14,7 @@ directories:
   - path: .
     git:
       url: https://github.com/pacphi/tf4k8s
-      ref: 9be5033b2dc54806d763015c517cbe8459352da0
+      ref: 4e45c767ba4ed0d4fa1218cc6626b4aec329e559
     includePaths:
     - experiments/k8s/tbs/*.sh
 EOF
@@ -56,13 +56,13 @@ harbor login --username {harbor-username} --password '{harbor-password}' --api {
 cat > hp.json <<EOF
 { "projectName": "apps", "public": false }
 EOF
-harbor project create --project apps.json
+harbor project create --project hp.json
 harbor project list --name apps
 ```
 
 ### Save a container image
 
-For example
+#### For example
 
 ```
 kp image save primes-dev \
@@ -87,3 +87,44 @@ Adding cache layer 'paketo-buildpacks/gradle:cache'
 ```
 
 Make a note of the image SHA.
+
+
+#### Other examples
+
+> Replace occurrences of `harbor.klu.zoolabs.me/platform/app` below wth your own container image registry / repository prefix.
+
+* VueJS with NPM
+
+  ```
+  kp image save vue-sample --git https://github.com/paketo-buildpacks/samples --sub-path nodejs/vue-npm --tag harbor.klu.zoolabs.me/platform/app/vue-sample --env "BP_NODE_RUN_SCRIPTS=build" --env "NODE_ENV=development" --wait
+  ```
+
+* React with YARN
+
+  ```
+  kp image save react-sample --git https://github.com/paketo-buildpacks/samples --sub-path nodejs/react-yarn --tag harbor.klu.zoolabs.me/platform/app/react-sample --env "BP_NODE_RUN_SCRIPTS=build" --wait
+  ```
+
+* Angular with NPM
+
+  ```
+  kp image save angular-sample --git https://github.com/paketo-buildpacks/samples --sub-path nodejs/angular-npm --tag harbor.klu.zoolabs.me/platform/app/angular-sample --env "BP_NODE_RUN_SCRIPTS=build" --env "NODE_ENV=development" --wait
+  ```
+
+* httpd
+
+  ```
+  kp image save httpd-sample --git https://github.com/paketo-buildpacks/samples --sub-path httpd/httpd-sample --tag harbor.klu.zoolabs.me/platform/app/httpd-sample --cluster-builder custom --wait
+  ```
+
+* Python with PIP
+
+  ```
+  kp image save python-sample --git https://github.com/paketo-buildpacks/samples --sub-path python/pip --tag harbor.klu.zoolabs.me/platform/app/python-sample --wait
+  ```
+
+* Procfile
+
+  ```
+  kp image save procfile-sample --git https://github.com/paketo-buildpacks/samples --sub-path procfile/procfile-sample --tag harbor.klu.zoolabs.me/platform/app/procfile-sample --wait
+  ```

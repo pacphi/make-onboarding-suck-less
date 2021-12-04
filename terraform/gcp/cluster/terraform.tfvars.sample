@@ -1,0 +1,7 @@
+gcp_project = "my-project"
+gcp_service_account_credentials = "~/.tf4k8s/gcp/terraform-my-project-service-account-credentials.json"
+gcp_region = "us-west1"
+gke_name = "tap-dev"
+gke_nodes = 3
+gke_preemptible = false
+gke_node_type = "c2-standard-4"

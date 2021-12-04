@@ -2,7 +2,7 @@
 set -e
 
 if [ -z "$1" ]; then
-	echo "Usage: install-tap-plugins.sh {tanzu-network-api-token}"
+	echo "Usage: fetch-tap-vscode-extension.sh {tanzu-network-api-token}"
 	exit 1
 fi
 
@@ -18,18 +18,10 @@ fi
 TANZU_NETWORK_API_TOKEN="$1"
 pivnet login --api-token=$TANZU_NETWORK_API_TOKEN
 
-mkdir -p $HOME/tanzu
 cd /tmp
 TAP_VERSION="0.3.0"
-TAP_PRODUCT_FILE_ID=1080178
+TAP_PRODUCT_FILE_ID=1072030
 pivnet download-product-files --product-slug='tanzu-application-platform' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
-tar -xvf tanzu-framework-linux-amd64.tar -C $HOME/tanzu
+ls -la tanzu-vscode-extension.vsix
 
-cd $HOME/tanzu
-tanzu plugin delete package
-tanzu plugin install secret --local ./cli
-tanzu plugin install accelerator --local ./cli
-tanzu plugin install apps --local ./cli
-tanzu plugin install package --local ./cli
-tanzu plugin list
-tanzu version
+echo "Open Visual Studio Code.  Press Ctrl+Shift+X to switch to Extensions view.  From the Extensions lefthand-side menubar, click on the triple-dot, then select Install from VSIX...  Follow the dialog prompt to search for then select the dwonloaded .vsix file to install."
