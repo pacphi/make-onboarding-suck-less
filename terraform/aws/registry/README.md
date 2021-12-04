@@ -27,6 +27,14 @@ Amend the values for
 ./create-registry.sh
 ```
 
+## Use
+
+Login with Docker CLI
+
+```
+docker login --password-stdin $(terraform output ecr_admin_password | tr -d '"') -u $(terraform output ecr_admin_username | tr -d '"') $(terraform output ecr_endpoint | tr -d '"')
+```
+
 
 ## Teardown the registry
 

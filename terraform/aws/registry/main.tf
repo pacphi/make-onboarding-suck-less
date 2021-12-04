@@ -31,6 +31,6 @@ output "ecr_endpoint" {
 }
 
 output "ecr_repository_url" {
-  description = "The URL of the container image repository (in the form {aws_account_id}.dkr.ecr.region.amazonaws.com/{repository-name})."
+  description = "The URL of the container image repository (in the form {aws_account_id}.dkr.ecr.{region}.amazonaws.com/{repository-name})."
   value = module.ecr.ecr_repository_url
 }

@@ -1,0 +1,7 @@
+base_domain = "domain.com"
+domain_prefix = "prefix"
+resource_group_name = "resource-group"
+az_subscription_id = "why-would-i-share-this-with-you"
+az_tenant_id = "why-would-i-share-this-with-you"
+az_client_id = "why-would-i-share-this-with-you"
+az_client_secret = "why-would-i-share-this-with-you"
