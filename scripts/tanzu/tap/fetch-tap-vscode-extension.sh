@@ -19,9 +19,10 @@ TANZU_NETWORK_API_TOKEN="$1"
 pivnet login --api-token=$TANZU_NETWORK_API_TOKEN
 
 cd /tmp
-TAP_VERSION="0.3.0"
+TAP_VERSION="0.4.0-build.13"
 TAP_PRODUCT_FILE_ID=1072030
 pivnet download-product-files --product-slug='tanzu-application-platform' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
 ls -la tanzu-vscode-extension.vsix
+
 
 echo "Open Visual Studio Code.  Press Ctrl+Shift+X to switch to Extensions view.  From the Extensions lefthand-side menubar, click on the triple-dot, then select Install from VSIX...  Follow the dialog prompt to search for then select the dwonloaded .vsix file to install."

@@ -1,6 +1,6 @@
 # Tanzu Application Platform Quickstart Installation Guide
 
-> Note that Tanzu Application Platform is in Beta.  These instructions are based upon the Beta 3 release builds.
+> Note that Tanzu Application Platform is in Beta.  These instructions are based upon the Beta 4 release builds.
 
 ![Tanzu Application Platform // Component Diagram // Deployment Footprint // K8s Runtime Support](tap.png)
 
@@ -146,7 +146,7 @@ You'll want to copy and save the contents of the [install-tap-plugins.sh](instal
 ```
 > Replace `{tanzu-network-api-token}` with a valid VMWare Tanzu Network [API Token](https://network.pivotal.io/users/dashboard/edit-profile).
 
-Note: after you install the TAP plugins in this manner you will not be able to successfully complete `tanzu cluster create` with the `v0.10.0` `package` plugin.  You will need to revert back to the `v1.4.0` version.  To do that, run:
+If you need to revert back to the `v1.4.0` version, run:
 
 ```
 tanzu plugin delete package
@@ -178,7 +178,7 @@ Add Tanzu Application Platform package repository to the cluster by running:
 
 ```
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.3.0 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
   --namespace tap-install
 ```
 
@@ -207,7 +207,7 @@ Then run:
 To view possible configuration settings, run:
 
 ```
-tanzu package available get tap.tanzu.vmware.com/0.3.0 --values-schema --namespace tap-install
+tanzu package available get tap.tanzu.vmware.com/0.4.0-build.13 --values-schema --namespace tap-install
 ```
 > Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.0.3 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 
@@ -260,7 +260,7 @@ EOF
 Install the package by running:
 
 ```
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.3.0 --values-file tap-values.yml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -280,33 +280,13 @@ tanzu package installed list -A
 
 Sample output
 
+// FIXME Add sample output
+
 ```
 ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
 - Retrieving installed packages...
   NAME                                PACKAGE-NAME                                         PACKAGE-VERSION        STATUS                                                                NAMESPACE
-  accelerator                         accelerator.apps.tanzu.vmware.com                    0.4.0                  Reconcile succeeded                                                   tap-install
-  api-portal                          api-portal.tanzu.vmware.com                          1.0.3                  Reconcile succeeded                                                   tap-install
-  appliveview                         appliveview.tanzu.vmware.com                         0.3.0                  Reconcile succeeded                                                   tap-install
-  buildservice                        buildservice.tanzu.vmware.com                        1.3.1                  Reconcile succeeded                                                   tap-install
-  cartographer                        cartographer.tanzu.vmware.com                        0.0.7                  Reconcile succeeded                                                   tap-install
-  cnrs                                cnrs.tanzu.vmware.com                                1.0.3                  Reconcile succeeded                                                   tap-install
-  conventions-controller              controller.conventions.apps.tanzu.vmware.com         0.4.2                  Reconcile succeeded                                                   tap-install
-  developer-conventions               developer-conventions.tanzu.vmware.com               0.3.0                  Reconcile succeeded                                                   tap-install
-  grype                               grype.scanning.apps.tanzu.vmware.com                 1.0.0-beta.2           Reconcile succeeded                                                   tap-install
-  image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0-beta.1           Reconcile succeeded                                                   tap-install
-  learningcenter                      learningcenter.tanzu.vmware.com                      1.0.14-build.1         Reconcile succeeded                                                  tap-install
-  learningcenter-workshops            workshops.learningcenter.tanzu.vmware.com            1.0.7-build.1          Reconcile succeeded                                                   tap-install
-  ootb-supply-chain-basic             ootb-supply-chain-basic.tanzu.vmware.com             0.3.0-build.5          Reconcile succeeded                                                   tap-install
-  ootb-templates                      ootb-templates.tanzu.vmware.com                      0.3.0-build.5          Reconcile succeeded                                                   tap-install
-  scanning                            scanning.apps.tanzu.vmware.com                       1.0.0-beta.2           Reconcile succeeded                                                   tap-install
-  service-bindings                    service-bindings.labs.vmware.com                     0.5.0                  Reconcile succeeded                                                   tap-install
-  services-toolkit                    services-toolkit.tanzu.vmware.com                    0.4.0                  Reconcile succeeded                                                   tap-install
-  source-controller                   controller.source.apps.tanzu.vmware.com              0.1.2                  Reconcile succeeded                                                   tap-install
-  spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.1.2                  Reconcile succeeded                                                   tap-install
-  tap                                 tap.tanzu.vmware.com                                 0.3.0                  Reconcile succeeded                                                   tap-install
-  tap-gui                             tap-gui.tanzu.vmware.com                             0.3.0-rc.4             Reconcile succeeded                                                   tap-install
-  antrea                              antrea.tanzu.vmware.com                              0.13.3+vmware.1-tkg.1  Reconcile succeeded                                                   tkg-system
-  metrics-server                      metrics-server.tanzu.vmware.com                      0.4.0+vmware.1-tkg.1   Reconcile succeeded                                                   tkg-system
+  
 ```
 
 ### Updating TAP packages
@@ -314,7 +294,7 @@ ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.3.0 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-values.yml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -342,17 +322,21 @@ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo
 
 Sample output
 
+// FIXME Add sample output
+
 ```
 ubuntu@ip-172-31-61-62:~$ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo-global
 - Retrieving package versions for external-dns.tanzu.vmware.com...
   NAME                           VERSION               RELEASED-AT
-  external-dns.tanzu.vmware.com  0.8.0+vmware.1-tkg.1  2021-06-11 11:00:00 -0700 PDT
+  
 ```
 
 We can check in on what we can configure
 
+// FIXME Add version
+
 ```
-tanzu package available get external-dns.tanzu.vmware.com/0.8.0+vmware.1-tkg.1 --values-schema --namespace tanzu-package-repo-global
+tanzu package available get external-dns.tanzu.vmware.com/ --values-schema --namespace tanzu-package-repo-global
 ```
 
 Let's install the external-dns package with a [script](install-external-dns-package-for-tkg-on-aws.sh)
@@ -467,7 +451,7 @@ EOT
 Let's apply our updates.
 
 ```
-tanzu package installed update tap -v 0.3.0 --values-file /tmp/tap-values-updated.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file /tmp/tap-values-updated.yml -n tap-install
 ```
 
 Next, we'll patch a set of `ConfigMap`s in the `knative-serving` namespace by following these steps:
@@ -539,12 +523,14 @@ You may use the convenience script to download a `.vsix` file for installation a
 
 ## Troubleshooting a Tanzu Application Platform Profile installation
 
+// FIXME Replace occurrences of x.x.x below with release version
+
 ### Problem with build-service
 
 What would you do if you saw the following after executing `tanzu package installed list -A`?
 
 ```
-buildservice                        buildservice.tanzu.vmware.com                        1.3.1                  Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
+buildservice                        buildservice.tanzu.vmware.com                        x.x.x                  Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
 ```
 
 Start by getting more detail about the error by running:
@@ -560,7 +546,7 @@ ubuntu@ip-172-31-61-62:~$ tanzu package installed get buildservice -n tap-instal
 / Retrieving installation details for buildservice...
 NAME:                    buildservice
 PACKAGE-NAME:            buildservice.tanzu.vmware.com
-PACKAGE-VERSION:         1.3.1
+PACKAGE-VERSION:         x.x.x
 STATUS:                  Reconcile failed: Error (see .status.usefulErrorMessage for details)
 CONDITIONS:              [{ReconcileFailed True  Error (see .status.usefulErrorMessage for details)}]
 USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupdater/dependency-updater (buildservice.tanzu.vmware.com/v1alpha1) namespace: build-service:
@@ -570,14 +556,14 @@ USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupd
 This is telling us that we're missing a CA.  What do we need to add to `tap-values.yml` then?
 
 ```
-tanzu package available get buildservice.tanzu.vmware.com/1.3.1 --values-schema --namespace tap-install
+tanzu package available get buildservice.tanzu.vmware.com/x.x.x --values-schema --namespace tap-install
 ```
 
 Sample output
 
 ```
-ubuntu@ip-172-31-61-62:~$ tanzu package available get buildservice.tanzu.vmware.com/1.3.1 --values-schema --namespace tap-install
-| Retrieving package details for buildservice.tanzu.vmware.com/1.3.1...
+ubuntu@ip-172-31-61-62:~$ tanzu package available get buildservice.tanzu.vmware.com/x.x.x --values-schema --namespace tap-install
+| Retrieving package details for buildservice.tanzu.vmware.com/x.x.x...
   KEY                             DEFAULT  TYPE    DESCRIPTION
   kp_default_repository           <nil>    string  docker repository (required)
   kp_default_repository_password  <nil>    string  registry password (required)
@@ -592,7 +578,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.3.0 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui
@@ -628,6 +614,8 @@ Well, the answer to that question is only going to be partially addressed here. 
 
 We'll touch on how to interact with a handful of those components here:
 
+// FIXME Links to public docs below need updates
+
 * Cloud Native Runtimes
   * [Verifying your Cloud Native Runtimes installation](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-verify-installation.html)
     * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
@@ -637,15 +625,15 @@ We'll touch on how to interact with a handful of those components here:
   * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
   * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-acc-cli.html#accelerator-commands-2)
   * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
-* [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-index.html)
+* [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-index.html)
   * Visit `https://app-live-view.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
-  * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.3/docs/GUID-product-features.html)
+  * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-product-features.html)
 * Tanzu Application Platform GUI
   * Visit `https://tap-gui.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
-  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-tap-gui-about.html)
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-tap-gui-about.html)
 * Learning Center
   * You can check the Training Portals available in your environment running the following command `kubectl get trainingportals`
-  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-learning-center-about.html)
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-learning-center-about.html)
 * API Portal
   * Visit `https://api-portal.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
   * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)

@@ -15,4 +15,4 @@ kubectl delete secret knative-tls -n contour-external
 kubectl delete secret knative-tls -n educates
 
 ## Uninstall EmberStack's Reflector
-kubectl -n kube-system delete -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.21/reflector.yaml
+kubectl -n kube-system delete -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.42/reflector.yaml

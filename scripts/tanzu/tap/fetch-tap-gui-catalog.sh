@@ -19,9 +19,10 @@ TANZU_NETWORK_API_TOKEN="$1"
 pivnet login --api-token=$TANZU_NETWORK_API_TOKEN
 
 cd /tmp
-TAP_VERSION="0.3.0"
-TAP_PRODUCT_FILE_ID=1073909
+TAP_VERSION="0.4.0-build.13"
+TAP_PRODUCT_FILE_ID=1099786
 pivnet download-product-files --product-slug='tanzu-application-platform' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
 ls -la tap-gui-blank-catalog.tgz
 
-echo "Unpack the contents of this file, initialize a Git repository, commit the source and push to a repisitory of record (e.g., Github)."
+
+echo "Unpack the contents of this file, initialize a Git repository, commit the source and push to a repository of record (e.g., Github)."

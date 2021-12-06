@@ -30,13 +30,13 @@ brew install tilt-dev/tap/tilt
 brew install podman
 brew install velero
 
-OM_VERSION=7.3.1
+OM_VERSION=7.4.1
 curl -LO https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-darwin-${OM_VERSION} && \
 mv om-darwin-${OM_VERSION} om && \
 chmod +x om && \
 sudo mv om /usr/local/bin && \
 
-TMC_VERSION=0.4.0-08a1abaa && \
+TMC_VERSION=0.4.0-fdabbe74 && \
 curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x64/tmc && \
 chmod +x tmc && \
 sudo mv tmc /usr/local/bin

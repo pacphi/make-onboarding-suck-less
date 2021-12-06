@@ -33,7 +33,7 @@ EOF
 ## Install EmberStack's Reflector
 ### Reflector can create mirrors (of configmaps and secrets) with the same name in other namespaces automatically
 
-kubectl -n kube-system apply -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.21/reflector.yaml
+kubectl -n kube-system apply -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.42/reflector.yaml
 
 ## Create the certificate in the contour-external namespace
 cat << EOF | tee knative-tls.yaml

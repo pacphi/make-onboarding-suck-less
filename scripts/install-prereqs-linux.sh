@@ -33,8 +33,8 @@ case $CROPT in
 
   nerdtcl)
     cd /tmp
-    curl -LO https://github.com/containerd/nerdctl/releases/download/v0.13.0/nerdctl-full-0.13.0-linux-amd64.tar.gz
-    sudo tar Cxzvvf /usr/local nerdctl-full-0.13.0-linux-amd64.tar.gz
+    curl -LO https://github.com/containerd/nerdctl/releases/download/v0.14.0/nerdctl-full-0.14.0-linux-amd64.tar.gz
+    sudo tar Cxzvvf /usr/local nerdctl-full-0.14.0-linux-amd64.tar.gz
     sudo systemctl enable --now containerd
     containerd-rootless-setuptool.sh install
     containerd-rootless-setuptool.sh install-buildkit

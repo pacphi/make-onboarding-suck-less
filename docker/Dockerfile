@@ -4,32 +4,32 @@ LABEL author=cphillipson@vmware.com
 ARG DEBIAN_FRONTEND=noninteractive
 
 ENV TZ=America/Los_Angeles \
-    ARGO_VERSION=3.1.14 \
-    ARGOCD_VERSION=2.1.6 \
-    BOSH_VERSION=6.4.7 \
-    CF_VERSION=7.3.0 \
+    ARGO_VERSION=3.2.4 \
+    ARGOCD_VERSION=2.1.7 \
+    BOSH_VERSION=6.4.8 \
+    CF_VERSION=7.4.0 \
     CREDHUB_VERSION=2.9.0 \
-    GH_VERSION=2.1.0 \
-    GO_VERSION=1.17 \
-    HELM_VERSION=3.7.0 \
-    HELMFILE_VERSION=0.141.0 \
+    GH_VERSION=2.3.0 \
+    GO_VERSION=1.17.4 \
+    HELM_VERSION=3.7.1 \
+    HELMFILE_VERSION=0.142.0 \
     AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05" \
-    IMGPKG_VERSION=0.20.0 \
+    IMGPKG_VERSION=0.23.1 \
     KAPP_VERSION=0.42.0 \
     KBLD_VERSION=0.31.0 \
     KWT_VERSION=0.0.6 \
     KUBECTL_VERSION=1.22.1 \
     KNATIVE_VERSION=1.0.0 \
-    OM_VERSION=7.3.2 \
+    OM_VERSION=7.4.1 \
     PACK_VERSION=0.21.1 \
     PIVNET_VERSION=3.0.1 \
-    TERRAFORM_VERSION=1.0.9 \
+    TERRAFORM_VERSION=1.0.11 \
     TERRAFORM_DOCS_VERSION=0.16.0 \
     LEFTOVERS_VERSION=0.62.0 \
-    TMC_VERSION=0.4.0-21354296 \
-    VELERO_VERSION=1.7.0 \
+    TMC_VERSION=0.4.0-fdabbe74 \
+    VELERO_VERSION=1.7.1 \
     VENDIR_VERSION=0.23.0 \
-    YTT_VERSION=0.37.0
+    YTT_VERSION=0.38.0
 
 RUN mkdir downloads && cd downloads && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \

@@ -1,7 +1,11 @@
 # Tanzu Application Platform Evaluation
 
-## On TKG 1.4.0 on AWS
+## Installation
+### On TKG 1.4.0 on AWS
 
-* [Install](INSTALL.md)
-* [Usage](USAGE.md)
+* [Install](tkg/aws/INSTALL.md)
+
+## Usage
+
+* [Tutorial](USAGE.md)
 
