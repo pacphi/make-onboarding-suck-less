@@ -7,121 +7,24 @@
 
 ## Create a new workload cluster
 
-We're going to do this on AWS.
+We're going to use a [Terraform module](../../../../terraform/gcp/cluster/README.md) to do this.
+
+Obtain the new workload cluster kubectl configuration using the scripts:
+
+* list-clusters.sh
+* set-kubectl-context.sh
+
+## Install kapp-controller
 
 ```
-cat > zoolabs-app-platform.yml <<EOF
-CLUSTER_NAME: zoolabs-app-platform
-CLUSTER_PLAN: dev
-NAMESPACE: default
-CNI: antrea
-IDENTITY_MANAGEMENT_TYPE: none
-CONTROL_PLANE_MACHINE_TYPE: t3.large
-NODE_MACHINE_TYPE: m5.xlarge
-AWS_REGION: "us-west-2"
-AWS_NODE_AZ: "us-west-2b"
-AWS_SSH_KEY_NAME: "se-cphillipson-cloudgate-aws-us-west-2"
-BASTION_HOST_ENABLED: false
-ENABLE_MHC: true
-MHC_UNKNOWN_STATUS_TIMEOUT: 5m
-MHC_FALSE_STATUS_TIMEOUT: 12m
-ENABLE_AUDIT_LOGGING: false
-ENABLE_DEFAULT_STORAGE_CLASS: true
-CLUSTER_CIDR: 100.96.0.0/11
-SERVICE_CIDR: 100.64.0.0/13
-ENABLE_AUTOSCALER: false
-EOF
-
-tanzu cluster create --file zoolabs-app-platform.yml
-
-tanzu cluster scale zoolabs-app-platform --worker-machine-count 3
-```
-> Replace occurrences of `zoolabs-app-platform` above with whatever name you'd like to give the workload cluster.  You'll also want to replace the value of `AWS_SSH_KEY_NAME` with your own SSH key.  Other property values may be updated as appropriate.
-
-
-Obtain the new workload cluster kubectl configuration.
-
-```
-tanzu cluster kubeconfig get zoolabs-app-platform --admin
-```
-> Replace occurrence of `zoolabs-app-platform` above with name you gave the workload cluster.
-
-Sample output
-
-```
-Credentials of cluster 'zoolabs-app-platform' have been saved
-You can now access the cluster by running 'kubectl config use-context zoolabs-app-platform-admin@zoolabs-app-platform'
-```
-
-## Upgrade kapp-controller
-
-### Verify installed version
-
-```
-kubectl get deployment kapp-controller -n tkg-system -o yaml | grep kapp-controller.carvel.dev/version
-```
-> You should see version 0.23.0 if you've installed Tanzu Kubernetes Grid 1.4 or Tanzu Community Edition.  We need to delete this version and install a newer version of the kapp-controller.
-
-### Install newer version
-
-Log into management cluster
-
-```
-kubectl config use-context zoolabs-mgmt-admin@zoolabs-mgmt
-```
-> Replace `zoolabs-mgmt` with your own management cluster name.
-
-Apply this patch
-
-```
-kubectl patch app/zoolabs-app-platform-kapp-controller -n default -p '{"spec":{"paused":true}}' --type=merge
-```
-> Replace `zoolabs-app-platform` with your own workload cluster name.
-
-Login to workload cluster, teardown the existing kapp-controller deployment, and deploy a new version of kapp-controller.
-
-```
-kubectl config use-context zoolabs-app-platform-admin@zoolabs-app-platform
-kubectl delete deployment kapp-controller -n tkg-system
 kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.30.0/release.yml
 ```
-> Replace occurrence of `zoolabs-app-platform-admin@zoolabs-app-platform` with your own workload cluster context.
 
-
-### Verify new release version installed
+Verify install
 
 ```
 kubectl get deployment kapp-controller -n kapp-controller -o yaml | grep kapp-controller.carvel.dev/version
 ```
-
-### How to undo patch to management cluster
-
-> This scenario only applies when you may have destroyed a workload cluster hosting TAP, then attempted to create a new workload cluster of the same name.
-
-You will need to undo the patch.  If you forget to do this then the workload cluster creation will stall.
-
-Check with:
-
-```
-kubectl get app zoolabs-app-platform-kapp-controller -n default
-```
-> Replace `zoolabs-app-platform` with your own workload cluster name.
-
-To fix:
-
-```
-kubectl config use-context zoolabs-mgmt-admin@zoolabs-mgmt
-kubectl patch app/zoolabs-app-platform-kapp-controller -n default -p '{"spec":{"paused":false}}' --type=merge
-```
-> Replace `zoolabs-mgmt` with your own management cluster name and replace `zoolabs-app-platform` with your own workload cluster name.
-
-After a few moments check in on the status of the cluster with:
-
-```
-tanzu cluster list
-```
-
-Your cluster should be up-and-running.
 
 ## Install secret-gen-controller
 
@@ -139,7 +42,7 @@ kubectl get deployment secretgen-controller -n secretgen-controller -o yaml | gr
 
 > This procedure expects that you want to maintain the Tanzu CLI core and plugins you installed previously for interacting with Tanzu Kubernetes Grid or Tanzu Community Edition.
 
-You'll want to copy and save the contents of the [install-tap-plugins.sh](install-tap-plugins.sh) to the machine where you had previously installed and used the `tanzu` CLI.
+You'll want to copy and save the contents of the [install-tap-plugins.sh](../install-tap-plugins.sh) to the machine where you had previously installed and used the `tanzu` CLI.
 
 ```
 ./install-tap-plugins.sh {tanzu-network-api-token}

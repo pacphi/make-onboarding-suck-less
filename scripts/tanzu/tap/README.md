@@ -1,13 +1,46 @@
 # Tanzu Application Platform Evaluation
 
 ## Installation
-### On TKG 1.4.0 on AWS
 
-* [Install](tkg/aws/INSTALL.md)
+* [TKG 1.4.0 on AWS](tkg/aws/INSTALL.md)
+* [on AKS](aks/INSTALL.md)
+* [on EKS](eks/INSTALL.md)
+* [on GKE](gke/INSTALL.md)
 
 ## Usage
 
-* [Tutorial](USAGE.md)
+Congratulations! You've managed to install TAP.  Now what?
+
+Well, the answer to that question is only going to be partially addressed here.  The `full` platform profile is comprised of a number of components collectively delivering capabilities designed to help you go from idea to deployment with alacrity.
+
+We'll touch on how to interact with a handful of those components here:
+
+// FIXME Links to public docs below need updates
+
+* Cloud Native Runtimes
+  * [Verifying your Cloud Native Runtimes installation](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-verify-installation.html)
+    * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
+  * [Enabling Automatic TLS Certificate Provisioning for Cloud Native Runtimes for Tanzu](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-auto-tls.html)
+* Application Accelerator
+  * Visit `https://acclerator.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
+  * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-acc-cli.html#accelerator-commands-2)
+  * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
+* [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-index.html)
+  * Visit `https://app-live-view.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-product-features.html)
+* Tanzu Application Platform GUI
+  * Visit `https://tap-gui.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-tap-gui-about.html)
+* Learning Center
+  * You can check the Training Portals available in your environment running the following command `kubectl get trainingportals`
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-learning-center-about.html)
+* API Portal
+  * Visit `https://api-portal.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)
+
+A tutorial on what capabilities a developer may leverage may be found [here](USAGE.md).  Also, to whet your appetite, please view the section below entitled [For your consideration](#for-your-consideration).
+
 
 ## For your consideration
 
