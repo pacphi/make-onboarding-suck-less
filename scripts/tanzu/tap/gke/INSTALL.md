@@ -7,9 +7,16 @@
 
 ## Create a new workload cluster
 
-We're going to use a [Terraform module](../../../../terraform/gcp/cluster/README.md) to do this.
+Authenticate and set environment variable
 
-Obtain the new workload cluster kubectl configuration using the scripts:
+```
+gcloud activate-service-account --key-file=/path/to/service-account-credentials.json
+```
+> Update the path to the key file as appropriate
+
+Next, we're going to use a [Terraform module](../../../../terraform/gcp/cluster/README.md) to do create the cluster.
+
+Obtain the new workload cluster `kubectl` configuration using the scripts:
 
 * list-clusters.sh
 * set-kubectl-context.sh
@@ -17,7 +24,7 @@ Obtain the new workload cluster kubectl configuration using the scripts:
 ## Install kapp-controller
 
 ```
-kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.30.0/release.yml
+kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.29.0/release.yml
 ```
 
 Verify install
@@ -60,9 +67,10 @@ tanzu plugin install package --local {path-to-cli-directory}
 
 ## Add the Tanzu Application Platform Package Repository
 
-Create a new namespace
+Create new namespaces
 
 ```
+kubectl create ns tanzu-package-repo-global
 kubectl create ns tap-install
 ```
 
@@ -77,32 +85,58 @@ tanzu secret registry add tap-registry \
 > Replace `{tanzu-network-username}` and `{tanzu-network-password}` with the account credentials that you use to authenticate to the VMware Tanzu Network.
 
 
-Add Tanzu Application Platform package repository to the cluster by running:
+Add the Tanzu Standard and Tanzu Application Platform package repositories to the cluster by running:
 
 ```
+tanzu package repository add tanzu-standard-repository \
+  --url projects.registry.vmware.com/tkg/packages/standard/repo:v1.4.0 \
+  --namespace tanzu-package-repo-global
+
 tanzu package repository add tanzu-tap-repository \
   --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
   --namespace tap-install
 ```
 
-Get the status of the Tanzu Application Platform package repository, and ensure the status updates to `Reconcile succeeded` by running:
+Get the status of the Tanzu Standard and Tanzu Application Platform package repositories, and ensure the status updates to `Reconcile succeeded` by running:
 
 ```
+tanzu package repository get tanzu-standard-repository --namespace tanzu-package-repo-global
 tanzu package repository get tanzu-tap-repository --namespace tap-install
+```
+
+Sample output
+
+```
+\ Retrieving repository tanzu-standard-repository...
+NAME:          tanzu-standard-repository
+VERSION:       8808681
+REPOSITORY:    projects.registry.vmware.com/tkg/packages/standard/repo
+TAG:           v1.4.0
+STATUS:        Reconcile succeeded
+REASON:
+
+/ Retrieving repository tanzu-tap-repository...
+NAME:          tanzu-tap-repository
+VERSION:       4454281
+REPOSITORY:    registry.tanzu.vmware.com/tanzu-application-platform/tap-packages
+TAG:           0.4.0-build.13
+STATUS:        Reconcile succeeded
+REASON:
 ```
 
 List the available packages by running:
 
 ```
+tanzu package available list --namespace tanzu-package-repo-global
 tanzu package available list --namespace tap-install
 ```
 
-List versions of available packages.  You'll want to copy and save the contents of the [list-available-packages.sh](list-available-packages.sh) to the machine where you had previously installed and used the `tanzu` CLI.
+List versions of available packages.  You'll want to copy and save the contents of the [list-available-packages.sh](../list-available-tap-packages.sh) to the machine where you had previously installed and used the `tanzu` CLI.
 
 Then run:
 
 ```
-./list-available-packages.sh
+./list-available-tap-packages.sh
 ```
 
 ## Install a Tanzu Application Platform Profile
@@ -112,58 +146,21 @@ To view possible configuration settings, run:
 ```
 tanzu package available get tap.tanzu.vmware.com/0.4.0-build.13 --values-schema --namespace tap-install
 ```
-> Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.0.3 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
+> Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.1.0 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 
-Let's create a sample `tap-values.yml` file:
-
-```
-cat > tap-values.yml << EOF
-profile: full
-
-buildservice:
-  kp_default_repository: "{container-registry-domain}/platform/app"
-  kp_default_repository_username: "{container-registry-username}"
-  kp_default_repository_password: "{container-registry-password}"
-  tanzunet_username: "{tanzu-network-username}"
-  tanzunet_password: "{tanzu-network-password}"
-
-ootb_supply_chain_basic:
-  registry:
-    server: "{container-registry-domain}"
-    repository: "platform/app"
-
-ootb_supply_chain_testing_scanning:
-  registry:
-    server: "{container-registry-domain}"
-    repository: "platform/app"
-
-ootb_supply_chain_testing:
-  registry:
-    server: "{container-registry-domain}"
-    repository: "platform/app"
-
-learningcenter:
-  ingressDomain: "{domain}"
-  ingressClass: contour-external
-  ingressSecret:
-    secretName: knative-tls
-  server:
-    service_type: ClusterIP
-
-tap_gui:
-  service_type: LoadBalancer
-
-appliveview:
-  connector_namespaces: [default]
-  service_type: LoadBalancer
-EOF
-```
-> Replace curly-bracketed value-placeholders with real values. The `buildservice.kp_default_repository` and `ootb_supply_chain_*.registry.repository` values should be the same.  If you're integrating with a Harbor registry then the convention is `{harbor-domain}/{project}/{repository}`.  The `{project}` must be created and exist before you attempt the `tanzu package install` below.  The `{repository}` will be created automatically if it doesn't already exist.
-
-Install the package by running:
+It's helpful to start with some sample configuration, so
 
 ```
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+cp tap-values.yaml.sample tap-values.yaml
+```
+
+Edit the `tap-values.yaml` file by supplying appropriate configuration values; particularly occurrences of the `replace.me` placeholder.
+
+Then, install the package by running:
+
+```
+ytt -f tap-values.yaml -f tap-config.yaml > tap-reified-values.yaml
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -179,17 +176,43 @@ Verify all the necessary packages in the profile are installed by running:
 ```
 tanzu package installed list -A
 ```
-> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.
+> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.  When you run the package install for TAP, it may fail fast because of sequencing.  Depending on whether you enabled ingress for your `tap-gui` configuration, `tap-gui` will require an `HttpProxy` resource, but those CRDs won’t exist until later in the process when the Cloud Native Runtimes package installs Contour.  If you're patent, everything will eventually get reconciled and figure itself out, but admittedly a fast failure is a poor experience for new users.  This is a known issue and will be addressed in a subsequent build before the official Beta 4 release.
 
 Sample output
 
-// FIXME Add sample output
-
 ```
-ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
+$ tanzu package installed list -A
 - Retrieving installed packages...
-  NAME                                PACKAGE-NAME                                         PACKAGE-VERSION        STATUS                                                                NAMESPACE
-  
+  NAME                                PACKAGE-NAME                                         PACKAGE-VERSION  STATUS               NAMESPACE
+  accelerator                         accelerator.apps.tanzu.vmware.com                    0.5.1            Reconcile succeeded  tap-install
+  api-portal                          api-portal.tanzu.vmware.com                          1.0.6            Reconcile succeeded  tap-install
+  appliveview                         run.appliveview.tanzu.vmware.com                     1.0.0            Reconcile succeeded  tap-install
+  appliveview-conventions             build.appliveview.tanzu.vmware.com                   1.0.0            Reconcile succeeded  tap-install
+  buildservice                        buildservice.tanzu.vmware.com                        1.4.0-build.1    Reconcile succeeded  tap-install
+  cartographer                        cartographer.tanzu.vmware.com                        0.0.8-rc.7       Reconcile succeeded  tap-install
+  cert-manager                        cert-manager.tanzu.vmware.com                        1.5.3+tap.1      Reconcile succeeded  tap-install
+  cnrs                                cnrs.tanzu.vmware.com                                1.1.0            Reconcile succeeded  tap-install
+  contour                             contour.tanzu.vmware.com                             1.18.2+tap.1     Reconcile succeeded  tap-install
+  conventions-controller              controller.conventions.apps.tanzu.vmware.com         0.4.2            Reconcile succeeded  tap-install
+  developer-conventions               developer-conventions.tanzu.vmware.com               0.4.0-build1     Reconcile succeeded  tap-install
+  fluxcd-source-controller            fluxcd.source.controller.tanzu.vmware.com            0.16.0           Reconcile succeeded  tap-install
+  grype                               scst-grype.apps.tanzu.vmware.com                     1.0.0            Reconcile succeeded  tap-install
+  image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0-beta.2     Reconcile succeeded  tap-install
+  learningcenter                      learningcenter.tanzu.vmware.com                      0.1.0-build.6    Reconcile succeeded  tap-install
+  learningcenter-workshops            workshops.learningcenter.tanzu.vmware.com            0.1.0-build.7    Reconcile succeeded  tap-install
+  ootb-delivery-basic                 ootb-delivery-basic.tanzu.vmware.com                 0.4.0-build.2    Reconcile succeeded  tap-install
+  ootb-supply-chain-testing-scanning  ootb-supply-chain-testing-scanning.tanzu.vmware.com  0.4.0-build.2    Reconcile succeeded  tap-install
+  ootb-templates                      ootb-templates.tanzu.vmware.com                      0.4.0-build.2    Reconcile succeeded  tap-install
+  scanning                            scst-scan.apps.tanzu.vmware.com                      1.0.0            Reconcile succeeded  tap-install
+  scst-store                          scst-store.tanzu.vmware.com                          1.0.0-beta.2     Reconcile succeeded  tap-install
+  service-bindings                    service-bindings.labs.vmware.com                     0.6.0            Reconcile succeeded  tap-install
+  services-toolkit                    services-toolkit.tanzu.vmware.com                    0.5.0-rc.3       Reconcile succeeded  tap-install
+  source-controller                   controller.source.apps.tanzu.vmware.com              0.2.0            Reconcile succeeded  tap-install
+  spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.2.0            Reconcile succeeded  tap-install
+  tap                                 tap.tanzu.vmware.com                                 0.4.0-build.13   Reconcile succeeded  tap-install
+  tap-gui                             tap-gui.tanzu.vmware.com                             1.0.0-rc.72      Reconcile succeeded  tap-install
+  tap-telemetry                       tap-telemetry.tanzu.vmware.com                       0.1.0            Reconcile succeeded  tap-install
+  tekton-pipelines                    tekton.tanzu.vmware.com                              0.30.0           Reconcile succeeded  tap-install
 ```
 
 ### Updating TAP packages
@@ -197,23 +220,23 @@ ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
-> You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-values.yml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
+> You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-reified-values.yaml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
 ### Setting up Ingress
 
-We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://cert-manager.io/docs/configuration/acme/dns01/route53/), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) with [Contour](https://projectcontour.io/getting-started/).
+We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://cert-manager.io/docs/configuration/acme/dns01/google/), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) with [Contour](https://projectcontour.io/getting-started/).
 
-TAP already installed Contour into the `contour-external` namespace.  We can verify that a `LoadBalancer` was created on your behalf by running:
+TAP already installed Contour.  We can verify that API resources were created by running:
 
 ```
-kubectl get svc -n contour-external
+kubectl api-resources | grep contour
 ```
 
 #### Setting up an A or CNAME record for a wildcard Domain
 
-The `envoy` service within the `contour-external` namespace references an ELB.
+The `envoy` service within the `tanzu-system-ingress` namespace references an LB.
 
 #### Install external-dns
 
@@ -225,55 +248,29 @@ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo
 
 Sample output
 
-// FIXME Add sample output
-
 ```
-ubuntu@ip-172-31-61-62:~$ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo-global
+$ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo-global
 - Retrieving package versions for external-dns.tanzu.vmware.com...
   NAME                           VERSION               RELEASED-AT
-  
+  external-dns.tanzu.vmware.com  0.8.0+vmware.1-tkg.1  2021-06-11 11:00:00 -0700 PDT
 ```
 
 We can check in on what we can configure
 
-// FIXME Add version
-
 ```
-tanzu package available get external-dns.tanzu.vmware.com/ --values-schema --namespace tanzu-package-repo-global
+tanzu package available get external-dns.tanzu.vmware.com/0.8.0+vmware.1-tkg.1 --values-schema --namespace tanzu-package-repo-global
 ```
 
-Let's install the external-dns package with a [script](install-external-dns-package-for-tkg-on-aws.sh)
+Let's install the external-dns package with a [script](install-external-dns-package-on-gke.sh)
 
 ```
-./install-external-dns-package-for-tkg-on-aws.sh {aws-access-key-id} {aws-secret-access-key} {domain} {hosted-zone-id}
+./install-external-dns-package-on-gke.sh {project-id} {service-account-key-path-to-file-in-json-format} {domain}
 ```
-> This script simplifies the process of configuring and installing external-dns on your cluster hosted on AWS.  See step 6 [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html#aws-route-53-4).  You will need to have [created an IAM Policy](../aws/HARBOR.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone) with required permissions to interact with (a) target HostedZone(s) in Route53.
+> This script simplifies the process of configuring and installing external-dns on your GKE cluster.
 
 #### Manual DNS
 
-If you chose not to install `external-dns`, then you will have to [manually add](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-creating.html) a wildcard domain as an `A` or `CNAME` record to the HostedZone within Route53.
-
-To add an A record we'll want to configure Route53 to [route traffic to it via an alias record](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html#routing-to-elb-load-balancer-configuring).
-
-To add a CNAME record (e.g., when managing Route53 hosted zone record in a separate account)
-
-![Create a new record in a hosted zone for a domain you're managing in Route53](../aws/route53-hz-create-record.png)
-
-![Specifying a Wildcard domain where CNAME record references ELB](../aws/route53-hz-create-record-2.png)
-
-> Change the wildcard domain and ELB address above to suit your needs.
-
-#### Install a mkcert managed Certificate
-
-> Recommended option if you've been following the Tanzu Advanced evaluation guide to this point.
-
-We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
-
-```
-./install-mkcert-for-tkg-on-aws.sh {domain} {path-to-cert-pem-filename} {path-to-key-pem-filename}
-```
-
-> The `.pem` files mentioned above should already exist if you had followed the instructions [here](../aws/HARBOR.md#install-ca).
+If you chose not to install `external-dns`, then you will have to [manually add](https://cloud.google.com/dns/docs/records) a wildcard domain as an `A` or `CNAME` record to the zone within Cloud DNS.
 
 #### Install a Let's Encrypt managed Certificate
 
@@ -282,13 +279,13 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
 
 ```
-./install-letsencrypt-cert-for-tkg-on-aws.sh {email-address} {aws-access-key-id} {aws-secret-access-key} {aws-region} {domain} {hosted-zone-id}
+./install-letsencrypt-cert-on-gke.sh {email-address} {project-id} {service-account-key-path-to-file-in-json-format} {domain}
 ```
-> This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `knative-tls` secret in the `contour-external` namespace into the `educates` namespace.
+> This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
 
 #### Create a new Tanzu Application Platform GUI catalog
 
-We're going to fetch some [baseline configuration](https://network.pivotal.io/products/tanzu-application-platform/#/releases/992949/file_groups/5756) for a _blank catalog_ from the Tanzu Network.
+We're going to fetch some [baseline configuration](https://network.pivotal.io/products/tanzu-application-platform/#/releases/1009773) for a _blank catalog_ from the Tanzu Network.
 
 ```
 ./fetch-tap-gui-catalog.sh {tanzu-network-api-token}
@@ -311,92 +308,9 @@ git push -u origin main --force
 ```
 
 
-#### Update configuration
+#### Verify Contour HTTP proxies
 
-We're going to remove the last 6 lines of `tap-values.yml` that we created and used for the initial install of TAP, emitting a new file that we'll then append some updated configuration to.
-
-```
-head -n -6 tap-values.yml > /tmp/tap-values-updated.yml
-```
-
-```
-cat <<EOT >> /tmp/tap-values-updated.yml
-tap_gui:
-  namespace: tap-gui
-  service_type: ClusterIP
-  app-config:
-    app:
-      baseUrl: https://tap-gui.{domain}
-    integrations:
-      github:
-        - host: github.com
-          token: {git-personal-access-token}
-    catalog:
-      locations:
-        - type: url
-          target: {git-repo}/catalog-info.yaml  # e.g., https://github.com/pacphi/tap-gui-catalog/blob/main/catalog-info.yaml
-    backend:
-        baseUrl: https://tap-gui.{domain}
-        cors:
-            origin: https://tap-gui.{domain}
-
-accelerator:
-  server:
-    service_type: ClusterIP
-
-appliveview:
-  connector_namespaces: [default]
-  service_type: ClusterIP
-EOT
-```
-> Replace `{domain}` above with the domain you specified earlier.
-
-Let's apply our updates.
-
-```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file /tmp/tap-values-updated.yml -n tap-install
-```
-
-Next, we'll patch a set of `ConfigMap`s in the `knative-serving` namespace by following these steps:
-
-```
-cd /tmp
-git clone https://github.com/pacphi/tap-ingress
-cd tap-ingress
-rm values-ingress.yaml
-
-cat > values-ingress.yaml << EOF
-#@data/values
----
-domain: {domain}
-tls:
-  secretName: knative-tls
-  namespace: contour-external
-EOF
-
-./configure-ingress.sh
-```
-> Replace `{domain}` above with the same domain you specified earlier.
-
-We're almost done!
-
-Need to kick a couple resources to get them to behave.  (This is a beta release after all).
-
-* Delete the `server` pod in the `tap-gui` namespace
-
-  ```
-  kubectl delete po -l component=backstage-server -n tap-gui
-  ```
-* Delete the Learning Center `trainingportal` as it's stuck in a `Pending` state
-
-  ```
-  kubectl delete trainingportal educates-tutorials
-  ```
-
-> Don't worry both resources will automatically be re-created.
-
-
-And finally we can execute:
+Finally we can execute:
 
 ```
 kubectl get httpproxy -A
@@ -407,11 +321,9 @@ to see all of the HTTPS endpoints for the TAP components
 Sample output
 
 ```
-ubuntu@ip-172-31-61-62:/tmp/tap-ingress$ kubectl get httpproxy -A
-NAMESPACE            NAME            FQDN                           TLS SECRET                     STATUS   STATUS DESCRIPTION
-accelerator-system   accelerator     accelerator.lab.zoolabs.me     contour-external/knative-tls   valid    Valid HTTPProxy
-app-live-view        app-live-view   app-live-view.lab.zoolabs.me   contour-external/knative-tls   valid    Valid HTTPProxy
-tap-gui              tap-gui         tap-gui.lab.zoolabs.me         contour-external/knative-tls   valid    Valid HTTPProxy
+$ kubectl get httpproxy -A
+NAMESPACE   NAME      FQDN                      TLS SECRET        STATUS   STATUS DESCRIPTION
+tap-gui     tap-gui   tap-gui.j00k.ironleg.me   contour-tls/tls   valid    Valid HTTPProxy
 ```
 
 ### Installing the Visual Studio Code TAP Extension
@@ -426,14 +338,12 @@ You may use the convenience script to download a `.vsix` file for installation a
 
 ## Troubleshooting a Tanzu Application Platform Profile installation
 
-// FIXME Replace occurrences of x.x.x below with release version
-
 ### Problem with build-service
 
 What would you do if you saw the following after executing `tanzu package installed list -A`?
 
 ```
-buildservice                        buildservice.tanzu.vmware.com                        x.x.x                  Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
+buildservice                        buildservice.tanzu.vmware.com                        1.4.0-build.1                    Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
 ```
 
 Start by getting more detail about the error by running:
@@ -445,11 +355,11 @@ tanzu package installed get buildservice -n tap-install
 Sample output
 
 ```
-ubuntu@ip-172-31-61-62:~$ tanzu package installed get buildservice -n tap-install
+$ tanzu package installed get buildservice -n tap-install
 / Retrieving installation details for buildservice...
 NAME:                    buildservice
 PACKAGE-NAME:            buildservice.tanzu.vmware.com
-PACKAGE-VERSION:         x.x.x
+PACKAGE-VERSION:         1.4.0-build.1
 STATUS:                  Reconcile failed: Error (see .status.usefulErrorMessage for details)
 CONDITIONS:              [{ReconcileFailed True  Error (see .status.usefulErrorMessage for details)}]
 USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupdater/dependency-updater (buildservice.tanzu.vmware.com/v1alpha1) namespace: build-service:
@@ -459,14 +369,14 @@ USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupd
 This is telling us that we're missing a CA.  What do we need to add to `tap-values.yml` then?
 
 ```
-tanzu package available get buildservice.tanzu.vmware.com/x.x.x --values-schema --namespace tap-install
+tanzu package available get buildservice.tanzu.vmware.com/1.4.0-build.1 --values-schema --namespace tap-install
 ```
 
 Sample output
 
 ```
-ubuntu@ip-172-31-61-62:~$ tanzu package available get buildservice.tanzu.vmware.com/x.x.x --values-schema --namespace tap-install
-| Retrieving package details for buildservice.tanzu.vmware.com/x.x.x...
+$ tanzu package available get buildservice.tanzu.vmware.com/1.4.0-build.1 --values-schema --namespace tap-install
+| Retrieving package details for buildservice.tanzu.vmware.com/1.4.0-build.1...
   KEY                             DEFAULT  TYPE    DESCRIPTION
   kp_default_repository           <nil>    string  docker repository (required)
   kp_default_repository_password  <nil>    string  registry password (required)
@@ -516,7 +426,7 @@ Delete the package install
 ```
 tanzu package installed delete tap -n tap-install -y
 ```
-> Be patient! This can take up to 10m or more.  It may even timeout.  Just wait a little longer.  Then verify that the only two packages remaining are: `antrea`, `external-dns` and `metrics-server` by executing `tanzu package installed list -A`.
+> Be patient! This can take up to 10m or more.  It may even timeout.  Just wait a little longer.  Then verify that no packages are installed by executing `tanzu package installed list -A`.
 
 Delete lingering resources
 
@@ -536,35 +446,29 @@ tanzu package repository delete tanzu-tap-repository -n tap-install
 
 ## Uninstall external-dns
 
-Run this [script](uninstall-external-dns-package-for-tkg-on-aws.sh)
+Run this [script](uninstall-external-dns-package-on-gke.sh)
 
 ```
-./uninstall-external-dns-package-for-tkg-on-aws.sh
+./uninstall-external-dns-package-on-gke.sh
 ```
 
 
 ## Uninstall the Let's Encrypt managed certificate
 
-Run this [script](uninstall-letsencrypt-cert-for-tkg-on-aws.sh)
+Run this [script](uninstall-letsencrypt-cert-on-gke.sh)
 
 ```
-./uninstall-letsencrypt-cert-for-tkg-on-aws.sh
-```
-
-## Uninstall mkcert managed certificate
-
-Run this [script](uninstall-mkcert-for-tkg-on-aws.sh)
-
-```
-./uninstall-mk-cert-for-tkg-on-aws.sh
+./uninstall-letsencrypt-cert-on-gke.sh
 ```
 
 
 ## Teardown the cluster
 
+Use the [Terraform module](../../../../terraform/gcp/cluster/README.md) to do destroy the cluster.
+
 ```
-tanzu cluster delete zoolabs-app-platform
-kubectl config delete-context zoolabs-app-platform-admin@zoolabs-app-platform
+kubectl config get-contexts
+kubectl config delete-context {context}
 ```
-> Replace occurrences of `zoolabs-app-platform` and `zoolabs-app-platform-admin@zoolabs-app-platform` with your own workload cluster name and context.
+> Replace occurrence of `{context}` with your own workload cluster context.
 

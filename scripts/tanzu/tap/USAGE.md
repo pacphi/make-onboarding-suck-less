@@ -209,7 +209,7 @@ Create workload:
       1 + |apiVersion: carto.run/v1alpha1
       2 + |kind: Workload
       3 + |metadata:
-      4 +   |  labels:
+      4 + |  labels:
       5 + |    apps.tanzu.vmware.com/workload-type: web
       6 + |  name: my-java-web-app
       7 + |  namespace: default

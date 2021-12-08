@@ -6,9 +6,10 @@
 .vagrant
 
 # Miscellaneous
-iam-config.sh
 creds.tmp
 dist
+iam-config.sh
+tap-*values.yaml
 
 # Terraform
 .terraform.lock.hcl

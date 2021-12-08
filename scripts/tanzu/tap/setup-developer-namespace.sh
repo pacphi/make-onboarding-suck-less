@@ -8,7 +8,7 @@ fi
 export REGISTRY_SERVER="$1"
 export REGISTRY_USERNAME="$2"
 export REGISTRY_PASSWORD="$3"
-export NAMESPACE="${4:default}"
+export NAMESPACE="$4"
 
 ## Create namespace
 
@@ -47,37 +47,60 @@ imagePullSecrets:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: kapp-permissions
-  annotations:
-    kapp.k14s.io/change-group: "role"
+  name: default
 rules:
-  - apiGroups:
-      - servicebinding.io
-    resources: ['servicebindings']
-    verbs: ['*']
-  - apiGroups:
-      - services.tanzu.vmware.com
-    resources: ['resourceclaims']
-    verbs: ['*']
-  - apiGroups:
-      - serving.knative.dev
-    resources: ['services']
-    verbs: ['*']
-  - apiGroups: [""]
-    resources: ['configmaps']
-    verbs: ['get', 'watch', 'list', 'create', 'update', 'patch', 'delete']
+- apiGroups: [source.toolkit.fluxcd.io]
+  resources: [gitrepositories]
+  verbs: ['*']
+- apiGroups: [source.apps.tanzu.vmware.com]
+  resources: [imagerepositories]
+  verbs: ['*']
+- apiGroups: [carto.run]
+  resources: [deliverables, runnables]
+  verbs: ['*']
+- apiGroups: [kpack.io]
+  resources: [images]
+  verbs: ['*']
+- apiGroups: [conventions.apps.tanzu.vmware.com]
+  resources: [podintents]
+  verbs: ['*']
+- apiGroups: [""]
+  resources: ['configmaps']
+  verbs: ['*']
+- apiGroups: [""]
+  resources: ['pods']
+  verbs: ['list']
+- apiGroups: [tekton.dev]
+  resources: [taskruns, pipelineruns]
+  verbs: ['*']
+- apiGroups: [tekton.dev]
+  resources: [pipelines]
+  verbs: ['list']
+- apiGroups: [kappctrl.k14s.io]
+  resources: [apps]
+  verbs: ['*']
+- apiGroups: [serving.knative.dev]
+  resources: ['services']
+  verbs: ['*']
+- apiGroups: [servicebinding.io]
+  resources: ['servicebindings']
+  verbs: ['*']
+- apiGroups: [services.apps.tanzu.vmware.com]
+  resources: ['resourceclaims']
+  verbs: ['*']
+- apiGroups: [scst-scan.apps.tanzu.vmware.com]
+  resources: ['imagescans', 'sourcescans']
+  verbs: ['*']
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: kapp-permissions
-  annotations:
-    kapp.k14s.io/change-rule: "upsert after upserting role"
+  name: default
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: kapp-permissions
+  name: default
 subjects:
   - kind: ServiceAccount
     name: default

@@ -22,12 +22,12 @@ We'll touch on how to interact with a handful of those components here:
     * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
   * [Enabling Automatic TLS Certificate Provisioning for Cloud Native Runtimes for Tanzu](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-auto-tls.html)
 * Application Accelerator
-  * Visit `https://acclerator.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * Available within Tanzu Application Platform GUI.
   * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
   * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-acc-cli.html#accelerator-commands-2)
   * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
 * [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-index.html)
-  * Visit `https://app-live-view.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
+  * Available within Tanzu Application Platform GUI
   * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-product-features.html)
 * Tanzu Application Platform GUI
   * Visit `https://tap-gui.{domain}` in your favorite browser.  Replace `{domain}` with your domain.

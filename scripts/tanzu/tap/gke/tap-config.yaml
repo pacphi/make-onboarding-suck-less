@@ -1,0 +1,71 @@
+#@ load("@ytt:data", "data")
+---
+profile: #@ data.values.profile
+
+ceip_policy_disclosed: #@ data.values.ceip_policy_disclosed
+
+buildservice:
+  kp_default_repository: #@ "{}/{}".format(data.values.container_image_server_url, data.values.container_image_repository)
+  kp_default_repository_username: #@ data.values.container_image_server_username
+  kp_default_repository_password: #@ data.values.container_image_server_password
+  tanzunet_username: #@ data.values.tanzunet_username
+  tanzunet_password: #@ data.values.tanzunet_password
+
+contour:
+  envoy:
+    service:
+      type: #@ data.values.shared_ingress_service_type
+
+supply_chain: #@ data.values.supply_chain
+
+grype:
+  targetImagePullSecret: #@ data.values.scan_image_pull_secret
+
+metadata_store:
+ app_service_type: #@ data.values.metadata_store_ingress_service_type
+
+ootb_supply_chain_basic:
+  registry:
+    server: #@ data.values.container_image_server_url
+    repository: #@ data.values.container_image_repository
+
+ootb_supply_chain_testing_scanning:
+  registry:
+    server: #@ data.values.container_image_server_url
+    repository: #@ data.values.container_image_repository
+
+ootb_supply_chain_testing:
+  registry:
+    server: #@ data.values.container_image_server_url
+    repository: #@ data.values.container_image_repository
+
+learningcenter:
+  ingressDomain: #@ data.values.ingress_domain
+  ingressSecret:
+    secretName: #@ data.values.ingress_secret_name
+
+tap_gui:
+  service_type: #@ data.values.tap_gui_ingress_service_type
+  ingressEnabled: #@ data.values.tap_gui_ingress_enabled
+  ingressDomain: #@ data.values.ingress_domain
+  tls:
+    namespace: contour-tls
+    secretName: #@ data.values.ingress_secret_name
+  app_config:
+    app:
+      baseUrl: #@ "{}.{}".format("https://tap-gui", data.values.ingress_domain)
+    integrations:
+      github:
+        - host: github.com
+          token: #@ data.values.github_personal_access_token
+    catalog:
+      locations:
+        - type: url
+          target: #@ "{}/{}".format(data.values.tap_catalog_github_repository_url, "catalog-info.yaml")
+    backend:
+      baseUrl: #@ "{}.{}".format("https://tap-gui", data.values.ingress_domain)
+      cors:
+        origin: #@ "{}.{}".format("https://tap-gui", data.values.ingress_domain)
+
+appliveview:
+  connector_namespaces: #@ data.values.appliveview_connector_namespaces
