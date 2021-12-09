@@ -21,6 +21,11 @@ buildservice:
   tanzunet_username: #@ data.values.tanzunet_username
   tanzunet_password: #@ data.values.tanzunet_password
 
+cnrs:
+ default_tls_secret: #@ "{}/{}".format(data.values.ingress_namespace, data.values.ingress_secret_name)
+ domain_name: #@ data.values.ingress_domain
+ domain_template: "{{.Name}}-{{.Namespace}}.{{.Domain}}"
+
 contour:
   envoy:
     service:
