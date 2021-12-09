@@ -1,0 +1,36 @@
+#@data/values
+---
+profile: "full"
+ingress_domain: "replace.me"
+ingress_namespace: "contour-tls"
+ingress_secret_name: "tls"
+ceip_policy_disclosed: true
+container_image_server_url: "us.gcr.io/replace.me"
+container_image_repository: "tap"
+container_image_server_username: "_json_key"
+container_image_server_password: |
+  {
+    "type": "service_account",
+    "project_id": "replace.me",
+    "private_key_id": "replace.me",
+    "private_key": "replace.me",
+    "client_email": "replace.me@replace.me.iam.gserviceaccount.com",
+    "client_id": "replace.me",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/replace.me%40replace.me.iam.gserviceaccount.com"
+  }
+tanzunet_username: "replace.me"
+tanzunet_password: "replace.me"
+shared_ingress_service_type: "LoadBalancer"
+supply_chain: "basic"
+scan_image_pull_secret: "registry-credentials"
+metadata_store_ingress_service_type: "ClusterIP"
+tap_catalog_github_repository_url: "replace.me"
+tap_gui_ingress_service_type: "ClusterIP"
+tap_gui_ingress_enabled: true
+accelerator_ingress_enabled: true
+accelerator_ingress_service_type: "ClusterIP"
+github_personal_access_token: "replace.me"
+appliveview_connector_namespaces: [default]
