@@ -2,10 +2,11 @@
 
 ## Installation
 
-* [TKG 1.4.0 on AWS](tkg/aws/INSTALL.md)
-* [on AKS](aks/INSTALL.md)
-* [on EKS](eks/INSTALL.md)
-* [on GKE](gke/INSTALL.md)
+* [ ] [TKG 1.4.0 on AWS](tkg/aws/INSTALL.md)
+  * consider TAP Beta 3 [here](https://github.com/pacphi/make-onboarding-suck-less/blob/f19167ee0f9b547081f9e489cf9f311ad13284a7/scripts/tanzu/tap/INSTALL.md)
+* [ ] [on AKS](aks/INSTALL.md)
+* [ ] [on EKS](eks/INSTALL.md)
+* [x] [on GKE](gke/INSTALL.md)
 
 ## Usage
 
