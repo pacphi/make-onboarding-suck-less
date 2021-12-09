@@ -386,7 +386,7 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     * (d) Update the installed package
 
       ```
-      tanzu package installed update tap -v 0.4.0-build.13 --values-file /tmp/tap-values-updated.yml -n tap-install
+      tanzu package installed update tap -v 0.4.0 --values-file /tmp/tap-values-updated.yml -n tap-install
       ```
 
   * Deploy with

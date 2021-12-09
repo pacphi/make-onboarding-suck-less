@@ -67,7 +67,7 @@ EOF
 kubectl apply -f tls-cert-delegation.yaml
 
 # Expose API Portal
-## As of tap-beta4-build.13 there is no set of configuration options to do this via tap-values.yaml
+## As of tap-beta4 there is no set of configuration options to do this via tap-values.yaml
 cat << EOF | tee api-portal-proxy.yaml
 apiVersion: projectcontour.io/v1
 kind: HTTPProxy

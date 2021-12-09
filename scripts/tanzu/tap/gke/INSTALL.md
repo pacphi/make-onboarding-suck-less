@@ -93,7 +93,7 @@ tanzu package repository add tanzu-standard-repository \
   --namespace tanzu-package-repo-global
 
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0 \
   --namespace tap-install
 ```
 
@@ -119,7 +119,7 @@ REASON:
 NAME:          tanzu-tap-repository
 VERSION:       4454281
 REPOSITORY:    registry.tanzu.vmware.com/tanzu-application-platform/tap-packages
-TAG:           0.4.0-build.13
+TAG:           0.4.0
 STATUS:        Reconcile succeeded
 REASON:
 ```
@@ -144,7 +144,7 @@ Then run:
 To view possible configuration settings, run:
 
 ```
-tanzu package available get tap.tanzu.vmware.com/0.4.0-build.13 --values-schema --namespace tap-install
+tanzu package available get tap.tanzu.vmware.com/0.4.0 --values-schema --namespace tap-install
 ```
 > Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.1.0 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 
@@ -160,7 +160,7 @@ Then, install the package by running:
 
 ```
 ytt -f tap-values.yaml -f tap-config.yaml > tap-reified-values.yaml
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -209,7 +209,7 @@ $ tanzu package installed list -A
   services-toolkit                    services-toolkit.tanzu.vmware.com                    0.5.0-rc.3       Reconcile succeeded  tap-install
   source-controller                   controller.source.apps.tanzu.vmware.com              0.2.0            Reconcile succeeded  tap-install
   spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.2.0            Reconcile succeeded  tap-install
-  tap                                 tap.tanzu.vmware.com                                 0.4.0-build.13   Reconcile succeeded  tap-install
+  tap                                 tap.tanzu.vmware.com                                 0.4.0   Reconcile succeeded  tap-install
   tap-gui                             tap-gui.tanzu.vmware.com                             1.0.0-rc.72      Reconcile succeeded  tap-install
   tap-telemetry                       tap-telemetry.tanzu.vmware.com                       0.1.0            Reconcile succeeded  tap-install
   tekton-pipelines                    tekton.tanzu.vmware.com                              0.30.0           Reconcile succeeded  tap-install
@@ -220,7 +220,7 @@ $ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
+tanzu package installed update tap -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-reified-values.yaml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -391,7 +391,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui
