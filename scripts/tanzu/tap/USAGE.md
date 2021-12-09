@@ -8,10 +8,10 @@ As a developer you're going to want to have a few tools installed on your workst
   * Your kubeconfig context is set to the prepared cluster `kubectl config use-context {CONTEXT_NAME}`.  Replace `{CONTEXT_NAME}` with the context for the cluster you wish to target.
   * By the way, that cluster should have the Tanzu Application Platform installed on it.
 * [tanzu](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html#download-and-unpack-the-tanzu-cli-and-kubectl-1) CLI
-  * The `apps` plugin is installed. See the [Apps Plugin Overview](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-cli-plugins-apps-overview-installation.html#Installation).
+  * The `apps` plugin is installed. See the [Apps Plugin Overview](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-cli-plugins-apps-overview-installation.html#Installation).
 * This Visual Studio Code [extension](INSTALL.md#installing-the-visual-studio-code-tap-extension)
 * Ask your platform operator to create a new namespace on the target cluster for your workloads to run within.
-  * This handy [script](setup-developer-namespace.sh) must be run in advance.  Or refer to these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-install-components.html#set-up-developer-namespaces-to-use-installed-packages-30).
+  * This handy [script](setup-developer-namespace.sh) must be run in advance.  Or refer to these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-install-components.html#set-up-developer-namespaces-to-use-installed-packages-40).
 
 ## Accelerators, increasing development velocity
 
@@ -29,29 +29,29 @@ Sample output
 $ tanzu accelerator list
 
 NAME                       READY   REPOSITORY
-hello-fun                  true    git-repository: https://github.com/sample-accelerators/hello-fun:tap-beta3
-hello-ytt                  true    git-repository: https://github.com/sample-accelerators/hello-ytt:tap-beta3
-new-accelerator            true    git-repository: https://github.com/sample-accelerators/new-accelerator:tap-beta3
-node-express               true    git-repository: https://github.com/sample-accelerators/node-express:tap-beta3
-spring-petclinic           true    git-repository: https://github.com/sample-accelerators/spring-petclinic:tap-beta3
-spring-sql-jpa             true    git-repository: https://github.com/sample-accelerators/spring-sql-jpa:tap-beta3
-tanzu-java-web-app         true    git-repository: https://github.com/sample-accelerators/tanzu-java-web-app.git:tap-beta3
-weatherforecast-csharp     true    git-repository: https://github.com/sample-accelerators/csharp-weatherforecast.git:tap-beta3
-weatherforecast-fsharp     true    git-repository: https://github.com/sample-accelerators/fsharp-weatherforecast.git:tap-beta3
-weatherforecast-steeltoe   true    git-repository: https://github.com/sample-accelerators/steeltoe-weatherforecast.git:tap-beta3
+hello-fun                  true    git-repository: https://github.com/sample-accelerators/hello-fun:tap-beta4
+hello-ytt                  true    git-repository: https://github.com/sample-accelerators/hello-ytt:tap-beta4
+new-accelerator            true    git-repository: https://github.com/sample-accelerators/new-accelerator:tap-beta4
+node-express               true    git-repository: https://github.com/sample-accelerators/node-express:tap-beta4
+spring-petclinic           true    git-repository: https://github.com/sample-accelerators/spring-petclinic:tap-beta4
+spring-sql-jpa             true    git-repository: https://github.com/sample-accelerators/spring-sql-jpa:tap-beta4
+tanzu-java-web-app         true    git-repository: https://github.com/sample-accelerators/tanzu-java-web-app.git:tap-beta4
+weatherforecast-csharp     true    git-repository: https://github.com/sample-accelerators/csharp-weatherforecast.git:tap-beta4
+weatherforecast-fsharp     true    git-repository: https://github.com/sample-accelerators/fsharp-weatherforecast.git:tap-beta4
+weatherforecast-steeltoe   true    git-repository: https://github.com/sample-accelerators/steeltoe-weatherforecast.git:tap-beta
 ```
 
 What if we want to create a new application based on one of the above?
 
 ```
-tanzu accelerator generate tanzu-java-web-app --server-url https://accelerator.{domain} --options '{"projectName":"{application-name}"}'
+tanzu accelerator generate {application-name} --server-url https://accelerator.{domain} --options '{"projectName":"{application-name}", "includeKubernetes": true}'
 ```
 
 Sample output
 
 ```
 $ cd /tmp
-$ tanzu accelerator generate tanzu-java-web-app --server-url https://accelerator.lab.zoolabs.me --options '{"projectName":"my-java-web-app"}'
+$ tanzu accelerator generate tanzu-java-web-app --server-url https://accelerator.lab.zoolabs.me --options '{"projectName":"my-java-web-app", "includeKubernetes": true}'
 zip file my-java-web-app.zip created
 ```
 > This will download a zip file containing the source code and configuration for the new project named `my-java-web-app` into the directory where the command was executed.
@@ -63,7 +63,7 @@ unzip -o unzip -o my-java-web-app.zip
 cd my-java-web-app
 ls -la
 ```
-> Note that this is a Java application built with [Maven](https://maven.apache.org/).  In the top-level folder you'll see a `config` directory plus a couple files: `catalog-info.yaml` and `Tiltfile`.  The config directory contains the [Workload](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-cli-plugins-apps-command-reference-tanzu_apps_workload.html) custom resource definition.  The `Tiltfile` is used by the [Tanzu Developer Tools Visual Studio Code extension](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-vscode-extension-about.html) to help you with inner-loop development (e.g., build, run, test on your local workstation).  The `catalog-info.yaml` file is consumed by [Tanzu Application Platform GUI](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.3/tap-0-3/GUID-tap-gui-catalog-catalog-operations.html)'s Organization Catalog.
+> Note that this is a Java application built with [Maven](https://maven.apache.org/).  In the top-level folder you'll see a `config` directory plus a couple files: `catalog-info.yaml` and `Tiltfile`.  The config directory contains the [Workload](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-cli-plugins-apps-command-reference-tanzu_apps_workload.html) custom resource definition.  The `Tiltfile` is used by the [Tanzu Developer Tools Visual Studio Code extension](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-vscode-extension-about.html) to help you with inner-loop development (e.g., build, run, test on your local workstation).  The `catalog-info.yaml` file is consumed by [Tanzu Application Platform GUI](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-tap-gui-catalog-catalog-operations.html)'s Organization Catalog.
 
 ## Prepare new project repository
 

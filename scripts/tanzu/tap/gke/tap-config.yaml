@@ -4,6 +4,16 @@ profile: #@ data.values.profile
 
 ceip_policy_disclosed: #@ data.values.ceip_policy_disclosed
 
+accelerator:
+  domain: #@ data.values.ingress_domain
+  ingress:
+    include: #@ data.values.accelerator_ingress_enabled
+  server:
+    service_type: #@ data.values.accelerator_ingress_service_type
+  tls:
+    namespace: #@ data.values.ingress_namespace
+    secretName: #@ data.values.ingress_secret_name
+
 buildservice:
   kp_default_repository: #@ "{}/{}".format(data.values.container_image_server_url, data.values.container_image_repository)
   kp_default_repository_username: #@ data.values.container_image_server_username
@@ -20,6 +30,9 @@ supply_chain: #@ data.values.supply_chain
 
 grype:
   targetImagePullSecret: #@ data.values.scan_image_pull_secret
+
+image_policy_webhook:
+  allow_unmatched_tags: true
 
 metadata_store:
  app_service_type: #@ data.values.metadata_store_ingress_service_type
@@ -49,7 +62,7 @@ tap_gui:
   ingressEnabled: #@ data.values.tap_gui_ingress_enabled
   ingressDomain: #@ data.values.ingress_domain
   tls:
-    namespace: contour-tls
+    namespace: #@ data.values.ingress_namespace
     secretName: #@ data.values.ingress_secret_name
   app_config:
     app:

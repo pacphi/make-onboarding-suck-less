@@ -66,6 +66,29 @@ EOF
 
 kubectl apply -f tls-cert-delegation.yaml
 
+# Expose API Portal
+## As of tap-beta4-build.13 there is no set of configuration options to do this via tap-values.yaml
+cat << EOF | tee api-portal-proxy.yaml
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: api-portal-external
+  namespace: api-portal
+spec:
+  routes:
+  - conditions:
+    - prefix: /
+    services:
+    - name: api-portal-server
+      port: 8080
+  virtualhost:
+    fqdn: "api-portal.${DOMAIN}"
+    tls:
+      secretName: contour-tls/tls
+EOF
+
+kubectl apply -f api-portal-proxy.yaml
+
 ## Create the certificate in the contour-tls namespace
 cat << EOF | tee tls.yaml
 apiVersion: cert-manager.io/v1
