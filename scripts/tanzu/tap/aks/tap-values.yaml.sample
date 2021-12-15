@@ -5,22 +5,10 @@ ingress_domain: "replace.me"
 ingress_namespace: "contour-tls"
 ingress_secret_name: "tls"
 ceip_policy_disclosed: true
-container_image_server_url: "us.gcr.io/replace.me"
+container_image_server_url: "images.azurecr.io"
 container_image_repository: "tap"
-container_image_server_username: "_json_key"
-container_image_server_password: |
-  {
-    "type": "service_account",
-    "project_id": "replace.me",
-    "private_key_id": "replace.me",
-    "private_key": "replace.me",
-    "client_email": "replace.me@replace.me.iam.gserviceaccount.com",
-    "client_id": "replace.me",
-    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-    "token_uri": "https://accounts.google.com/o/oauth2/token",
-    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/replace.me%40replace.me.iam.gserviceaccount.com"
-  }
+container_image_server_username: "replace.me"
+container_image_server_password: "replace.me"
 tanzunet_username: "replace.me"
 tanzunet_password: "replace.me"
 shared_ingress_service_type: "LoadBalancer"

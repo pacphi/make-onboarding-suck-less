@@ -7,12 +7,12 @@
 
 ## Create a new workload cluster
 
-Authenticate and set environment variable
+Authenticate
 
 ```
-gcloud activate-service-account --key-file=/path/to/service-account-credentials.json
+az login --service-principal --username {APP_ID} --password {CLIENT_SECRET} --tenant {TENANT_ID}
 ```
-> Update the path to the key file as appropriate
+> Replace {APP_ID}, {CLIENT_SECRET}, and {TENANT_ID} with the values you may have used to create the service principal [here](../../../../packer/azure/ubuntu/20_04/BUILD.md#optional-create-a-service-principal).
 
 Next, we're going to use a [Terraform module](../../../../terraform/azure/cluster/README.md) to do create the cluster.
 
@@ -264,9 +264,9 @@ tanzu package available get external-dns.tanzu.vmware.com/0.8.0+vmware.1-tkg.1 -
 Let's install the external-dns package with a [script](install-external-dns-package-on-aks.sh)
 
 ```
-./install-external-dns-package-on-aks.sh {project-id} {service-account-key-path-to-file-in-json-format} {domain}
+./install-external-dns-package-on-aks.sh {resource-group} {domain} {subscription-id} {tenant-id} {client-id} {client-secret}
 ```
-> This script simplifies the process of configuring and installing external-dns on your GKE cluster.
+> This script [simplifies the process](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html#microsoft-azure-6) of configuring and installing external-dns on your AKS cluster.
 
 #### Manual DNS
 
@@ -279,7 +279,7 @@ If you chose not to install `external-dns`, then you will have to [manually add]
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
 
 ```
-./install-letsencrypt-cert-on-aks.sh {email-address} {project-id} {service-account-key-path-to-file-in-json-format} {domain}
+./install-letsencrypt-cert-on-aks.sh {email-address} {resource-group} {domain} {subscription-id} {tenant-id} {client-id} {client-secret}
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
 

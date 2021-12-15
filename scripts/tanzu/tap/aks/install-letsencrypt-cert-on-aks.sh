@@ -3,19 +3,22 @@ set -e
 
 # Automates wildcard ClusterIssuer, Certificate and Secret generation on a GKE cluster where cert-manager is already installed.
 
-if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ]; then
-	echo "Usage: install-letsencypt-cert-on-gke.sh {email-address} {project-id} {service-account-key-path-to-file-in-json-format} {domain}"
+if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ] && [ -z "$5" ] && [ -z "$6" ] && [ -z "$7" ]; then
+	echo "Usage: install-letsencypt-cert-on-aks.sh {email-address} {resource-group} {domain} {subscription-id} {tenant-id} {client-id} {client-secret}"
 	exit 1
 fi
 
 export EMAIL_ADDRESS="$1"
-export PROJECT_ID="$2"
-export SERVICE_ACCOUNT_KEY_FILE="$3"
-export DOMAIN="$4"
+export RESOURCE_GROUP="$2"
+export DOMAIN="$3"
+export SUBSCRIPTION_ID="$4"
+export TENANT_ID="$5"
+export CLIENT_ID="$6"
+export CLIENT_SECRET="$7"
 
-## Create secret for SERVICE_ACCOUNT_KEY_FILE
-kubectl -n cert-manager create secret generic sa-secret \
-  --from-literal=credentials.json="$(cat ${SERVICE_ACCOUNT_KEY_FILE})"
+## Create secret
+kubectl -n cert-manager create secret generic azuredns-config \
+  --from-literal=client-secret="${CLIENT_SECRET}"
 
 ## Create the cluster issuer
 cat << EOF | tee cluster-issuer.yaml
@@ -26,20 +29,25 @@ metadata:
   namespace: cert-manager
 spec:
   acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
     email: ${EMAIL_ADDRESS}
+    server: https://acme-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: letsencrypt-prod
     solvers:
+    # @see https://cert-manager.io/docs/configuration/acme/dns01/azuredns/
     - dns01:
-        cloudDNS:
-          project: ${PROJECT_ID}
-          serviceAccountSecretRef:
-            name: sa-secret
-            key: credentials.json
-      selector:
-        dnsZones:
-        - "${DOMAIN}"
+        azureDNS:
+          clientID: ${CLIENT_ID}
+          clientSecretSecretRef:
+            # The following is the secret we created in Kubernetes. Issuer will use this to present challenge to Azure DNS.
+            name: azuredns-config
+            key: client-secret
+          subscriptionID: ${SUBSCRIPTION_ID}
+          tenantID: ${TENANT_ID}
+          resourceGroupName: ${RESOURCE_GROUP}
+          hostedZoneName: ${DOMAIN}
+          # Azure Cloud Environment, default to AzurePublicCloud
+          environment: AzurePublicCloud
 EOF
 
 ## Install EmberStack's Reflector

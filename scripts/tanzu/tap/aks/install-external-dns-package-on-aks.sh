@@ -1,20 +1,35 @@
 #!/bin/bash
 set -e
 
-if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ]; then
-	echo "Usage: install-external-dns-package-on-gke.sh {project-id} {service-account-key-path-to-file-in-json-format} {domain}"
+if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ] && [ -z "$5" ] && [ -z "$6" ]; then
+	echo "Usage: install-external-dns-package-on-aks.sh {resource-group} {domain} {subscription-id} {tenant-id} {client-id} {client-secret}"
 	exit 1
 fi
 
-export PROJECT_ID="$1"
-export SERVICE_ACCOUNT_KEY_FILE="$2"
-export DOMAIN="$3"
+export RESOURCE_GROUP="$1"
+export DOMAIN="$2"
+export SUBSCRIPTION_ID="$3"
+export TENANT_ID="$4"
+export CLIENT_ID="$5"
+export CLIENT_SECRET="$6"
 
 kubectl create ns tanzu-system-service-discovery
 
-## Create secret for SERVICE_ACCOUNT_KEY_FILE
-kubectl -n tanzu-system-service-discovery create secret generic external-dns-admin-credentials \
-  --from-literal=credentials.json="$(cat ${SERVICE_ACCOUNT_KEY_FILE})"
+## Create secret based on Azure credentials (in JSON format)
+
+cat > azure.json << EOF
+{
+ "tenantId": "${TENANT_ID}",
+ "subscriptionId": "${SUBSCRIPTION_ID}",
+ "resourceGroup": "${RESOURCE_GROUP}",
+ "aadClientId": "${CLIENT_ID}",
+ "aadClientSecret": "${CLIENT_SECRET}"
+}
+EOF
+
+kubectl -n tanzu-system-service-discovery create secret generic azure-config-file --from-file=azure.json
+
+## Configure the package
 
 cat > external-dns-data-values.yaml <<EOF
 ---
@@ -28,12 +43,12 @@ deployment:
    - --source=service
    - --source=ingress
    - --source=contour-httpproxy # Provide this to enable Contour HTTPProxy support. Must have Contour installed or ExternalDNS will fail.
-   - --domain-filter=DOMAIN # For example, k8s.example.org. Makes ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones.
+   - --domain-filter=${DOMAIN} # For example, k8s.example.org. Makes ExternalDNS see only the hosted zones matching provided domain, omit to process all available hosted zones.
    - --policy=upsert-only # Prevents ExternalDNS from deleting any records, omit to enable full synchronization.
    - --registry=txt
    - --txt-prefix=externaldns- # Disambiguates TXT records from CNAME records.
    - --provider=azure
-   - --azure-resource-group=RESOURCE-GROUP # Azure resource group.
+   - --azure-resource-group=${RESOURCE_GROUP} # Azure resource group.
  env: []
  securityContext: {}
  volumeMounts:
