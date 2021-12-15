@@ -7,7 +7,7 @@
 
 ## Create a new workload cluster
 
-Authenticate and set environment variable
+Authenticate
 
 ```
 gcloud activate-service-account --key-file=/path/to/service-account-credentials.json
