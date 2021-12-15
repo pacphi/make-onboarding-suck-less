@@ -17,7 +17,7 @@ kubectl create namespace ${NAMESPACE} --dry-run=client -o yaml | kubectl apply -
 ## Add secret for container image registry access
 
 docker login -u $REGISTRY_USERNAME -p "$REGISTRY_PASSWORD" ${REGISTRY_SERVER}
-kubectl kubectl create secret generic registry-credentials --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson --namespace ${NAMESPACE}
+kubectl create secret generic registry-credentials --from-file=.dockerconfigjson=$HOME/.docker/config.json --type=kubernetes.io/dockerconfigjson --namespace ${NAMESPACE}
 
 ## Add placeholder read secrets, a service account, and RBAC rules to the developer namespace
 
