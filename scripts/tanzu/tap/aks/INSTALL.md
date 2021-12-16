@@ -180,7 +180,7 @@ Verify all the necessary packages in the profile are installed by running:
 ```
 tanzu package installed list -A
 ```
-> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.  When you run the package install for TAP, it may fail fast because of sequencing.  Depending on whether you enabled ingress for your `tap-gui` configuration, `tap-gui` will require an `HttpProxy` resource, but those CRDs won’t exist until later in the process when the Cloud Native Runtimes package installs Contour.  If you're patent, everything will eventually get reconciled and figure itself out, but admittedly a fast failure is a poor experience for new users.  This is a known issue and will be addressed in a subsequent build before the official Beta 4 release.
+> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.  When you run the package install for TAP, it may fail fast because of sequencing.  Depending on whether you enabled ingress for your `tap-gui` configuration, `tap-gui` will require an `HttpProxy` resource, but those CRDs won’t exist until later in the process when the Cloud Native Runtimes package installs Contour.  If you're patient, everything will eventually get reconciled and figure itself out, but admittedly a fast failure is a poor experience for new users.  This is a known issue and will be addressed in a subsequent build before the official Beta 4 release.
 
 Sample output
 
