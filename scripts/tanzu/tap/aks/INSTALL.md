@@ -5,16 +5,20 @@
 ![Tanzu Application Platform // Component Diagram // Deployment Footprint // K8s Runtime Support](../tap.png)
 
 
-## Create a new workload cluster
-
-Authenticate
+## Authenticate
 
 ```
 az login --service-principal --username {APP_ID} --password {CLIENT_SECRET} --tenant {TENANT_ID}
 ```
 > Replace {APP_ID}, {CLIENT_SECRET}, and {TENANT_ID} with the values you may have used to create the service principal [here](../../../../packer/azure/ubuntu/20_04/BUILD.md#optional-create-a-service-principal).
 
-Next, we're going to use a [Terraform module](../../../../terraform/azure/cluster/README.md) to do create the cluster.
+## (Optional) Create container image registry
+
+We'll employ this [Terraform module](../../../../terraform/azure/registry/README.md) to create a registry.
+
+## Create a new workload cluster
+
+Next, we're going to employ another [Terraform module](../../../../terraform/azure/cluster/README.md) to create a cluster.
 
 Obtain the new workload cluster `kubectl` configuration using the scripts:
 
@@ -226,7 +230,7 @@ tanzu package installed update tap -v 0.4.0 --values-file tap-reified-values.yam
 
 ### Setting up Ingress
 
-We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://cert-manager.io/docs/configuration/acme/dns01/google/), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/aws.md) with [Contour](https://projectcontour.io/getting-started/).
+We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://cert-manager.io/docs/configuration/acme/dns01/azuredns/), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/azure.md) with [Contour](https://projectcontour.io/getting-started/).
 
 TAP already installed Contour.  We can verify that API resources were created by running:
 
@@ -285,7 +289,7 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 
 #### Create a new Tanzu Application Platform GUI catalog
 
-We're going to fetch some [baseline configuration](https://network.pivotal.io/products/tanzu-application-platform/#/releases/1009773) for a _blank catalog_ from the Tanzu Network.
+We're going to fetch some [baseline configuration](https://network.pivotal.io/products/tanzu-application-platform/#/releases/1013926/file_groups/6091) for a _blank catalog_ from the Tanzu Network.
 
 ```
 ./fetch-tap-gui-catalog.sh {tanzu-network-api-token}
@@ -464,7 +468,7 @@ Run this [script](uninstall-letsencrypt-cert-on-aks.sh)
 
 ## Teardown the cluster
 
-Use the [Terraform module](../../../../terraform/gcp/cluster/README.md) to do destroy the cluster.
+Use the [Terraform module](../../../../terraform/azure/cluster/README.md) to do destroy the cluster.
 
 ```
 kubectl config get-contexts

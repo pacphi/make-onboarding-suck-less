@@ -1,4 +1,4 @@
-# Terraform for creating a Microsoft Registry
+# Terraform for creating an Azure Registry
 
 Sometimes you need a place to put your container images.  Why not use Microsoft Azure's registry?
 

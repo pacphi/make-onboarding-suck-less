@@ -1,0 +1,24 @@
+#@data/values
+---
+profile: "full"
+ingress_domain: "replace.me"
+ingress_namespace: "contour-tls"
+ingress_secret_name: "tls"
+ceip_policy_disclosed: true
+container_image_server_url: "000000000000.dkr.ecr.us-east-1.amazonaws.com"
+container_image_repository: "tap"
+container_image_server_username: "replace.me"
+container_image_server_password: "replace.me"
+tanzunet_username: "replace.me"
+tanzunet_password: "replace.me"
+shared_ingress_service_type: "LoadBalancer"
+supply_chain: "basic"
+scan_image_pull_secret: "registry-credentials"
+metadata_store_ingress_service_type: "ClusterIP"
+tap_catalog_github_repository_url: "replace.me"
+tap_gui_ingress_service_type: "ClusterIP"
+tap_gui_ingress_enabled: true
+accelerator_ingress_enabled: true
+accelerator_ingress_service_type: "ClusterIP"
+github_personal_access_token: "replace.me"
+appliveview_connector_namespaces: [default]
