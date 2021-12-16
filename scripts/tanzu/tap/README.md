@@ -4,8 +4,8 @@
 
 * [ ] [TKG 1.4.0 on AWS](tkg/aws/INSTALL.md)
   * consider TAP Beta 3 [here](https://github.com/pacphi/make-onboarding-suck-less/blob/f19167ee0f9b547081f9e489cf9f311ad13284a7/scripts/tanzu/tap/INSTALL.md)
-* [ ] [on AKS](aks/INSTALL.md)
-* [ ] [on EKS](eks/INSTALL.md)
+* [x] [on AKS](aks/INSTALL.md)
+* [x] [on EKS](eks/INSTALL.md)
 * [x] [on GKE](gke/INSTALL.md)
 
 ## Usage
@@ -19,26 +19,25 @@ We'll touch on how to interact with a handful of those components here:
 // FIXME Links to public docs below need updates
 
 * Cloud Native Runtimes
-  * [Verifying your Cloud Native Runtimes installation](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-verify-installation.html)
+  * [Verifying your Cloud Native Runtimes installation](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.1/tanzu-cloud-native-runtimes-1-1/GUID-verify-installation.html)
     * As you walk through Knative Serving, Knative Eventing, and TriggerMesh SAWS you won't need to create a cluster role binding as this has been taken care of by the package.
   * [Enabling Automatic TLS Certificate Provisioning for Cloud Native Runtimes for Tanzu](https://docs.vmware.com/en/Cloud-Native-Runtimes-for-VMware-Tanzu/1.0/tanzu-cloud-native-runtimes-1-0/GUID-auto-tls.html)
 * Application Accelerator
   * Available within Tanzu Application Platform GUI.
-  * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-installation-install.html#access-the-application-accelerator-ui-server-1)
-  * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-acc-cli.html#accelerator-commands-2)
-  * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.4/acc-docs/GUID-creating-accelerators-index.html)
-* [Application Live View](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-index.html)
+  * [Using Application Accelerator for VMware Tanzu](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-tap-gui-plugins-application-accelerator.html)
+  * [Accelerator Commands](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.5/acc-docs/GUID-acc-cli.html#accelerator-commands-3)
+  * [Creating Accelerators](https://docs.vmware.com/en/Application-Accelerator-for-VMware-Tanzu/0.5/acc-docs/GUID-creating-accelerators-index.html)
+* [Application Live View](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-tap-gui-plugins-app-live-view.html)
   * Available within Tanzu Application Platform GUI
-  * [Product Features](https://docs.vmware.com/en/Application-Live-View-for-VMware-Tanzu/0.4/docs/GUID-product-features.html)
 * Tanzu Application Platform GUI
   * Visit `https://tap-gui.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
-  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-tap-gui-about.html)
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-tap-gui-about.html)
 * Learning Center
   * You can check the Training Portals available in your environment running the following command `kubectl get trainingportals`
-  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-learning-center-about.html)
+  * Public [documentation](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-learning-center-about-learning-center-about-learning-center.html)
 * API Portal
   * Visit `https://api-portal.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
-  * [Viewing APIs](https://docs.pivotal.io/api-portal/1-0/api-viewer.html)
+  * [Viewing APIs](https://docs.vmware.com/en/API-portal-for-VMware-Tanzu)
 
 A tutorial on what capabilities a developer may leverage may be found [here](USAGE.md).  Also, to whet your appetite, please view the section below entitled [For your consideration](#for-your-consideration).
 
