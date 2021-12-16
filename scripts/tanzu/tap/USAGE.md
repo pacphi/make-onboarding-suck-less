@@ -340,12 +340,14 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
 
 ### Source
 
-* [x] [Dotnet Core](https://github.com/pacphi/AltPackageRepository)
-  * Deploy with
+* Dotnet Core
+  * [x] [Simple web application](https://github.com/pacphi/AltPackageRepository) with alternative Nuget package usage
+    * Deploy with
 
-    ```
-    tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
-    ```
+      ```
+      tanzu apps workload create dotnet-core-sample --git-repo https://github.com/pacphi/AltPackageRepository --git-branch main --type web
+      ```
+  * [ ] [eShopOnWeb](https://github.com/pacphi/eShopOnWeb/blob/jfrog-saas-artifactory/TANZU.md)
 * [x] [Ruby](https://github.com/pacphi/puma-sample)
   * Tanzu Application Platform does not ship with commercial support for _Ruby_, but we can
     * (a) install OSS _buildpack_
@@ -360,7 +362,7 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
       kubectl apply -f custom-cb.yaml
       kp clusterbuilder status custom
       ```
-      > See [custom-cb.yaml](custom-cb.yaml)
+      > See [custom-cb.yaml](custom-cb.yaml).  This is only a sample.  If you want to create your own custom cluster builder you could start with `kubectl get clusterbuilder full -o yaml > custom-cb.yaml`, then edit it, change `metadata.name` to `custom`.  Consult the sample to see where you'd need to add relevant lines for supporting the Ruby buildpack.
 
     * (c) update configuration in `/tmp/tap-values-updated.yaml`
 
