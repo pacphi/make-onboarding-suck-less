@@ -118,7 +118,7 @@ respectively.
 
 ## Create a workload cluster
 
-With the overlay in place, [create a workload cluster](README.md#create-workload-cluster).
+With the overlay in place, [create a workload cluster](TKG.md#create-workload-cluster).
 
 
 ## Verify that the CA was injected

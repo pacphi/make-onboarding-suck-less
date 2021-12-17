@@ -1,6 +1,6 @@
 # Installing Tanzu Build Service
 
-This is the shortest path to install [Tanzu Build Service](https://docs.vmware.com/en/Tanzu-Build-Service/1.3/vmware-tanzu-build-service-v13/GUID-installing.html) integrated with [Harbor](HARBOR.md) on a TKG workload cluster on AWS.
+This is the shortest path to install [Tanzu Build Service](https://docs.vmware.com/en/Tanzu-Build-Service/1.3/vmware-tanzu-build-service-v13/GUID-installing.html) integrated with [Harbor](../../harbor/README.md) on a TKG workload cluster on AWS.
 
 Fetch documentation and scripts
 

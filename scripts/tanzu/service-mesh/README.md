@@ -74,9 +74,9 @@ tanzu cluster kubeconfig get zoolabs-workload-2 --admin
 
 While we could [enable TSM for an organization](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-ABEEC120-5B2C-4D26-BD5D-C6BE71102154.html) then [integrate both clusters with TSM](https://docs.vmware.com/en/VMware-Tanzu-Mission-Control/services/tanzumc-using/GUID-5B1445AB-EFEB-41BD-B9B3-6DD38E69991F.html) via Tanzu Mission Control, we're going to follow these instructions:
 
-* [Create an IAM policy for managing domain records in a Route53 hosted zone](HARBOR.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone)
+* [Create an IAM policy for managing domain records in a Route53 hosted zone](../../harbor/README.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone)
   * Referring to [Amazon Route 53 API permissions: Actions, resources, and conditions reference](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/r53-api-permissions-ref.html)
-* [Create account, attach policy, and obtain credentials](HARBOR.md#create-account-attach-policy-and-obtain-credentials)
+* [Create account, attach policy, and obtain credentials](../../harbor/README.md#create-account-attach-policy-and-obtain-credentials)
 * [Manage integration](https://docs.vmware.com/en/VMware-Tanzu-Service-Mesh/services/using-tanzu-service-mesh-guide/GUID-C1321224-0298-40C9-91DC-4C2467886CEA.html)
 
 A visual montage...
@@ -132,10 +132,10 @@ That last screenshot is multi-step.  Make sure you pay attention to detail.  Sup
 
 Rinse-and-repeat these instructions targeting each cluster:
 
-* [primes](APP.md)
+* [primes](../../carvel/README.md)
   * Employ Option 1
-* [console-availability](OBSERVABILITY.md)
-  * Choose to follow one section's steps (employing _public_ or _private_ manifests)
+* [console-availability](../observability/README.md)
+  * Choose to follow one section's steps (employing _Public_ or _Private_ manifests)
 
 
 ## Create Global Namespace
@@ -302,7 +302,7 @@ git commit -m "Intentionally break liveness probe"
 git push -u origin broken
 ```
 
-It's not enough to have made the update to the manifest on the branch to trigger a deployment.  Why? Because the [original App CR](OBSERVABILITY.md#server-1) was configured to watch for updates on `origin/main`.
+It's not enough to have made the update to the manifest on the branch to trigger a deployment.  Why? Because the [original App CR](../observability/README.md#server-1) was configured to watch for updates on `origin/main`.
 
 So we need to update the App CR as well to have it point to our new branch.  The easiest way to do this is to
 

@@ -286,7 +286,7 @@ Sample output
 ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
 - Retrieving installed packages...
   NAME                                PACKAGE-NAME                                         PACKAGE-VERSION        STATUS                                                                NAMESPACE
-  
+
 ```
 
 ### Updating TAP packages
@@ -328,7 +328,7 @@ Sample output
 ubuntu@ip-172-31-61-62:~$ tanzu package available list external-dns.tanzu.vmware.com -n tanzu-package-repo-global
 - Retrieving package versions for external-dns.tanzu.vmware.com...
   NAME                           VERSION               RELEASED-AT
-  
+
 ```
 
 We can check in on what we can configure
@@ -344,7 +344,7 @@ Let's install the external-dns package with a [script](install-external-dns-pack
 ```
 ./install-external-dns-package-for-tkg-on-aws.sh {aws-access-key-id} {aws-secret-access-key} {domain} {hosted-zone-id}
 ```
-> This script simplifies the process of configuring and installing external-dns on your cluster hosted on AWS.  See step 6 [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html#aws-route-53-4).  You will need to have [created an IAM Policy](../aws/HARBOR.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone) with required permissions to interact with (a) target HostedZone(s) in Route53.
+> This script simplifies the process of configuring and installing external-dns on your cluster hosted on AWS.  See step 6 [here](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-packages-external-dns.html#aws-route-53-4).  You will need to have [created an IAM Policy](../../../../harbor/README.md#create-an-iam-policy-for-managing-subdomain-records-in-a-route53-hosted-zone) with required permissions to interact with (a) target HostedZone(s) in Route53.
 
 #### Manual DNS
 

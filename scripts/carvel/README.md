@@ -1,6 +1,6 @@
 # Implementing Continuous Application Deployment
 
-We'll start with the assumption [you have already published an image](TBS.md#save-a-container-image) that you want to deploy.
+We'll start with the assumption [you have already published an image](../tanzu/build-service/README.md#save-a-container-image) that you want to deploy.
 
 Now we're going to walk thru the process of how to setup continuous deployment.
 
@@ -70,9 +70,9 @@ For both options below it's assumed you'll be pulling images from a private cont
 
 Here's how you would:
 
-* [obtain](DEPLOY.MD#obtain-container-registry-secrets)
+* [obtain](../tanzu/kubernetes-grid/aws/DEPLOY.md#obtain-container-registry-secrets)
   * Assumes you have access to the cluster where TBS is deployed.
-* [deploy](DEPLOY.MD#create-a-secret)
+* [deploy](../tanzu/kubernetes-grid/aws/DEPLOY.md#create-a-secret)
   * Make sure you're targeting the right workload cluster
 
 the secret.
