@@ -2,17 +2,19 @@
 
 ## Installation
 
-* [ ] [TKG 1.4.0 on AWS](tkg/aws/INSTALL.md)
+* [ ] [TKG 1.4.0 on AWS](tkg/aws/README.md)
   * consider TAP Beta 3 [here](https://github.com/pacphi/make-onboarding-suck-less/blob/f19167ee0f9b547081f9e489cf9f311ad13284a7/scripts/tanzu/tap/INSTALL.md)
-* [x] [on AKS](aks/INSTALL.md)
-* [x] [on EKS](eks/INSTALL.md)
-* [x] [on GKE](gke/INSTALL.md)
+* [x] [on AKS](aks/README.md)
+* [x] [on EKS](eks/README.md)
+* [x] [on GKE](gke/README.md)
 
 ## Usage
 
 Congratulations! You've managed to install TAP.  Now what?
 
 Well, the answer to that question is only going to be partially addressed here.  The `full` platform profile is comprised of a number of components collectively delivering capabilities designed to help you go from idea to deployment with alacrity.
+
+### Individual components
 
 We'll touch on how to interact with a handful of those components here:
 
@@ -38,6 +40,8 @@ We'll touch on how to interact with a handful of those components here:
 * API Portal
   * Visit `https://api-portal.{domain}` in your favorite browser.  Replace `{domain}` with your domain.
   * [Viewing APIs](https://docs.vmware.com/en/API-portal-for-VMware-Tanzu)
+
+### Tutorial
 
 A tutorial on what capabilities a developer may leverage may be found [here](USAGE.md).  Also, to whet your appetite, please view the section below entitled [For your consideration](#for-your-consideration).
 
