@@ -1,5 +1,20 @@
 # Tanzu Application Platform Evaluation
 
+## Prerequisites
+
+* a Cloud provider account
+  * admin and/or power-user account credentials, see IAM [config sample](../../../terraform/iam-config.sh.sample) and [script](../../../terraform/iam.sh)
+* a Domain
+  * provided by a domain registrar (e.g., hover.com)
+  * with DNS zone provisioned, see Terraform for [ [AWS](../../../terraform/aws/dns/README.md), [Azure](../../../terraform/azure/dns/README.md), [Google](../../../terraform/gcp/dns/README.md) ]
+* a Container Image registry
+  * admin credentials
+  * a few options are supported here but any [OCI compliant registry](https://dlorenc.medium.com/oci-artifacts-explained-8f4a77945c13) provider will do
+  * see Terraform for [ [AWS](../../../terraform/aws/registry/README.md), [Azure](../../../terraform/azure/registry/README.md), [Google](../../../terraform/gcp/registry/README.md) ]
+  * also see [Harbor](../../harbor/README.md)
+    * this guide starts off with provisioning a TKG cluster first, but that's not necessary, any Kubernetes provided distribution (1.19 or better) should work
+
+
 ## Installation
 
 * [ ] [TKG 1.4.0 on AWS](tkg/aws/README.md)
