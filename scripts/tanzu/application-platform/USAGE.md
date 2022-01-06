@@ -419,13 +419,6 @@ Have a look at this sample repository's [catalog-info.yaml](https://github.com/p
     ```
 
 * NodeJS
-  * [ ] [Vlackjack](https://github.com/pacphi/vlackjack)
-    * Deploy with
-
-      ```
-      tanzu apps workload create black-jack --git-repo https://github.com/pacphi/vlackjack --git-branch dev --type web --env "BP_NODE_RUN_SCRIPTS=build" --env "NODE_ENV=development"
-      ```
-
   * [ ] [Guessing Game](https://github.com/pacphi/guessing-game-using-options-api)
     * Deploy with
 
