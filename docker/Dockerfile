@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:21.04
 LABEL author=cphillipson@vmware.com
 
 ARG DEBIAN_FRONTEND=noninteractive

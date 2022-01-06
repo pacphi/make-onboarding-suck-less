@@ -1,4 +1,4 @@
-name: Build Ubuntu 20.10 Container Image with Docker
+name: Build Ubuntu 21.04 Container Image with Docker
 
 on:
   - pull_request
