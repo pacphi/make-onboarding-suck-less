@@ -145,6 +145,9 @@ RUN mkdir downloads && cd downloads && \
     tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
     chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
     sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
+    curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh && \
+    chmod +x install.sh && \
+    ./install.sh --accept-all-defaults && \
     cd ../.. && \
     rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean && \
