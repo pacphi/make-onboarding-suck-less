@@ -242,6 +242,9 @@ main() {
   chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero
   sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
 
+  # Install Oracle CLI
+  bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" --accept-all-defaults
+
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
   apt clean

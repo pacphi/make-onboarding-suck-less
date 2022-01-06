@@ -27,6 +27,7 @@ echo "kubectl" && kubectl version && echo
 echo "mkcert" && mkcert --version && echo
 echo "VMware Tanzu Ops Manager CLI" && om version && echo
 echo "Open SSL" && openssl version && echo
+echo "Oracle Cloud Infrastructure CLI" && oci --version && echo
 echo "Node JS" && node --version && echo
 echo "Node Package Manager" && npm version && echo
 echo "Cloud Native Buildpacks CLI" && pack --version && echo

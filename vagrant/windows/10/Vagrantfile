@@ -145,6 +145,10 @@ Set-Variable LOCAL_BIN_DIR $TARGET_DIR/.cli/bin
 md $LOCAL_BIN_DIR -ea 0
 cd $LOCAL_BIN_DIR
 
+Invoke-WebRequest https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.ps1 -OutFile install.ps1
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.ps1'))
+install.ps1 -AcceptAllDefaults
+Remove-Item install.ps1
 
 Set-Variable PIVNET_VERSION 3.0.1
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/pivotal-cf/pivnet-cli/releases/download/v$PIVNET_VERSION/pivnet-windows-amd64-$PIVNET_VERSION", "$LOCAL_BIN_DIR/pivnet-windows-amd64-$PIVNET_VERSION.exe")

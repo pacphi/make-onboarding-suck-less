@@ -1,0 +1,15 @@
+tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaa-unique"
+user_ocid = "ocid1.user.oc1..aaaaaaaapa-unique"
+private_key_path = "~/.oci/oci_api_key.pem"
+fingerprint = "94:c5:08:46:70:06:3e:a2:35:81:9b:19:81:dc:d0:d0"
+region = "us-phoenix-1"
+vcn_oid = ""
+compartment_ocid = ""
+# Source from https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengaboutk8sversions.htm
+k8s_version = "v1.20.11"
+cluster_name = "tap-cluster"
+vcn_public_subnet_ocid = ""
+vcn_private_subnet_ocid = ""
+compute_instance_shape = "VM.Standard2.2"
+# Run oci compute image list -c ocid1.tenancy.oc1..aaaaaaaa --all --operating-system "Canonical Ubuntu" --operating-system-version 20.04
+compute_instance_source_image_ocid = "ocid1.image.oc1.phx.aaaaaaaazvmq762wkokwfxpec3iipkidzxrqxqv4bdmjszm4mkcno3nzzzga"

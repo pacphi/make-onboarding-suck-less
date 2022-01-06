@@ -29,6 +29,7 @@ brew install java11
 brew install tilt-dev/tap/tilt
 brew install podman
 brew install velero
+brew install oci-cli
 
 OM_VERSION=7.4.1
 curl -LO https://github.com/pivotal-cf/om/releases/download/${OM_VERSION}/om-darwin-${OM_VERSION} && \
