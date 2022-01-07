@@ -3,6 +3,7 @@
 ## Prerequisites
 
 * Oracle Cloud service account credentials
+  * You need to use a _paid account_, consider ["Pay as You Go](https://docs.oracle.com/en-us/iaas/Content/GSG/Tasks/changingpaymentmethod.htm) for personal experiments
 * Oracle Cloud CLI ([oci](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/cliinstall.htm#Quickstart))
 * [Packer](https://www.packer.io/downloads)
 
@@ -129,7 +130,18 @@ echo "delete command ==>  oci network subnet delete --subnet-id ${SUBNET_OCID}" 
 
 Or you might want to use Terraform
 
-// TODO Insert procedure for leveraging terraform/oci modules
+```
+cd ../../../
+cd terraform/oci/compartment
+cp terraform.tfvars.sample terraform.tfvars
+# Edit the contents of terraform.tfvars
+./create-compartment.sh
+cd ../vcn
+cp terraform.tfvars.sample terraform.tfvars
+# Edit the contents of terraform.tfvars
+## Make sure you employ the compartment_ocid that was created in the prior step
+./create-vcn.sh
+```
 
 
 ## Use Packer to build and start a VM in a designated region and availability zone

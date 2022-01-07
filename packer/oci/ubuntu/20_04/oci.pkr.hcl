@@ -28,7 +28,7 @@ variable "init_script" {
 
 variable "access_cfg_file" {
   type    = string
-  default = ""
+  default = "~/.oci/config"
 }
 
 variable "region" {
@@ -38,10 +38,15 @@ variable "region" {
 
 variable "availability_domain" {
   type    = string
-  default = ""
+  default = "imYr:PHX-AD-3"
 }
 
 variable "compartment_ocid" {
+  type    = string
+  default = ""
+}
+
+variable "subnet_ocid" {
   type    = string
   default = ""
 }
@@ -52,20 +57,19 @@ variable "compartment_ocid" {
 # https://www.packer.io/docs/templates/hcl_templates/blocks/source
 
 source "oracle-oci" "k8s-toolset" {
-  access_cfg_file = var.access_cfg_file
+  access_cfg_file     = var.access_cfg_file
   compartment_ocid    = var.compartment_ocid
-  region = var.region
+  region              = var.region
   availability_domain = var.availability_domain
-  base_image_filter = {
-    operating_system = "Ubuntu"
+  base_image_filter {
+    operating_system         = "Canonical Ubuntu"
     operating_system_version = "20.04"
-    display_name_search = "^Canonical-Ubuntu-20\\.04-2021\\.\\d+"
+    display_name_search      = "^Canonical-Ubuntu-20\\.04-2021\\.\\d+"
   }
-  image_name          = "${var.image_name}-${local.timestamp}"
-  shape               = var.machine_type
-  ssh_username        = "ubuntu"
-  subnet_ocid         = "ocid1.subnet.oc1..aaa"
-  use_instance_principals = "true"
+  image_name              = "${var.image_name}-${local.timestamp}"
+  shape                   = var.machine_type
+  ssh_username            = "ubuntu"
+  subnet_ocid             = var.subnet_ocid
   tags = {
     CreationDate = "${local.timestamp}"
   }
