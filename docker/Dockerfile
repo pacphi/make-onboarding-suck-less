@@ -36,7 +36,7 @@ RUN cd /tmp && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
     apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3.9-dev python3.9-venv ruby-dev sudo tmux tzdata unzip wget -y && \
-    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr nano -y && \
+    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update -y && apt install -y docker-ce-cli && \

@@ -46,7 +46,7 @@ main() {
 
   # Install packages from APT
   apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.9-dev python3.9-venv ruby-dev snapd sudo tmux tree tzdata unzip wget -y
-  apt install apt-transport-https ca-certificates gnupg lsb-release nano software-properties-common dirmngr -y
+  apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y
   add-apt-repository ppa:cncf-buildpacks/pack-cli
   apt install pack-cli -y
 
