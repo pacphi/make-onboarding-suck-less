@@ -31,6 +31,11 @@ variable "access_cfg_file" {
   default = "~/.oci/config"
 }
 
+variable "key_file" {
+  type    = string
+  default = "~/.oci/oci_api_key.pem"
+}
+
 variable "region" {
   type    = string
   default = "us-phoenix-1"
@@ -58,6 +63,7 @@ variable "subnet_ocid" {
 
 source "oracle-oci" "k8s-toolset" {
   access_cfg_file     = var.access_cfg_file
+  key_file            = var.key_file
   compartment_ocid    = var.compartment_ocid
   region              = var.region
   availability_domain = var.availability_domain

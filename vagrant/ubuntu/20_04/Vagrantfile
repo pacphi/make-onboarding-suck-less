@@ -156,7 +156,7 @@ chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
 sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
 curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh && \
 chmod +x install.sh && \
-sudo -u ubuntu install.sh --accept-all-defaults && \
+./install.sh --accept-all-defaults && \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \

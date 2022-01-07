@@ -245,7 +245,7 @@ main() {
   # Install Oracle CLI
   curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
   chmod +x install.sh
-  sudo -u ubuntu install.sh --accept-all-defaults
+  ./install.sh --accept-all-defaults
 
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
