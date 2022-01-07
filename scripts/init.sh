@@ -24,6 +24,7 @@ main() {
   KUBECTL_VERSION=1.22.1
   KNATIVE_VERSION=1.0.0
   LEFTOVERS_VERSION=0.62.0
+  OCI_VERSION=3.4.1
   OM_VERSION=7.4.1
   PIVNET_VERSION=3.0.1
   TEKTONCD_VERSION=0.21.0
@@ -44,7 +45,7 @@ main() {
   apt update -y
 
   # Install packages from APT
-  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tree tzdata unzip wget -y
+  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.9-dev python3.9-venv ruby-dev snapd sudo tmux tree tzdata unzip wget -y
   apt install apt-transport-https ca-certificates gnupg lsb-release nano software-properties-common dirmngr -y
   add-apt-repository ppa:cncf-buildpacks/pack-cli
   apt install pack-cli -y
@@ -243,9 +244,14 @@ main() {
   sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
 
   # Install Oracle CLI
-  curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-  chmod +x install.sh
-  ./install.sh --accept-all-defaults
+  mkdir -p ~/development/python && cd ~/development/python
+  python3 -m venv oracle-cli
+  . ./oracle-cli/bin/activate
+  curl -L "https://github.com/oracle/oci-cli/releases/download/v${OCI_VERSION}/oci-cli-${OCI_VERSION}.zip" -o /tmp/oci-cli-${OCI_VERSION}.zip
+  cd /tmp
+  unzip oci-cli-${OCI_VERSION}.zip
+  pip install /tmp/oci-cli/oci_cli-${OCI_VERSION}-py3-none-any.whl
+  echo "alias activate-oci='mkdir -p ~/development/python && cd ~/development/python && python3 -m venv oracle-cli && . ./oracle-cli/bin/activate'" >> ~/.bashrc
 
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

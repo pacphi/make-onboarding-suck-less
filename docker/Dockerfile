@@ -20,6 +20,7 @@ ENV TZ=America/Los_Angeles \
     KWT_VERSION=0.0.6 \
     KUBECTL_VERSION=1.22.1 \
     KNATIVE_VERSION=1.0.0 \
+    OCI_VERSION=3.4.1 \
     OM_VERSION=7.4.1 \
     PACK_VERSION=0.21.1 \
     PIVNET_VERSION=3.0.1 \
@@ -31,11 +32,11 @@ ENV TZ=America/Los_Angeles \
     VENDIR_VERSION=0.23.0 \
     YTT_VERSION=0.38.0
 
-RUN mkdir downloads && cd downloads && \
+RUN cd /tmp && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
-    apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3-dev ruby-dev sudo tmux tzdata unzip wget -y && \
-    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
+    apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3.9-dev python3.9-venv ruby-dev sudo tmux tzdata unzip wget -y && \
+    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr nano -y && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update -y && apt install -y docker-ce-cli && \
@@ -145,11 +146,15 @@ RUN mkdir downloads && cd downloads && \
     tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
     chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
     sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
-    curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh && \
-    chmod +x install.sh && \
-    ./install.sh --accept-all-defaults && \
-    cd ../.. && \
-    rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    mkdir -p ~/development/python && cd ~/development/python && \
+    python3 -m venv oracle-cli && \
+    . ./oracle-cli/bin/activate && \
+    curl -L "https://github.com/oracle/oci-cli/releases/download/v${OCI_VERSION}/oci-cli-${OCI_VERSION}.zip" -o /tmp/oci-cli-${OCI_VERSION}.zip && \
+    cd /tmp && \
+    unzip oci-cli-${OCI_VERSION}.zip && \
+    pip install /tmp/oci-cli/oci_cli-${OCI_VERSION}-py3-none-any.whl && \
+    echo "alias activate-oci='mkdir -p ~/development/python && cd ~/development/python && python3 -m venv oracle-cli && . ./oracle-cli/bin/activate'" >> ~/.bashrc && \
+    rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     apt clean && \
     useradd -m docker && echo "docker:docker" | chpasswd && \
     adduser docker sudo && \
