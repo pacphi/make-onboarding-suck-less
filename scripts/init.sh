@@ -17,7 +17,7 @@ main() {
   HELMFILE_VERSION=0.142.0
   AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05"
   IMGPKG_VERSION=0.23.1
-  KAPP_VERSION=0.42.0
+  KAPP_VERSION=0.43.0
   KBLD_VERSION=0.31.0
   KIND_VERSION=0.11.1
   KWT_VERSION=0.0.6
@@ -45,7 +45,7 @@ main() {
   apt update -y
 
   # Install packages from APT
-  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.9-dev python3.9-venv ruby-dev snapd sudo tmux tree tzdata unzip wget -y
+  apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.8-dev python3.8-venv ruby-dev snapd sudo tmux tree tzdata unzip wget -y
   apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y
   add-apt-repository ppa:cncf-buildpacks/pack-cli
   apt install pack-cli -y

@@ -170,6 +170,7 @@ packer fmt .
 packer validate .
 packer inspect .
 packer build -only='{BUILD_NAME}.*' .
+packer build -only='{BUILD_NAME}.*' -var compartment_ocid=ocid1.compartment.oc1..aaaaaaaa-unique -var subnet_ocid=ocid1.subnet.oc1.phx.aaaaaaaa-unique .
 ```
 > Replace `{BUILD_NAME}` with one of [ `standard`, `with-tanzu` ]; a file provisioner uploads the Tanzu CLI into your image when set to `with-tanzu`.  You have the option post image build to fetch and install or upgrade it via [vmw-cli](https://github.com/apnex/vmw-cli).  The [fetch-tanzu-cli.sh](../../../../scripts/fetch-tanzu-cli.sh) script is also packaged and available for your convenience in the resultant image.
 
@@ -181,7 +182,7 @@ packer build -only='{BUILD_NAME}.*' .
 You may wish to size the instance and/or choose a different region to host the image.
 
 ```
-packer build --var  --var  .
+packer build -only='standard.*' -var compartment_ocid=ocid1.compartment.oc1..aaaaaaaa-unique -var subnet_ocid=ocid1.subnet.oc1.phx.aaaaaaaa-unique -var region="ap-sydney-1" -var shape="VM.Standard2.4" -var access_cfg_file="./oci-config" -var key_file="./key.pem" .
 ```
 > Consult the `variable` blocks inside [oci.pkr.hcl](oci.pkr.hcl)
 
