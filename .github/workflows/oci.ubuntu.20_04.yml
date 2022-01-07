@@ -47,7 +47,7 @@ jobs:
       - name: Build image from template
         working-directory: ./packer/oci/ubuntu/20_04
         run: |
-          echo '${{ secrets.OCI_CONFIG }}' > $(pwd)/oci-config
-          packer build -only='standard.*' -var compartment_ocid="${{ secrets.COMPARTMENT_OCID }}" -var subnet_ocid="${{ secrets.SUBNET_OCID }}" -var availability_domain="${{ secrets.AVAILABILITY_DOMAIN }}" -var access_cfg_file="$(pwd)/oci-config" .
+          echo '${{ secrets.OCI_CONFIG }}' > ./oci-config
+          packer build -only='standard.*' -var compartment_ocid="${{ secrets.COMPARTMENT_OCID }}" -var subnet_ocid="${{ secrets.SUBNET_OCID }}" -var availability_domain="${{ secrets.AVAILABILITY_DOMAIN }}" -var access_cfg_file="./oci-config" .
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
