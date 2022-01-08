@@ -26,11 +26,12 @@ main() {
   LEFTOVERS_VERSION=0.62.0
   OCI_VERSION=3.4.1
   OM_VERSION=7.4.1
+  MKPCLI_VERSION=0.5.3
   PIVNET_VERSION=3.0.1
   TEKTONCD_VERSION=0.21.0
-  TERRAFORM_VERSION=1.1.0
+  TERRAFORM_VERSION=1.1.3
   TERRAFORM_DOCS_VERSION=0.16.0
-  TMC_VERSION=0.4.0-fdabbe74
+  TMC_VERSION=0.4.0-089ff971
   VELERO_VERSION=1.7.1
   VENDIR_VERSION=0.23.0
   YTT_VERSION=0.38.0
@@ -46,7 +47,7 @@ main() {
 
   # Install packages from APT
   apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.8-dev python3.8-venv ruby-dev snapd sudo tmux tree tzdata unzip wget -y
-  apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y
+  apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr vim -y
   add-apt-repository ppa:cncf-buildpacks/pack-cli
   apt install pack-cli -y
 
@@ -54,6 +55,10 @@ main() {
   sudo snap install snap-store
   sudo snap install k9s
   sudo snap install yq
+
+  # Install NodeJS
+  curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash -
+  sudo apt-get install -y nodejs
 
   # Install Python 3
   python3 -m pip install --user --upgrade pip
@@ -242,6 +247,11 @@ main() {
   tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz
   chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero
   sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
+
+  # Install VMware Labs Marketplace CLI
+  curl -LO https://github.com/vmware-labs/marketplace-cli/releases/download/v${MKPCLI_VERSION}/mkpcli-linux-amd64 && \
+  chmod +x mkpcli-linux-amd64 && \
+  sudo mv mkpcli-linux-amd64 /usr/local/bin/mkpcli && \
 
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -37,10 +37,15 @@ mv om-darwin-${OM_VERSION} om && \
 chmod +x om && \
 sudo mv om /usr/local/bin && \
 
-TMC_VERSION=0.4.0-fdabbe74 && \
+TMC_VERSION=0.4.0-089ff971 && \
 curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x64/tmc && \
 chmod +x tmc && \
 sudo mv tmc /usr/local/bin
+
+MKPCLI_VERSION=0.5.3 & \
+curl -LO https://github.com/vmware-labs/marketplace-cli/releases/download/v${MKPCLI_VERSION}/mkpcli-darwin-amd64 && \
+chmod +x mkpcli-darwin-amd64 && \
+mv mkpcli-darwin-amd64 /usr/local/bin/mkpcli
 
 if [ -e "/Users/vagrant/tanzu" ]; then
   sudo chmod +x /Users/vagrant/tanzu

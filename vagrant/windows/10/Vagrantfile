@@ -172,11 +172,14 @@ Set-Variable KREW_VERSION 0.4.2
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.exe", "$LOCAL_BIN_DIR/krew.exe")
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/kubernetes-sigs/krew/releases/download/v$KREW_VERSION/krew.yaml", "$LOCAL_BIN_DIR/krew.yaml")
 
-Set-Variable TMC_VERSION 0.4.0-fdabbe74
+Set-Variable TMC_VERSION 0.4.0-089ff971
 (New-Object System.Net.WebClient).DownloadFile("https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/$TMC_VERSION/windows/x64/tmc.exe", "$LOCAL_BIN_DIR/tmc.exe")
 
 Set-Variable KNATIVE_VERSION 1.0.0
 (New-Object System.Net.WebClient).DownloadFile("https://github.com/knative/client/releases/download/knative-v$KNATIVE_VERSION/kn-windows-amd64.exe", "$LOCAL_BIN_DIR/kn.exe")
+
+Set-Variable MKPCLI_VERSION 0.5.3
+(New-Object System.Net.WebClient).DownloadFile("https://github.com/vmware-labs/marketplace-cli/releases/download/v$MKPCLI_VERSION/mkpcli-windows-amd64", "$LOCAL_BIN_DIR/mkpcli.exe") && \
 
 Add-EnvPath -Path "$LOCAL_BIN_DIR" -Container "Machine"
 

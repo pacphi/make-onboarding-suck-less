@@ -20,14 +20,15 @@ ENV TZ=America/Los_Angeles \
     KWT_VERSION=0.0.6 \
     KUBECTL_VERSION=1.22.1 \
     KNATIVE_VERSION=1.0.0 \
+    MKPCLI_VERSION=0.5.3 \
     OCI_VERSION=3.4.1 \
     OM_VERSION=7.4.1 \
     PACK_VERSION=0.23.0 \
     PIVNET_VERSION=3.0.1 \
-    TERRAFORM_VERSION=1.1.0 \
+    TERRAFORM_VERSION=1.1.3 \
     TERRAFORM_DOCS_VERSION=0.16.0 \
     LEFTOVERS_VERSION=0.62.0 \
-    TMC_VERSION=0.4.0-fdabbe74 \
+    TMC_VERSION=0.4.0-089ff971 \
     VELERO_VERSION=1.7.1 \
     VENDIR_VERSION=0.23.0 \
     YTT_VERSION=0.38.0
@@ -35,11 +36,15 @@ ENV TZ=America/Los_Angeles \
 RUN cd /tmp && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt update -y && \
-    apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq nodejs npm openssl podman pv python3-pip python3.9-dev python3.9-venv ruby-dev sudo tmux tzdata unzip wget -y && \
-    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr -y && \
+    apt install buildah build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl podman pv python3-pip python3.9-dev python3.9-venv ruby-dev sudo tmux tzdata unzip wget -y && \
+    apt install apt-transport-https ca-certificates gnupg lsb-release software-properties-common dirmngr vim -y && \
+    curl -fsSL https://deb.nodesource.com/setup_17.x | sudo -E bash - && \
+    apt install nodejs -y && \
     curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
     echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
     apt-get update -y && apt install -y docker-ce-cli && \
+    useradd -m docker && echo "docker:docker" | chpasswd && \
+    adduser docker sudo && \
     (curl -sSL "https://github.com/buildpacks/pack/releases/download/v${PACK_VERSION}/pack-v${PACK_VERSION}-linux.tgz" | sudo tar -C /usr/local/bin/ --no-same-owner -xzv pack) && \
     python3 -m pip install --user --upgrade pip && \
     python3 -m pip install --user virtualenv && \
@@ -146,13 +151,11 @@ RUN cd /tmp && \
     tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
     chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
     sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
-    rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    curl -LO https://github.com/vmware-labs/marketplace-cli/releases/download/v${MKPCLI_VERSION}/mkpcli-linux-amd64 && \
+    chmod +x mkpcli-linux-amd64 && \
+    mv mkpcli-linux-amd64 /usr/local/bin/mkpcli && \
     apt clean && \
-    useradd -m docker && echo "docker:docker" | chpasswd && \
-    adduser docker sudo && \
-    npm install vmw-cli --global && \
-    sudo chown -R docker /usr/local/lib/node_modules && \
-    sudo chgrp -R docker /usr/local/lib/node_modules
+    rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 WORKDIR /root
 COPY dist/ /root/
