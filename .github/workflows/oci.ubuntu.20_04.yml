@@ -35,6 +35,12 @@ jobs:
           source: "scripts/fetch-tanzu-cli.sh"
           target: "packer/oci/ubuntu/20_04/fetch-tanzu-cli.sh"
 
+      - name: Copy fetch-and-install-oci-cli.sh
+        uses: canastro/copy-file-action@master
+        with:
+          source: "scripts/fetch-and-install-oci-cli.sh"
+          target: "packer/aws/ubuntu/20_04/fetch-and-install-oci-cli.sh"
+
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1
         with:
