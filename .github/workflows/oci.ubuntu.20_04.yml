@@ -39,7 +39,7 @@ jobs:
         uses: canastro/copy-file-action@master
         with:
           source: "scripts/fetch-and-install-oci-cli.sh"
-          target: "packer/aws/ubuntu/20_04/fetch-and-install-oci-cli.sh"
+          target: "packer/oci/ubuntu/20_04/fetch-and-install-oci-cli.sh"
 
       - name: Use latest Packer
         uses: hashicorp-contrib/setup-packer@v1

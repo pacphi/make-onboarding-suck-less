@@ -39,7 +39,7 @@ jobs:
         uses: canastro/copy-file-action@master
         with:
           source: "scripts/fetch-and-install-oci-cli.sh"
-          target: "packer/aws/ubuntu/20_04/fetch-and-install-oci-cli.sh"
+          target: "packer/google/ubuntu/20_04/fetch-and-install-oci-cli.sh"
 
       - name: Authenticate
         uses: google-github-actions/setup-gcloud@master
