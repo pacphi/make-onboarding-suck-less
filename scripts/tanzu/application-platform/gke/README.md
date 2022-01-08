@@ -280,7 +280,7 @@ If you chose not to install `external-dns`, then you will have to [manually add]
 
 > Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Let's Encrypt.
 
-We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
+We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a GKE cluster where `cert-manager` is already installed.
 
 ```
 ./install-letsencrypt-cert-on-gke.sh {email-address} {project-id} {service-account-key-path-to-file-in-json-format} {domain}

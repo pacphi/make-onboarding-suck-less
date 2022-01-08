@@ -8,12 +8,28 @@ output "cluster-ocid" {
   value = oci_containerengine_cluster.oke-cluster.id
 }
 
+output "endpoint_config" {
+  value = oci_containerengine_cluster.oke-cluster.endpoint_config
+}
+
+output "endpoints" {
+  value = oci_containerengine_cluster.oke-cluster.endpoints
+}
+
 output "cluster-kubernetes-version" {
   value = oci_containerengine_cluster.oke-cluster.kubernetes_version
 }
 
+output "available_kubernetes_upgrades"{
+  value = oci_containerengine_cluster.oke-cluster.available_kubernetes_upgrades
+}
+
 output "cluster-state" {
   value = oci_containerengine_cluster.oke-cluster.state
+}
+
+output "metadata" {
+  value = oci_containerengine_cluster.oke-cluster.metadata
 }
 
 

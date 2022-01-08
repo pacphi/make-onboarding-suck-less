@@ -274,13 +274,13 @@ Let's install the external-dns package with a [script](install-external-dns-pack
 
 #### Manual DNS
 
-If you chose not to install `external-dns`, then you will have to [manually add](https://cloud.google.com/dns/docs/records) a wildcard domain as an `A` or `CNAME` record to the zone within Cloud DNS.
+If you chose not to install `external-dns`, then you will have to [manually add](https://docs.microsoft.com/en-us/azure/dns/dns-getstarted-portal) a wildcard domain as an `A` or `CNAME` record to the zone within Azure DNS.
 
 #### Install a Let's Encrypt managed Certificate
 
 > Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Let's Encrypt.
 
-We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
+We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on an AKS cluster where `cert-manager` is already installed.
 
 ```
 ./install-letsencrypt-cert-on-aks.sh {email-address} {resource-group} {domain} {subscription-id} {tenant-id} {client-id} {client-secret}
