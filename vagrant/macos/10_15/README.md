@@ -4,6 +4,7 @@
 
 ```
 cp ../../../scripts/fetch-tanzu-cli.sh .
+cp ../../../scripts/fetch-and-install-oci-cli.sh .
 cp ../../../scripts/inventory.sh .
 ./fetch-tanzu-cli.sh {VMWUSER} {VMWPASS} darwin {TANZU_CLI_VERSION}
 vagrant up

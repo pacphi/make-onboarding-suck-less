@@ -106,6 +106,11 @@ build {
   }
 
   provisioner "file" {
+    source      = "fetch-and-install-oci-cli.sh"
+    destination = "/home/ubuntu/fetch-and-install-oci-cli.sh"
+  }
+
+  provisioner "file" {
     source      = "inventory.sh"
     destination = "/home/ubuntu/inventory.sh"
   }
@@ -120,7 +125,8 @@ build {
       "chmod +x /home/ubuntu/tanzu",
       "chmod +x /home/ubuntu/inventory.sh",
       "chmod +x /home/ubuntu/kind-load-cafile.sh",
-      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh"
+      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh",
+      "chmod +x /home/ubuntu/fetch-and-install-oci-cli.sh"
     ]
   }
 
@@ -154,6 +160,11 @@ build {
   }
 
   provisioner "file" {
+    source      = "fetch-and-install-oci-cli.sh"
+    destination = "/home/ubuntu/fetch-and-install-oci-cli.sh"
+  }
+
+  provisioner "file" {
     source      = "inventory.sh"
     destination = "/home/ubuntu/inventory.sh"
   }
@@ -167,7 +178,8 @@ build {
     inline = [
       "chmod +x /home/ubuntu/inventory.sh",
       "chmod +x /home/ubuntu/kind-load-cafile.sh",
-      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh"
+      "chmod +x /home/ubuntu/fetch-tanzu-cli.sh",
+      "chmod +x /home/ubuntu/fetch-and-install-oci-cli.sh"
     ]
   }
 

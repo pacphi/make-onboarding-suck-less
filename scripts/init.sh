@@ -243,16 +243,6 @@ main() {
   chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero
   sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin
 
-  # Install Oracle CLI
-  mkdir -p ~/development/python && cd ~/development/python
-  python3 -m venv oracle-cli
-  . ./oracle-cli/bin/activate
-  curl -L "https://github.com/oracle/oci-cli/releases/download/v${OCI_VERSION}/oci-cli-${OCI_VERSION}.zip" -o /tmp/oci-cli-${OCI_VERSION}.zip
-  cd /tmp
-  unzip oci-cli-${OCI_VERSION}.zip
-  pip install /tmp/oci-cli/oci_cli-${OCI_VERSION}-py3-none-any.whl
-  echo "alias activate-oci='mkdir -p ~/development/python && cd ~/development/python && python3 -m venv oracle-cli && . ./oracle-cli/bin/activate'" >> ~/.bashrc
-
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
   apt clean

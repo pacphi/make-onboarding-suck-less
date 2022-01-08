@@ -173,19 +173,19 @@ sudo mv ./kind /usr/local/bin && \
 cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 apt clean
 
-if [ -e "/home/ubuntu/tanzu" ]; then
-  sudo chmod +x /home/ubuntu/tanzu
-  sudo mv /home/ubuntu/tanzu /usr/local/bin
+if [ -e "/home/vagrant/tanzu" ]; then
+  sudo chmod +x /home/vagrant/tanzu
+  sudo mv /home/vagrant/tanzu /usr/local/bin
 fi
 
-if [ -e "/home/ubuntu/tanzu-cli-bundle-linux-amd64.tar" ]; then
+if [ -e "/home/vagrant/tanzu-cli-bundle-linux-amd64.tar" ]; then
   tar xvf tanzu-cli-bundle-linux-amd64.tar -C .
   tanzu plugin clean
   tanzu plugin install --local cli all
   rm -Rf cli tanzu-cli-bundle-linux-amd64.tar
 fi
 
-chmod +x inventory.sh
+chmod +x *.sh
 
 SCRIPT
 
@@ -200,5 +200,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "file", source: "dist", destination: "/home/vagrant"
   config.vm.provision "file", source: "inventory.sh", destination: "/home/vagrant/inventory.sh"
+  config.vm.provision "file", source: "fetch-tanzu-cli.sh", destination: "/home/vagrant/fetch-tanzu-cli.sh"
+  config.vm.provision "file", source: "fetch-and-install-oci-cli.sh", destination: "/home/vagrant/fetch-and-install-oci-cli.sh"
   config.vm.provision "shell", inline: $script
 end

@@ -42,18 +42,18 @@ curl -LO https://tmc-cli.s3-us-west-2.amazonaws.com/tmc/${TMC_VERSION}/darwin/x6
 chmod +x tmc && \
 sudo mv tmc /usr/local/bin
 
-if [ -e "/home/ubuntu/tanzu" ]; then
-  sudo chmod +x /home/ubuntu/tanzu
-  sudo mv /home/ubuntu/tanzu /usr/local/bin
+if [ -e "/Users/vagrant/tanzu" ]; then
+  sudo chmod +x /Users/vagrant/tanzu
+  sudo mv /Users/vagrant/tanzu /usr/local/bin
 fi
 
-if [ -e "/home/ubuntu/tanzu-cli-bundle-darwin-amd64.tar" ]; then
+if [ -e "/Users/vagrant/tanzu-cli-bundle-darwin-amd64.tar" ]; then
   tar xvf tanzu-cli-bundle-darwin-amd64.tar -C .
   tanzu plugin clean
   tanzu plugin install --local cli all
   rm -Rf cli tanzu-cli-bundle-darwin-amd64.tar
 fi
-chmod +x inventory.sh
+chmod +x *.sh
 
 SCRIPT
 
@@ -68,5 +68,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "file", source: "dist", destination: "/Users/vagrant"
   config.vm.provision "file", source: "inventory.sh", destination: "/Users/vagrant/inventory.sh"
+  config.vm.provision "file", source: "fetch-tanzu-cli.sh", destination: "/Users/vagrant/fetch-tanzu-cli.sh"
+  config.vm.provision "file", source: "fetch-and-install-oci-cli.sh", destination: "/Users/vagrant/fetch-and-install-oci-cli.sh"
   config.vm.provision "shell", inline: $script, privileged: false
 end
