@@ -31,20 +31,37 @@ variable "vcn_compartment_ocid" {
 
 variable "vcn_name" {
   type = string
-  description = "User-friendly name of to use for the VCN to be appended to the label_prefix"
+  description = "Friendly name for the VCN"
+  default = "vcn"
 }
 
-variable "vcn_dns_label" {
+
+variable "vcn_cidr" {
   type = string
-  description = "A DNS label for the VCN, used in conjunction with the VNIC's hostname and subnet's DNS label to form a fully qualified domain name (FQDN) for each VNIC within this subnet"
+  description = "CIDR block for the VCN"
+  default = "10.0.0.0/16"
 }
 
-variable "vcn_public_subnet_ip_address" {
+variable "bastion_subnet_cidr" {
   type = string
-  default = "10.0.0.0"
+  description = "CIDR block for the Bastion Host subnet"
+  default = "10.0.1.0/24"
 }
 
-variable "vcn_private_subnet_ip_address" {
+variable "k8s_node_pool_subnet_cidr" {
   type = string
-  default = "10.0.1.0"
+  description = "CIDR block for the Kubernetes Node Pool subnet"
+  default = "10.0.4.0/24"
+}
+
+variable "k8s_api_endpoint_subnet_cidr" {
+  type = string
+  description = "CIDR block for the Kubernetes API endpoint subnet"
+  default = "10.0.2.0/24"
+}
+
+variable "k8s_lb_subnet_cidr" {
+  type = string
+  description = "CIDR block for the Kubernetes Load-balancer subnet"
+  default = "10.0.3.0/24"
 }

@@ -1,224 +1,311 @@
-# @see https://registry.terraform.io/modules/oracle-terraform-modules/vcn/oci/latest
-
-module "vcn" {
-  source  = "oracle-terraform-modules/vcn/oci"
-  version = "3.1.0"
-
-  region = var.region
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_name = var.vcn_name
-  vcn_dns_label = var.vcn_dns_label
-  vcn_cidrs = [ "${var.vcn_public_subnet_ip_address}/16" ]
-
-  create_internet_gateway = true
-  create_nat_gateway = true
-  create_service_gateway = false
-}
-
-# Source from https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_security_list
-
-resource "oci_core_security_list" "private-outbound-all" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-
-  display_name = "private-outbound-all"
-
-  egress_security_rules {
-    stateless = false
-    destination = "0.0.0.0/0"
-    destination_type = "CIDR_BLOCK"
-    protocol = "all"
+data "oci_core_services" "all_oci_services" {
+  filter {
+    name   = "name"
+    values = ["All .* Services In Oracle Services Network"]
+    regex  = true
   }
 }
 
-resource "oci_core_security_list" "private-inbound-ssh" {
+resource "random_string" "suffix" {
+  length           = 3
+  special          = false
+}
 
+resource "oci_core_vcn" "vcn" {
+  cidr_block     = var.vcn_cidr
   compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
+  display_name   = "${var.vcn_name}-${random_string.suffix.result}"
+}
 
-  display_name = "private-inbound-ssh"
+resource "oci_core_drg" "drg" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "drg-${random_string.suffix.result}"
+}
+
+resource "oci_core_drg_attachment" "drg_attachment" {
+  drg_id       = oci_core_drg.drg.id
+  vcn_id       = oci_core_vcn.vcn.id
+  display_name = "drg-attachment-${random_string.suffix.result}"
+}
+
+resource "oci_core_service_gateway" "service_gateway" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "service-gw-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+  services {
+    service_id = lookup(data.oci_core_services.all_oci_services.services[0], "id")
+  }
+}
+
+resource "oci_core_nat_gateway" "nat_gateway" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "nat-gw-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+}
+
+resource "oci_core_route_table" "route_table_via_nat" {
+  compartment_id = var.vcn_compartment_ocid
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "route-table-via-nat-${random_string.suffix.result}"
+
+  route_rules {
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_nat_gateway.nat_gateway.id
+  }
+
+  route_rules {
+    destination       = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
+    destination_type  = "SERVICE_CIDR_BLOCK"
+    network_entity_id = oci_core_service_gateway.service_gateway.id
+  }
+}
+
+resource "oci_core_internet_gateway" "igw" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "igw-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+}
+
+resource "oci_core_route_table" "route_table_via_igw" {
+  compartment_id = var.vcn_compartment_ocid
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "route-table-via-igw-${random_string.suffix.result}"
+
+  route_rules {
+    destination       = "0.0.0.0/0"
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = oci_core_internet_gateway.igw.id
+  }
+}
+
+resource "oci_core_security_list" "oke_security_list" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "oke-security-list-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+
+  egress_security_rules {
+    protocol    = "All"
+    destination = "0.0.0.0/0"
+  }
+
+  /* This entry is necesary for DNS resolving (open UDP traffic). */
+  ingress_security_rules {
+    protocol = "17"
+    source   = var.vcn_cidr
+  }
+}
+
+resource "oci_core_security_list" "private_k8s_api_endpoint_subnet_security_list" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "private-k8s-api-endpoint-subnet-security-list-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+
+  # egress_security_rules
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "CIDR_BLOCK"
+    destination      = var.k8s_node_pool_subnet_cidr
+  }
+
+  egress_security_rules {
+    protocol         = 1
+    destination_type = "CIDR_BLOCK"
+    destination      = var.k8s_node_pool_subnet_cidr
+
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "SERVICE_CIDR_BLOCK"
+    destination      = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
+
+    tcp_options {
+      min = 443
+      max = 443
+    }
+  }
+
+  # ingress_security_rules
 
   ingress_security_rules {
-    stateless = false
-    source = "${var.vcn_public_subnet_ip_address}/16"
-    source_type = "CIDR_BLOCK"
-    # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
     protocol = "6"
+    source   = var.k8s_node_pool_subnet_cidr
+
+    tcp_options {
+      min = 6443
+      max = 6443
+    }
+  }
+
+  ingress_security_rules {
+    protocol = "6"
+    source   = var.k8s_node_pool_subnet_cidr
+
+    tcp_options {
+      min = 12250
+      max = 12250
+    }
+  }
+
+  ingress_security_rules {
+    protocol = "6"
+    source   = "0.0.0.0/0"
+
+    tcp_options {
+      min = 6443
+      max = 6443
+    }
+  }
+
+  ingress_security_rules {
+    protocol = 1
+    source   = var.k8s_node_pool_subnet_cidr
+
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+}
+
+resource "oci_core_security_list" "private_k8s_private_worker_nodes_subnet_security_list" {
+  compartment_id = var.vcn_compartment_ocid
+  display_name   = "private-k8s-private-worker-nodes-subnet-security-list-${random_string.suffix.result}"
+  vcn_id         = oci_core_vcn.vcn.id
+
+
+  # egress_security_rules
+
+  egress_security_rules {
+    protocol         = "All"
+    destination_type = "CIDR_BLOCK"
+    destination      = var.k8s_node_pool_subnet_cidr
+  }
+
+  egress_security_rules {
+    protocol    = 1
+    destination = "0.0.0.0/0"
+
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "SERVICE_CIDR_BLOCK"
+    destination      = lookup(data.oci_core_services.all_oci_services.services[0], "cidr_block")
+  }
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "CIDR_BLOCK"
+    destination      = var.k8s_api_endpoint_subnet_cidr
+
+    tcp_options {
+      min = 6443
+      max = 6443
+    }
+  }
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "CIDR_BLOCK"
+    destination      = var.k8s_api_endpoint_subnet_cidr
+
+    tcp_options {
+      min = 12250
+      max = 12250
+    }
+  }
+
+  egress_security_rules {
+    protocol         = "6"
+    destination_type = "CIDR_BLOCK"
+    destination      = "0.0.0.0/0"
+  }
+
+  # ingress_security_rules
+
+  ingress_security_rules {
+    protocol = "All"
+    source   = var.k8s_node_pool_subnet_cidr
+  }
+
+  ingress_security_rules {
+    protocol = "6"
+    source   = var.k8s_api_endpoint_subnet_cidr
+  }
+
+  ingress_security_rules {
+    protocol = 1
+    source   = "0.0.0.0/0"
+
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
+
+  ingress_security_rules {
+    protocol = "6"
+    source   = "0.0.0.0/0"
+
     tcp_options {
       min = 22
       max = 22
     }
   }
+
 }
 
-resource "oci_core_security_list" "private-inbound-icmp-0" {
-
+resource "oci_core_subnet" "k8s_api_endpoint_subnet" {
+  cidr_block     = var.k8s_api_endpoint_subnet_cidr
   compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "k8s-api-endpoint-subnet-${random_string.suffix.result}"
 
-  display_name = "private-inbound-icmp-0"
-
-  ingress_security_rules {
-    stateless = false
-    source = "0.0.0.0/0"
-    source_type = "CIDR_BLOCK"
-    # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml ICMP is 1
-    protocol = "1"
-    # For ICMP type and code see: https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml
-    icmp_options {
-      type = 3
-      code = 4
-    }
-  }
+  security_list_ids          = [oci_core_vcn.vcn.default_security_list_id, oci_core_security_list.private_k8s_api_endpoint_subnet_security_list.id]
+  route_table_id             = oci_core_route_table.route_table_via_nat.id
+  prohibit_public_ip_on_vnic = true
 }
 
-resource "oci_core_security_list" "private-inbound-icmp-1" {
-
+resource "oci_core_subnet" "k8s_lb_subnet" {
+  cidr_block     = var.k8s_lb_subnet_cidr
   compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "k8s-lb-subnet-${random_string.suffix.result}"
 
-  display_name = "private-inbound-icmp-1"
-
-  ingress_security_rules {
-    stateless = false
-    source = "${var.vcn_public_subnet_ip_address}/16"
-    source_type = "CIDR_BLOCK"
-    # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml ICMP is 1
-    protocol = "1"
-    # For ICMP type and code see: https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml
-    icmp_options {
-      type = 3
-    }
-  }
+  security_list_ids          = [oci_core_vcn.vcn.default_security_list_id]
+  route_table_id             = oci_core_route_table.route_table_via_nat.id
+  prohibit_public_ip_on_vnic = true
 }
 
-resource "oci_core_security_list" "public-outbound-all" {
-
+resource "oci_core_subnet" "k8s_node_pool_subnet" {
+  cidr_block     = var.k8s_node_pool_subnet_cidr
   compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "k8s-node-pool-subnet-${random_string.suffix.result}"
 
-  display_name = "public-outbound-all"
-
-  egress_security_rules {
-    stateless = false
-    destination = "0.0.0.0/0"
-    destination_type = "CIDR_BLOCK"
-    protocol = "all"
-  }
+  security_list_ids          = [oci_core_vcn.vcn.default_security_list_id, oci_core_security_list.private_k8s_private_worker_nodes_subnet_security_list.id]
+  route_table_id             = oci_core_route_table.route_table_via_nat.id
+  prohibit_public_ip_on_vnic = true
 }
 
-resource "oci_core_security_list" "public-inbound-ssh" {
-
+resource "oci_core_subnet" "bastion_subnet" {
+  cidr_block     = var.bastion_subnet_cidr
   compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
+  vcn_id         = oci_core_vcn.vcn.id
+  display_name   = "bastion-subnet-${random_string.suffix.result}"
 
-  display_name = "public-inbound-ssh"
-
-  ingress_security_rules {
-      stateless = false
-      source = "0.0.0.0/0"
-      source_type = "CIDR_BLOCK"
-      # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml TCP is 6
-      protocol = "6"
-      tcp_options {
-        min = 22
-        max = 22
-      }
-  }
-}
-
-resource "oci_core_security_list" "public-inbound-icmp-0" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-
-  display_name = "public-inbound-icmp-0"
-
-  ingress_security_rules {
-    stateless = false
-    source = "0.0.0.0/0"
-    source_type = "CIDR_BLOCK"
-    # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml ICMP is 1
-    protocol = "1"
-    # For ICMP type and code see: https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml
-    icmp_options {
-      type = 3
-      code = 4
-    }
-  }
-}
-
-resource "oci_core_security_list" "public-inbound-icmp-1" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-
-  display_name = "public-inbound-icmp-1"
-
-  ingress_security_rules {
-    stateless = false
-    source = "${var.vcn_public_subnet_ip_address}/16"
-    source_type = "CIDR_BLOCK"
-    # Get protocol numbers from https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml ICMP is 1
-    protocol = "1"
-    # For ICMP type and code see: https://www.iana.org/assignments/icmp-parameters/icmp-parameters.xhtml
-    icmp_options {
-      type = 3
-    }
-  }
-}
-
-
-# Source from https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_subnet
-
-resource "oci_core_subnet" "vcn-private-subnet" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-  cidr_block = "${var.vcn_private_subnet_ip_address}/24"
-
-  # Caution: For the route table id, use module.vcn.nat_route_id.
-  # Do not use module.vcn.nat_gateway_id, because it is the OCID for the gateway and not the route table.
-  route_table_id = module.vcn.nat_route_id
-  security_list_ids = [
-    oci_core_security_list.private-outbound-all.id,
-    oci_core_security_list.private-inbound-ssh.id,
-    oci_core_security_list.private-inbound-icmp-0.id,
-    oci_core_security_list.private-inbound-icmp-0.id
-  ]
-  display_name = "private-subnet"
-}
-
-resource "oci_core_subnet" "vcn-public-subnet" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-  cidr_block = "${var.vcn_public_subnet_ip_address}/24"
-
-  route_table_id = module.vcn.ig_route_id
-  security_list_ids = [
-    oci_core_security_list.public-outbound-all.id,
-    oci_core_security_list.public-inbound-ssh.id,
-    oci_core_security_list.public-inbound-icmp-0.id,
-    oci_core_security_list.public-inbound-icmp-0.id
-  ]
-  display_name = "public-subnet"
-}
-
-
-# Source from https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/core_dhcp_options
-
-resource "oci_core_dhcp_options" "dhcp-options" {
-
-  compartment_id = var.vcn_compartment_ocid
-  vcn_id = module.vcn.vcn_id
-  #Options for type are either "DomainNameServer" or "SearchDomain"
-  options {
-    type = "DomainNameServer"
-    server_type = "VcnLocalPlusInternet"
-  }
-
-  display_name = "default-dhcp-options"
+  security_list_ids = [oci_core_vcn.vcn.default_security_list_id, oci_core_security_list.oke_security_list.id]
+  route_table_id    = oci_core_route_table.route_table_via_igw.id
 }

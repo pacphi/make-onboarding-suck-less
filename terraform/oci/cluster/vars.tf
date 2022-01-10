@@ -1,3 +1,16 @@
+locals {
+  compute_flexible_shapes = [
+    "VM.Standard.E3.Flex",
+    "VM.Standard.E4.Flex",
+    "VM.Standard3.Flex",
+    "VM.Optimized3.Flex",
+    "VM.Standard.A1.Flex"
+  ]
+  is_flexible_compute_instance_shape = contains(local.compute_flexible_shapes, var.compute_instance_shape)
+  instance_os = "Canonical Ubuntu"
+  os_version = "20.04"
+}
+
 variable "tenancy_ocid" {
   type = string
   description = "Oracle-assigned unique ID for Tenancy"
@@ -34,23 +47,53 @@ variable "compartment_ocid" {
   description = "Oracle-assigned unique ID for a Compartment"
 }
 
-variable "vcn_public_subnet_ocid" {
-  type = string
-  description = "Oracle-assigned unique ID for a public subnet"
-}
-
-variable "vcn_private_subnet_ocid" {
-  type = string
-  description = "Oracle-assigned unique ID for a private subnet"
-}
-
 variable "compute_instance_shape" {
   type = string
   description = "A shape is a template that determines the number of OCPUs, amount of memory, and other resources that are allocated to a compute instance. Compute shapes are available with AMD processors, Intel processors, and Arm-based processors.  See https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm."
-  default = "VM.Standard2.2"
+  default = "VM.Standard.E4.Flex"
+}
+
+variable "compute_instance_memory" {
+  description = "Amount of RAM allocated to flexible compute instance"
+  default = 16
+}
+
+variable "compute_instance_ocpus" {
+  description = "# of CPUs allocated to flexible compute instance"
+  default = 2
 }
 
 variable "compute_instance_source_image_ocid" {
   type = string
   description = "Oracle-assigned unique ID for a pre-existing compute instance image.  To list available images, see https://docs.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/compute/image/list.html."
+}
+
+variable "k8s_version" {
+  type = string
+  description = "A support Kubernetes cluster version (e.g., v1.20.11).  See https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengaboutk8sversions.htm."
+  default = "v1.21.5"
+}
+
+variable "k8s_api_endpoint_subnet_ocid" {
+  type = string
+  description = "OCID of the Kubernetes API endpoint subnet"
+}
+
+variable "k8s_net_pods_cidr" {
+  type = string
+  default = "10.1.0.0/16"
+}
+
+variable "k8s_net_services_cidr" {
+  type = string
+  default = "10.2.0.0/16"
+}
+
+variable "cluster_name" {
+  type = string
+  description = "The name ascribed to the Kubernetes cluster"
+}
+
+variable "node_pool_size" {
+  default = 6
 }
