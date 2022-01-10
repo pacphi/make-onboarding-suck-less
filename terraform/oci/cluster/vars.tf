@@ -1,3 +1,5 @@
+# For supported images see https://docs.oracle.com/en-us/iaas/Content/ContEng/Reference/contengimagesshapes.htm
+
 locals {
   compute_flexible_shapes = [
     "VM.Standard.E3.Flex",

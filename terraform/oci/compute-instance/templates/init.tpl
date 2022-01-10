@@ -20,4 +20,4 @@ ${oci_pk_file_contents}
 ' >> /home/ubuntu/.oci/oci_api_key.pem
 
 chown -R ubuntu:ubuntu /home/ubuntu/.oci
-chmod u+rw-x /home/ubuntu/.oci/*
+chmod 600 /home/ubuntu/.oci/*
