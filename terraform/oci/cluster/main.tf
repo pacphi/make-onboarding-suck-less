@@ -1,5 +1,5 @@
 data "oci_core_images" "i" {
-  compartment_id           = var.compute_instance_compartment_ocid
+  compartment_id           = var.compartment_ocid
   operating_system         = local.instance_os
   operating_system_version = local.os_version
   shape                    = var.compute_instance_shape
