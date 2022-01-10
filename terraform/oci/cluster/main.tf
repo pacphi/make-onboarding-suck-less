@@ -32,7 +32,7 @@ resource "oci_containerengine_cluster" "oke-cluster" {
       pods_cidr = var.k8s_net_pods_cidr
       services_cidr = var.k8s_net_services_cidr
     }
-    service_lb_subnet_ids = [ var.vcn_public_subnet_ocid ]
+    service_lb_subnet_ids = [ var.k8s_lb_subnet_ocid ]
   }
 }
 

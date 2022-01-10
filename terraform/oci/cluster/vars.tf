@@ -74,6 +74,11 @@ variable "k8s_api_endpoint_subnet_ocid" {
   description = "OCID of the Kubernetes API endpoint subnet"
 }
 
+variable "k8s_lb_subnet_ocid" {
+  type = string
+  description = "OCID of the Kubernetes Load-balancer subnet"
+}
+
 variable "k8s_net_pods_cidr" {
   type = string
   default = "10.1.0.0/16"
