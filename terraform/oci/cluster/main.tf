@@ -45,6 +45,7 @@ resource "oci_containerengine_node_pool" "oke-node-pool" {
   compartment_id = var.compartment_ocid
   kubernetes_version = var.k8s_version
   name = "${var.cluster_name}-pool"
+  node_shape = var.compute_instance_shape
   node_config_details {
     placement_configs {
         availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name

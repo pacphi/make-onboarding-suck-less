@@ -55,17 +55,17 @@ variable "compartment_ocid" {
 
 variable "compute_instance_shape" {
   type = string
-  description = "A shape is a template that determines the number of OCPUs, amount of memory, and other resources that are allocated to a compute instance. Compute shapes are available with AMD processors, Intel processors, and Arm-based processors.  See https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm."
+  description = "A shape is a template that determines the number of OCPUs, amount of memory, and other resources that are allocated to a compute instance (node). Compute shapes are available with AMD processors, Intel processors, and Arm-based processors.  See https://docs.oracle.com/en-us/iaas/Content/Compute/References/computeshapes.htm."
   default = "VM.Standard.E4.Flex"
 }
 
 variable "compute_instance_memory" {
-  description = "Amount of RAM allocated to flexible compute instance"
+  description = "Amount of RAM allocated to flexible compute instance (node)"
   default = 16
 }
 
 variable "compute_instance_ocpus" {
-  description = "# of CPUs allocated to flexible compute instance"
+  description = "# of CPUs allocated to flexible compute instance (node)"
   default = 2
 }
 
