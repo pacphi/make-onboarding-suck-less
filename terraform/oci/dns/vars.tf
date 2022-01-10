@@ -32,6 +32,10 @@ variable "root_zone_name" {
   description = "The name of an existing Oracle Cloud zone; it'll have an NS record added to it referencing the name servers of a new zone"
 }
 
+variable "root_zone_ocid" {
+  description = "The OCID of the root zone"
+}
+
 variable "dns_prefix" {
   description = "Prefix used to create a new domain (e.g., <dns_prefix>.<base-domain>)"
 }
