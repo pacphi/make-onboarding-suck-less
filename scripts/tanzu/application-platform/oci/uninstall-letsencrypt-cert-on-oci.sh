@@ -10,7 +10,7 @@ kubectl delete clusterissuer letsencrypt-prod -n cert-manager
 kubectl delete cert tls -n contour-tls
 
 ## Delete Secrets
-kubectl delete secret sa-secret -n cert-manager
+kubectl delete secret oci-profile -n cert-manager
 kubectl delete secret letsencrypt-prod -n cert-manager
 kubectl delete secret tls -n contour-tls
 kubectl delete secret tls -n learningcenter
