@@ -11,12 +11,17 @@ data "oci_core_images" "i" {
   }
 }
 
+resource "random_string" "suffix" {
+  length           = 3
+  special          = false
+}
+
 # Source from https://registry.terraform.io/providers/hashicorp/oci/latest/docs/resources/containerengine_cluster
 
 resource "oci_containerengine_cluster" "oke-cluster" {
   compartment_id = var.compartment_ocid
   kubernetes_version = var.k8s_version
-  name = var.cluster_name
+  name = "${var.cluster_name}-${random_string.suffix.result}"
   vcn_id = var.vcn_ocid
 
   endpoint_config {
@@ -44,7 +49,7 @@ resource "oci_containerengine_node_pool" "oke-node-pool" {
   cluster_id = oci_containerengine_cluster.oke-cluster.id
   compartment_id = var.compartment_ocid
   kubernetes_version = var.k8s_version
-  name = "${var.cluster_name}-pool"
+  name = "${var.cluster_name}-pool-${random_string.suffix.result}"
   node_shape = var.compute_instance_shape
   node_config_details {
     placement_configs {
