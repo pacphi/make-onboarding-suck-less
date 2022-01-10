@@ -63,11 +63,6 @@ variable "compute_instance_ocpus" {
   default = 2
 }
 
-variable "compute_instance_source_image_ocid" {
-  type = string
-  description = "Oracle-assigned unique ID for a pre-existing compute instance image.  To list available images, see https://docs.oracle.com/en-us/iaas/tools/oci-cli/latest/oci_cli_docs/cmdref/compute/image/list.html."
-}
-
 variable "k8s_version" {
   type = string
   description = "A support Kubernetes cluster version (e.g., v1.20.11).  See https://docs.oracle.com/en-us/iaas/Content/ContEng/Concepts/contengaboutk8sversions.htm."
