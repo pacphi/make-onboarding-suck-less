@@ -6,7 +6,7 @@ data "oci_core_images" "i" {
 
   filter {
     name   = "display_name"
-    values = ["^.*Ubuntu[^G]*$"]
+    values = ["^.*Oracle[^G]*$"]
     regex  = true
   }
 }

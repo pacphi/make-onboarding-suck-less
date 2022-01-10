@@ -7,8 +7,8 @@ locals {
     "VM.Standard.A1.Flex"
   ]
   is_flexible_node_shape = contains(local.compute_flexible_shapes, var.compute_instance_shape)
-  instance_os = "Canonical Ubuntu"
-  os_version = "20.04"
+  instance_os = "Oracle"
+  os_version = "8"
 }
 
 variable "tenancy_ocid" {
