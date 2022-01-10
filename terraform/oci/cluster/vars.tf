@@ -79,7 +79,7 @@ variable "k8s_lb_subnet_ocid" {
   description = "OCID of the Kubernetes Load-balancer subnet"
 }
 
-variable "k8s_node_pool_ocid" {
+variable "k8s_node_pool_subnet_ocid" {
   type = string
   description = "OCID of the Kubernetes node pool subnet"
 }
