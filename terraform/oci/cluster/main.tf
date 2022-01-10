@@ -66,8 +66,8 @@ resource "oci_containerengine_node_pool" "oke-node-pool" {
   dynamic "node_shape_config" {
     for_each = local.is_flexible_node_shape ? [1] : []
     content {
-      memory_in_gbs = var.node_memory
-      ocpus         = var.node_ocpus
+      memory_in_gbs = var.compute_instance_memory
+      ocpus         = var.compute_instance_ocpus
     }
   }
 

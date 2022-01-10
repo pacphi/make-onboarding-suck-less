@@ -6,7 +6,7 @@ locals {
     "VM.Optimized3.Flex",
     "VM.Standard.A1.Flex"
   ]
-  is_flexible_compute_instance_shape = contains(local.compute_flexible_shapes, var.compute_instance_shape)
+  is_flexible_node_shape = contains(local.compute_flexible_shapes, var.compute_instance_shape)
   instance_os = "Canonical Ubuntu"
   os_version = "20.04"
 }
@@ -35,6 +35,12 @@ variable "fingerprint" {
 variable "region" {
   type = string
   description = "Oracle Cloud data center location (e.g., us-phoenix-1)"
+}
+
+variable "ssh_public_key_path" {
+  type = string
+  description = "The path to a public key (RSA format) file that will be installed on the nodes and used for secure shell access with a private key pair."
+  default = "~/.ssh/id_rsa.pub"
 }
 
 variable "vcn_ocid" {
