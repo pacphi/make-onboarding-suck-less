@@ -7,8 +7,8 @@ locals {
     "VM.Standard.A1.Flex"
   ]
   is_flexible_node_shape = contains(local.compute_flexible_shapes, var.compute_instance_shape)
-  instance_os = "Oracle"
-  os_version = "8.4"
+  instance_os = "Oracle Linux"
+  os_version = "7.9"
 }
 
 variable "tenancy_ocid" {
