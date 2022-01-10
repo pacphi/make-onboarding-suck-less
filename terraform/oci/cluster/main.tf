@@ -48,17 +48,17 @@ resource "oci_containerengine_node_pool" "oke-node-pool" {
   node_config_details {
     placement_configs {
         availability_domain = data.oci_identity_availability_domains.ads.availability_domains[0].name
-        subnet_id = var.vcn_private_subnet_ocid
+        subnet_id = var.k8s_node_pool_subnet_ocid
     }
 
     placement_configs {
         availability_domain = data.oci_identity_availability_domains.ads.availability_domains[1].name
-        subnet_id = var.vcn_private_subnet_ocid
+        subnet_id = var.k8s_node_pool_subnet_ocid
     }
 
     placement_configs {
         availability_domain = data.oci_identity_availability_domains.ads.availability_domains[2].name
-        subnet_id = var.vcn_private_subnet_ocid
+        subnet_id = var.k8s_node_pool_subnet_ocid
     }
 
     size = var.node_pool_size

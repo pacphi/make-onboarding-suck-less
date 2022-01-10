@@ -79,6 +79,11 @@ variable "k8s_lb_subnet_ocid" {
   description = "OCID of the Kubernetes Load-balancer subnet"
 }
 
+variable "k8s_node_pool_ocid" {
+  type = string
+  description = "OCID of the Kubernetes node pool subnet"
+}
+
 variable "k8s_net_pods_cidr" {
   type = string
   default = "10.1.0.0/16"
