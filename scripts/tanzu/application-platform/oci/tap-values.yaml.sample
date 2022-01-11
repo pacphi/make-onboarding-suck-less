@@ -13,7 +13,7 @@ container_image_server_username: "replace.me/replace.me"
 container_image_server_password: "replace.me"
 tanzunet_username: "replace.me"
 tanzunet_password: "replace.me"
-shared_ingress_service_type: "LoadBalancer"
+shared_ingress_service_type: "NodePort"
 #! Choices of supply chain are [ basic, testing, testing_scanning ].
 #! @see https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-16, https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-19, and https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-22
 supply_chain: "basic"

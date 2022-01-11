@@ -2,9 +2,6 @@
 ---
 profile: #@ data.values.profile
 
-excluded_packages:
-  - cert-manager.tanzu.vmware.com
-
 ceip_policy_disclosed: #@ data.values.ceip_policy_disclosed
 
 accelerator:

@@ -41,15 +41,6 @@ Obtain the new workload cluster `kubectl` configuration using the script:
 * setup-access.sh
 
 
-## Install cert-manager
-
-We will install a [custom implementation](https://gitlab.com/dn13/cert-manager-webhook-oci) (instead of one provided by Tanzu package)
-
-```
-helm repo add cert-manager-webhook-oci https://dn13.gitlab.io/cert-manager-webhook-oci
-helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci
-```
-
 ## Install kapp-controller
 
 ```
@@ -295,7 +286,7 @@ tanzu package available get external-dns.tanzu.vmware.com/0.8.0+vmware.1-tkg.1 -
 Let's install the external-dns package with a [script](install-external-dns-package-on-oci.sh)
 
 ```
-./install-external-dns-package-on-oci.sh {project-id} {service-account-key-path-to-file-in-json-format} {domain}
+./install-external-dns-package-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain}
 ```
 > This script simplifies the process of configuring and installing external-dns on your OCI cluster.
 
@@ -309,8 +300,19 @@ If you chose not to install `external-dns`, then you will have to [manually add]
 
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on an OCI cluster where `cert-manager` is already installed.
 
+##### Install cert-manager-webhook
+
+We will install a [custom implementation](https://gitlab.com/dn13/cert-manager-webhook-oci) (instead of one provided by Tanzu package)
+
 ```
-./install-letsencrypt-cert-on-oci.sh {email-address} {project-id} {service-account-key-path-to-file-in-json-format} {domain}
+helm repo add cert-manager-webhook-oci https://dn13.gitlab.io/cert-manager-webhook-oci
+helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci
+```
+
+Then
+
+```
+./install-letsencrypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
 

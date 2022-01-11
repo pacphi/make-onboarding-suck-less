@@ -59,7 +59,7 @@ deployment:
   - --provider=oci
   securityContext: {}
   volumeMounts:
-  - mountPath: /secrets/external-dns-admin-credentials
+  - mountPath: /etc/kubernetes/
     name: external-dns-admin-credentials
     readOnly: true
   volumes:
