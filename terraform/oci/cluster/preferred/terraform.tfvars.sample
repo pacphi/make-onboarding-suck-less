@@ -82,7 +82,6 @@ bastion_notification_topic    = "bastion_server_notification"
 # Bastion service
 create_bastion_service        = false
 bastion_service_access        = ["0.0.0.0/0"]
-bastion_service_name          = "bastion"
 bastion_service_target_subnet = "operator"
 
 # Operator host
