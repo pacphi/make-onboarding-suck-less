@@ -1,38 +1,39 @@
 $script = <<-SCRIPT
 
 TZ=America/Los_Angeles
-ARGO_VERSION=3.1.14
-ARGOCD_VERSION=2.1.6
-BOSH_VERSION=6.4.7
-CF_VERSION=7.3.0
+ARGO_VERSION=3.2.4
+ARGOCD_VERSION=2.1.7
+BOSH_VERSION=6.4.9
+CF_VERSION=7.4.0
 CREDHUB_VERSION=2.9.0
-GH_VERSION=2.1.0
-GO_VERSION=1.17
-HELM_VERSION=3.7.0
-HELMFILE_VERSION=0.141.0
+GH_VERSION=2.3.0
+GO_VERSION=1.17.4
+HELM_VERSION=3.7.1
+HELMFILE_VERSION=0.142.0
 AWS_IAM_AUTHENTICATOR_VERSION="1.21.2/2021-07-05"
-IMGPKG_VERSION=0.20.0
-KAPP_VERSION=0.42.0
+IMGPKG_VERSION=0.23.1
+KAPP_VERSION=0.43.0
 KBLD_VERSION=0.31.0
 KIND_VERSION=0.11.1
 KWT_VERSION=0.0.6
 KUBECTL_VERSION=1.22.1
 KNATIVE_VERSION=1.0.0
 LEFTOVERS_VERSION=0.62.0
-OM_VERSION=7.3.2
+MKPCLI_VERSION=0.5.3
+OM_VERSION=7.4.1
 PIVNET_VERSION=3.0.1
 TEKTONCD_VERSION=0.21.0
-TERRAFORM_VERSION=1.0.9
+TERRAFORM_VERSION=1.1.3
 TERRAFORM_DOCS_VERSION=0.16.0
-TMC_VERSION=0.4.0-21354296
-VELERO_VERSION=1.7.0
+TMC_VERSION=0.4.0-089ff971
+VELERO_VERSION=1.7.1
 VENDIR_VERSION=0.23.0
-YTT_VERSION=0.37.0
+YTT_VERSION=0.38.0
 
 mkdir downloads && cd downloads && \
 ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
 apt update -y && \
-apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3-dev ruby-dev snapd sudo tmux tzdata unzip wget -y && \
+apt install build-essential curl default-jre git gpg graphviz gzip httpie libnss3-tools jq openssl pv python3-pip python3.8-dev python3.8-venv ruby-dev snapd sudo tmux tzdata unzip vim wget -y && \
 add-apt-repository ppa:cncf-buildpacks/pack-cli && \
 apt install pack-cli -y && \
 sudo snap install snap-store && \
@@ -154,6 +155,9 @@ curl -LO https://github.com/vmware-tanzu/velero/releases/download/v${VELERO_VERS
 tar -xvf velero-v${VELERO_VERSION}-linux-amd64.tar.gz && \
 chmod +x velero-v${VELERO_VERSION}-linux-amd64/velero && \
 sudo mv velero-v${VELERO_VERSION}-linux-amd64/velero /usr/local/bin && \
+curl -LO https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh && \
+chmod +x install.sh && \
+./install.sh --accept-all-defaults && \
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
 echo \
   "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
@@ -167,22 +171,25 @@ docker run --rm hello-world && \
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64 && \
 chmod +x ./kind && \
 sudo mv ./kind /usr/local/bin && \
+curl -LO https://github.com/vmware-labs/marketplace-cli/releases/download/v${MKPCLI_VERSION}/mkpcli-linux-amd64 && \
+chmod +x mkpcli-linux-amd64 && \
+mv mkpcli-linux-amd64 /usr/local/bin/mkpcli && \
 cd .. && rm -Rf downloads /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 apt clean
 
-if [ -e "/home/ubuntu/tanzu" ]; then
-  sudo chmod +x /home/ubuntu/tanzu
-  sudo mv /home/ubuntu/tanzu /usr/local/bin
+if [ -e "/home/vagrant/tanzu" ]; then
+  sudo chmod +x /home/vagrant/tanzu
+  sudo mv /home/vagrant/tanzu /usr/local/bin
 fi
 
-if [ -e "/home/ubuntu/tanzu-cli-bundle-linux-amd64.tar" ]; then
+if [ -e "/home/vagrant/tanzu-cli-bundle-linux-amd64.tar" ]; then
   tar xvf tanzu-cli-bundle-linux-amd64.tar -C .
   tanzu plugin clean
   tanzu plugin install --local cli all
   rm -Rf cli tanzu-cli-bundle-linux-amd64.tar
 fi
 
-chmod +x inventory.sh
+chmod +x *.sh
 
 SCRIPT
 
@@ -197,5 +204,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision "file", source: "dist", destination: "/home/vagrant"
   config.vm.provision "file", source: "inventory.sh", destination: "/home/vagrant/inventory.sh"
+  config.vm.provision "file", source: "fetch-tanzu-cli.sh", destination: "/home/vagrant/fetch-tanzu-cli.sh"
+  config.vm.provision "file", source: "fetch-and-install-oci-cli.sh", destination: "/home/vagrant/fetch-and-install-oci-cli.sh"
   config.vm.provision "shell", inline: $script
 end

@@ -33,6 +33,7 @@ gcloud beta compute instances create {INSTANCE_NAME} \
     --zone {AVAILABILITY_ZONE} \
     --image=https://www.googleapis.com/compute/v1/projects/{PROJECT_ID}/global/images/{IMAGE_NAME} \
     --machine-type {MACHINE_TYPE}
+    --scopes cloud-platform
 ```
 > Replace `{INSTANCE_NAME}` with the name you want to assign the VM.  Replace `{AVAILABILITY_ZONE}` with one of `gcloud compute zones list`.  Replace `{PROJECT_ID}` with a valid [project identifier](https://cloud.google.com/resource-manager/docs/creating-managing-projects).  Replace `{IMAGE_NAME}` with the name of a custom image that has already been created.  Finally, replace `{MACHINE_TYPE}` with one of `gcloud compute machine-types list`.
 

@@ -1,0 +1,28 @@
+#@data/values
+---
+#! Choices of profile are [ dev, full ].
+#! @see https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install.html#about-tanzu-application-platform-package-profiles-1
+profile: "full"
+ingress_domain: "replace.me"
+ingress_namespace: "contour-tls"
+ingress_secret_name: "tls"
+ceip_policy_disclosed: true
+container_image_server_url: "000000000000.dkr.ecr.us-east-1.amazonaws.com"
+container_image_repository: "tap"
+container_image_server_username: "replace.me"
+container_image_server_password: "replace.me"
+tanzunet_username: "replace.me"
+tanzunet_password: "replace.me"
+shared_ingress_service_type: "LoadBalancer"
+#! Choices of supply chain are [ basic, testing, testing_scanning ].
+#! @see https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-16, https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-19, and https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install-components.html#install-22
+supply_chain: "basic"
+scan_image_pull_secret: "registry-credentials"
+metadata_store_ingress_service_type: "ClusterIP"
+tap_catalog_github_repository_url: "replace.me"
+tap_gui_ingress_service_type: "ClusterIP"
+tap_gui_ingress_enabled: true
+accelerator_ingress_enabled: true
+accelerator_ingress_service_type: "ClusterIP"
+github_personal_access_token: "replace.me"
+appliveview_connector_namespaces: [default]

@@ -17,6 +17,13 @@ cp ../scripts/fetch-tanzu-cli.sh .
 > Replace `{VMWUSER}` and `{VMWPASS}` with credentials you use to authenticate to https://console.cloud.vmware.com.  Replace `{TANZU_CLI_VERSION}` with a supported (and available) version number for the CLI you wish to embed in the container image.  If your account has been granted access, the script will download a tarball, extract the [Tanzu CLI](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-tanzu-cli-reference.html) and place it into a `dist` directory.  The tarball and other content will be discarded.  (The script has "smarts" built-in to determine whether or not to fetch a version of the CLI that may have already been fetched and placed in the `dist` directory).
 
 
+(Optional) Fetch and install oci CLI
+
+```
+cp ../scripts/fetch-and-install-oci-cli.sh .
+```
+> You're just copying this script into place.  It will be part of the container image and you'll be able to execute it after a `docker run`.
+
 ## Building
 
 If you want to build a portable container image, then execute

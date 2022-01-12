@@ -1,0 +1,7 @@
+tenancy_ocid = "ocid1.tenancy.oc1..aaaaaaaa-unique"
+user_ocid = "ocid1.user.oc1..aaaaaaaapa-unique"
+private_key_path = "~/.oci/oci_api_key.pem"
+fingerprint = "94:c5:08:46:70:06:3e:a2:35:81:9b:19:81:dc:d0:d0"
+region = "us-phoenix-1"
+vcn_compartment_ocid = "ocid1.compartment.oc1..aaaaaaaa-unique"
+vcn_name = "tap-network"
