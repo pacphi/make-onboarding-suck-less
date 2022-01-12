@@ -85,7 +85,7 @@ bastion_service_access        = ["0.0.0.0/0"]
 bastion_service_target_subnet = "operator"
 
 # Operator host
-create_operator                    = true
+create_operator                    = false
 operator_image_id                  = "Oracle"
 enable_operator_instance_principal = true
 operator_nsg_ids                   = []
@@ -138,8 +138,8 @@ image_signing_keys = []
 # Node Pools
 check_node_active = "all"
 node_pools = {
-  np1 = { shape = "VM.Standard.E4.Flex", ocpus = 2, memory = 16, node_pool_size = 3, boot_volume_size = 150, label = { app = "frontend", pool = "np1" } }
-  np2 = { shape = "VM.Standard.E4.Flex", ocpus = 4, memory = 16, node_pool_size = 3, boot_volume_size = 150, label = { app = "frontend", pool = "np2" } }
+  np1 = { shape = "VM.Standard.E4.Flex", ocpus = 2, memory = 16, node_pool_size = 6, boot_volume_size = 150, label = { app = "frontend", pool = "np1" } }
+  np2 = { shape = "VM.Standard.E4.Flex", ocpus = 4, memory = 16, node_pool_size = 6, boot_volume_size = 150, label = { app = "frontend", pool = "np2" } }
 }
 node_pool_image_id    = "none"
 node_pool_name_prefix = "np"

@@ -60,10 +60,10 @@ deployment:
   securityContext: {}
   volumeMounts:
   - mountPath: /etc/kubernetes/
-    name: external-dns-admin-credentials
+    name: config
     readOnly: true
   volumes:
-  - name: external-dns-admin-credentials
+  - name: config
     secret:
       secretName: external-dns-admin-credentials
 EOF

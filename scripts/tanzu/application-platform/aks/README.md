@@ -97,7 +97,7 @@ tanzu package repository add tanzu-standard-repository \
   --namespace tanzu-package-repo-global
 
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
   --namespace tap-install
 ```
 
@@ -164,7 +164,7 @@ Then, install the package by running:
 
 ```
 ytt -f tap-values.yaml -f tap-config.yaml > tap-reified-values.yaml
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -224,7 +224,7 @@ $ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-reified-values.yaml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -395,7 +395,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.4.0 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui

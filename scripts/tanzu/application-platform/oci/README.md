@@ -34,7 +34,7 @@ We'll employ this [Terraform module](../../../../terraform/oci/registry) to crea
 
 ## Create a new workload cluster
 
-Next, we're going to employ another [Terraform module](../../../../terraform/oci/cluster) to create a cluster.
+Next, we're going to employ another [Terraform module](../../../../terraform/oci/cluster/preferred) to create a cluster.
 
 Obtain the new workload cluster `kubectl` configuration using the script:
 
@@ -115,7 +115,7 @@ tanzu package repository add tanzu-standard-repository \
   --namespace tanzu-package-repo-global
 
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
   --namespace tap-install
 ```
 
@@ -182,7 +182,7 @@ Then, install the package by running:
 
 ```
 ytt -f tap-values.yaml -f tap-config.yaml > tap-reified-values.yaml
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -242,7 +242,7 @@ $ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0 --values-file tap-reified-values.yaml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-reified-values.yaml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -306,7 +306,7 @@ We will install a [custom implementation](https://gitlab.com/dn13/cert-manager-w
 
 ```
 helm repo add cert-manager-webhook-oci https://dn13.gitlab.io/cert-manager-webhook-oci
-helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci
+helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci --set groupName {domain}
 ```
 
 Then
@@ -424,7 +424,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.4.0 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui
@@ -503,7 +503,7 @@ helm uninstall --namespace cert-manager cert-manager-webhook-oci
 
 ## Teardown the cluster
 
-Use the [Terraform module](../../../../terraform/gcp/cluster/README.md) to do destroy the cluster.
+Use the [Terraform module](../../../../terraform/oci/cluster/README.md) to do destroy the cluster.
 
 ```
 kubectl config get-contexts
