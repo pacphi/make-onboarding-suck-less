@@ -22,6 +22,7 @@
 * [x] [on AKS](aks/README.md)
 * [x] [on EKS](eks/README.md)
 * [x] [on GKE](gke/README.md)
+* [ ] [on OKE](oci/README.md)
 
 ## Usage
 
