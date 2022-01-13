@@ -21,8 +21,8 @@ TANZU_NETWORK_PASSWORD="$3"
 
 pivnet login --api-token=$TANZU_NETWORK_API_TOKEN
 
-mkdir -p $HOME/tanzu
 cd /tmp
+mkdir -p tanzu-cluster-essentials
 TAP_VERSION="1.0.0"
 TAP_PRODUCT_FILE_ID=1105818
 pivnet download-product-files --product-slug='tanzu-cluster-essentials' --release-version="${TAP_VERSION}" --product-file-id="${TAP_PRODUCT_FILE_ID}"
