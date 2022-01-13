@@ -8,10 +8,10 @@ As a developer you're going to want to have a few tools installed on your workst
   * Your kubeconfig context is set to the prepared cluster `kubectl config use-context {CONTEXT_NAME}`.  Replace `{CONTEXT_NAME}` with the context for the cluster you wish to target.
   * By the way, that cluster should have the Tanzu Application Platform installed on it.
 * [tanzu](https://docs.vmware.com/en/VMware-Tanzu-Kubernetes-Grid/1.4/vmware-tanzu-kubernetes-grid-14/GUID-install-cli.html#download-and-unpack-the-tanzu-cli-and-kubectl-1) CLI
-  * The `apps` plugin is installed. See the [Apps Plugin Overview](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-cli-plugins-apps-overview-installation.html#Installation).
+  * The `apps` plugin is installed. See the [Apps Plugin Overview](https://docs.vmware.com/en/Tanzu-Application-Platform/1.0/tap/GUID-install-general.html#install-or-update-the-tanzu-cli-and-plugins-7).
 * This Visual Studio Code [extension](INSTALL.md#installing-the-visual-studio-code-tap-extension)
 * Ask your platform operator to create a new namespace on the target cluster for your workloads to run within.
-  * This handy [script](setup-developer-namespace.sh) must be run in advance.  Or refer to these [instructions](https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap-0-4/GUID-install-components.html#set-up-developer-namespaces-to-use-installed-packages-40).
+  * This handy [script](setup-developer-namespace.sh) must be run in advance.  Or refer to these [instructions](https://docs.vmware.com/en/Tanzu-Application-Platform/1.0/tap/GUID-install-components.html#setup).
 
 ## Accelerators, increasing development velocity
 
