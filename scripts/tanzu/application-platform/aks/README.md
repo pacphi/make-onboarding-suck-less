@@ -25,29 +25,21 @@ Obtain the new workload cluster `kubectl` configuration using the scripts:
 * list-clusters.sh
 * set-kubectl-context.sh
 
-## Install kapp-controller
+## Install Tanzu Cluster Essentials
 
 ```
-kubectl apply -f https://github.com/vmware-tanzu/carvel-kapp-controller/releases/download/v0.30.0/release.yml
+./install-cluster-essentials.sh {tanzu-network-api-token} {tanzu-network-username} {tanzu-network-password}
 ```
 
-Verify install
+If you see an error message like
 
 ```
-kubectl get deployment kapp-controller -n kapp-controller -o yaml | grep kapp-controller.carvel.dev/version
+kapp: Error: waiting on reconcile customresourcedefinition/packagerepositories.packaging.carvel.dev (apiextensions.k8s.io/v1) cluster:
+  Errored:
+    Getting resource customresourcedefinition/packagerepositories.packaging.carvel.dev (apiextensions.k8s.io/v1) cluster: customresourcedefinitions.apiextensions.k8s.io "packagerepositories.packaging.carvel.dev" not found (reason: NotFound)
 ```
 
-## Install secret-gen-controller
-
-```
-kapp deploy -y -a sg -f https://github.com/vmware-tanzu/carvel-secretgen-controller/releases/download/v0.7.1/release.yml
-```
-
-Verify install
-
-```
-kubectl get deployment secretgen-controller -n secretgen-controller -o yaml | grep secretgen-controller.carvel.dev/version
-```
+just re-run the above script.
 
 ## Add the Tanzu Application Platform specific plugins
 
@@ -63,8 +55,8 @@ You'll want to copy and save the contents of the [install-tap-plugins.sh](../ins
 If you need to revert back to the `v1.4.0` version, run:
 
 ```
-tanzu plugin delete package
-tanzu plugin install package --local {path-to-cli-directory}
+tanzu plugin clean
+tanzu plugin install all --local {path-to-cli-directory}
 ```
 > Replace `{path-to-cli-directory}` with a relative path to the `cli` directory that hosts the `v1.4.0` version.  If you're using a jump box, it's typically just `$HOME/cli`.
 
@@ -97,7 +89,7 @@ tanzu package repository add tanzu-standard-repository \
   --namespace tanzu-package-repo-global
 
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.0.0 \
   --namespace tap-install
 ```
 
@@ -164,7 +156,7 @@ Then, install the package by running:
 
 ```
 ytt -f tap-values.yaml -f tap-config.yaml > tap-reified-values.yaml
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 1.0.0 --values-file tap-reified-values.yaml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -180,7 +172,7 @@ Verify all the necessary packages in the profile are installed by running:
 ```
 tanzu package installed list -A
 ```
-> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.  When you run the package install for TAP, it may fail fast because of sequencing.  Depending on whether you enabled ingress for your `tap-gui` configuration, `tap-gui` will require an `HttpProxy` resource, but those CRDs won’t exist until later in the process when the Cloud Native Runtimes package installs Contour.  If you're patient, everything will eventually get reconciled and figure itself out, but admittedly a fast failure is a poor experience for new users.  This is a known issue and will be addressed in a subsequent build before the official Beta 4 release.
+> Sometimes the install will time out.  That's ok.  Attempt to execute the command above until you see something like the sample output below.  If any of the packages has a "Reconcile failed" you'll need to troubleshoot and fix before proceeding.  When you run the package install for TAP, it may fail fast because of sequencing.  Depending on whether you enabled ingress for your `tap-gui` configuration, `tap-gui` will require an `HttpProxy` resource, but those CRDs won’t exist until later in the process when the Cloud Native Runtimes package installs Contour.  If you're patient, everything will eventually get reconciled and figure itself out, but admittedly a fast failure is a poor experience for new users.  This is a known issue and will be addressed in a subsequent release.
 
 Sample output
 
@@ -188,34 +180,34 @@ Sample output
 $ tanzu package installed list -A
 - Retrieving installed packages...
   NAME                                PACKAGE-NAME                                         PACKAGE-VERSION  STATUS               NAMESPACE
-  accelerator                         accelerator.apps.tanzu.vmware.com                    0.5.1            Reconcile succeeded  tap-install
-  api-portal                          api-portal.tanzu.vmware.com                          1.0.6            Reconcile succeeded  tap-install
-  appliveview                         run.appliveview.tanzu.vmware.com                     1.0.0            Reconcile succeeded  tap-install
-  appliveview-conventions             build.appliveview.tanzu.vmware.com                   1.0.0            Reconcile succeeded  tap-install
-  buildservice                        buildservice.tanzu.vmware.com                        1.4.0-build.1    Reconcile succeeded  tap-install
-  cartographer                        cartographer.tanzu.vmware.com                        0.0.8-rc.7       Reconcile succeeded  tap-install
+  accelerator                         accelerator.apps.tanzu.vmware.com                    1.0.0            Reconcile succeeded  tap-install
+  api-portal                          api-portal.tanzu.vmware.com                          1.0.8            Reconcile succeeded  tap-install
+  appliveview                         run.appliveview.tanzu.vmware.com                     1.0.1            Reconcile succeeded  tap-install
+  appliveview-conventions             build.appliveview.tanzu.vmware.com                   1.0.1            Reconcile succeeded  tap-install
+  buildservice                        buildservice.tanzu.vmware.com                        1.4.2            Reconcile succeeded  tap-install
+  cartographer                        cartographer.tanzu.vmware.com                        0.1.0            Reconcile succeeded  tap-install
   cert-manager                        cert-manager.tanzu.vmware.com                        1.5.3+tap.1      Reconcile succeeded  tap-install
   cnrs                                cnrs.tanzu.vmware.com                                1.1.0            Reconcile succeeded  tap-install
   contour                             contour.tanzu.vmware.com                             1.18.2+tap.1     Reconcile succeeded  tap-install
-  conventions-controller              controller.conventions.apps.tanzu.vmware.com         0.4.2            Reconcile succeeded  tap-install
-  developer-conventions               developer-conventions.tanzu.vmware.com               0.4.0-build1     Reconcile succeeded  tap-install
+  conventions-controller              controller.conventions.apps.tanzu.vmware.com         0.5.0            Reconcile succeeded  tap-install
+  developer-conventions               developer-conventions.tanzu.vmware.com               0.5.0-build1     Reconcile succeeded  tap-install
   fluxcd-source-controller            fluxcd.source.controller.tanzu.vmware.com            0.16.0           Reconcile succeeded  tap-install
   grype                               scst-grype.apps.tanzu.vmware.com                     1.0.0            Reconcile succeeded  tap-install
-  image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0-beta.2     Reconcile succeeded  tap-install
+  image-policy-webhook                image-policy-webhook.signing.run.tanzu.vmware.com    1.0.0            Reconcile succeeded  tap-install
   learningcenter                      learningcenter.tanzu.vmware.com                      0.1.0-build.6    Reconcile succeeded  tap-install
   learningcenter-workshops            workshops.learningcenter.tanzu.vmware.com            0.1.0-build.7    Reconcile succeeded  tap-install
-  ootb-delivery-basic                 ootb-delivery-basic.tanzu.vmware.com                 0.4.0-build.2    Reconcile succeeded  tap-install
-  ootb-supply-chain-testing-scanning  ootb-supply-chain-testing-scanning.tanzu.vmware.com  0.4.0-build.2    Reconcile succeeded  tap-install
-  ootb-templates                      ootb-templates.tanzu.vmware.com                      0.4.0-build.2    Reconcile succeeded  tap-install
+  metadata-store                      metadata-store.apps.tanzu.vmware.com                 1.0.1            Reconcile succeeded  tap-install
+  ootb-delivery-basic                 ootb-delivery-basic.tanzu.vmware.com                 0.5.1            Reconcile succeeded  tap-install
+  ootb-supply-chain-testing-scanning  ootb-supply-chain-testing-scanning.tanzu.vmware.com  0.5.1            Reconcile succeeded  tap-install
+  ootb-templates                      ootb-templates.tanzu.vmware.com                      0.5.1            Reconcile succeeded  tap-install
   scanning                            scst-scan.apps.tanzu.vmware.com                      1.0.0            Reconcile succeeded  tap-install
-  scst-store                          scst-store.tanzu.vmware.com                          1.0.0-beta.2     Reconcile succeeded  tap-install
   service-bindings                    service-bindings.labs.vmware.com                     0.6.0            Reconcile succeeded  tap-install
-  services-toolkit                    services-toolkit.tanzu.vmware.com                    0.5.0-rc.3       Reconcile succeeded  tap-install
+  services-toolkit                    services-toolkit.tanzu.vmware.com                    0.5.0            Reconcile succeeded  tap-install
   source-controller                   controller.source.apps.tanzu.vmware.com              0.2.0            Reconcile succeeded  tap-install
-  spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.2.0            Reconcile succeeded  tap-install
-  tap                                 tap.tanzu.vmware.com                                 0.4.0   Reconcile succeeded  tap-install
-  tap-gui                             tap-gui.tanzu.vmware.com                             1.0.0-rc.72      Reconcile succeeded  tap-install
-  tap-telemetry                       tap-telemetry.tanzu.vmware.com                       0.1.0            Reconcile succeeded  tap-install
+  spring-boot-conventions             spring-boot-conventions.tanzu.vmware.com             0.3.0            Reconcile succeeded  tap-install
+  tap                                 tap.tanzu.vmware.com                                 1.0.0            Reconcile succeeded  tap-install
+  tap-gui                             tap-gui.tanzu.vmware.com                             1.0.1            Reconcile succeeded  tap-install
+  tap-telemetry                       tap-telemetry.tanzu.vmware.com                       0.1.2            Reconcile succeeded  tap-install
   tekton-pipelines                    tekton.tanzu.vmware.com                              0.30.0           Reconcile succeeded  tap-install
 ```
 
@@ -224,7 +216,7 @@ $ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-reified-values.yaml -n tap-install
+tanzu package installed update tap -v 1.0.0 --values-file tap-reified-values.yaml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-reified-values.yaml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -347,7 +339,7 @@ You may use the convenience script to download a `.vsix` file for installation a
 What would you do if you saw the following after executing `tanzu package installed list -A`?
 
 ```
-buildservice                        buildservice.tanzu.vmware.com                        1.4.0-build.1                    Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
+buildservice                        buildservice.tanzu.vmware.com                        1.4.2                    Reconcile failed: Error (see .status.usefulErrorMessage for details)  tap-install
 ```
 
 Start by getting more detail about the error by running:
@@ -363,7 +355,7 @@ $ tanzu package installed get buildservice -n tap-install
 / Retrieving installation details for buildservice...
 NAME:                    buildservice
 PACKAGE-NAME:            buildservice.tanzu.vmware.com
-PACKAGE-VERSION:         1.4.0-build.1
+PACKAGE-VERSION:         1.4.2
 STATUS:                  Reconcile failed: Error (see .status.usefulErrorMessage for details)
 CONDITIONS:              [{ReconcileFailed True  Error (see .status.usefulErrorMessage for details)}]
 USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupdater/dependency-updater (buildservice.tanzu.vmware.com/v1alpha1) namespace: build-service:
@@ -373,14 +365,14 @@ USEFUL-ERROR-MESSAGE:    kapp: Error: waiting on reconcile tanzunetdependencyupd
 This is telling us that we're missing a CA.  What do we need to add to `tap-values.yml` then?
 
 ```
-tanzu package available get buildservice.tanzu.vmware.com/1.4.0-build.1 --values-schema --namespace tap-install
+tanzu package available get buildservice.tanzu.vmware.com/1.4.2 --values-schema --namespace tap-install
 ```
 
 Sample output
 
 ```
-$ tanzu package available get buildservice.tanzu.vmware.com/1.4.0-build.1 --values-schema --namespace tap-install
-| Retrieving package details for buildservice.tanzu.vmware.com/1.4.0-build.1...
+$ tanzu package available get buildservice.tanzu.vmware.com/1.4.2 --values-schema --namespace tap-install
+| Retrieving package details for buildservice.tanzu.vmware.com/1.4.2...
   KEY                             DEFAULT  TYPE    DESCRIPTION
   kp_default_repository           <nil>    string  docker repository (required)
   kp_default_repository_password  <nil>    string  registry password (required)
@@ -395,7 +387,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 1.0.0 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui

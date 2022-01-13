@@ -149,8 +149,8 @@ You'll want to copy and save the contents of the [install-tap-plugins.sh](instal
 If you need to revert back to the `v1.4.0` version, run:
 
 ```
-tanzu plugin delete package
-tanzu plugin install package --local {path-to-cli-directory}
+tanzu plugin clean
+tanzu plugin install all --local {path-to-cli-directory}
 ```
 > Replace `{path-to-cli-directory}` with a relative path to the `cli` directory that hosts the `v1.4.0` version.  If you're using a jump box, it's typically just `$HOME/cli`.
 
@@ -178,7 +178,7 @@ Add Tanzu Application Platform package repository to the cluster by running:
 
 ```
 tanzu package repository add tanzu-tap-repository \
-  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:0.4.0-build.13 \
+  --url registry.tanzu.vmware.com/tanzu-application-platform/tap-packages:1.0.0 \
   --namespace tap-install
 ```
 
@@ -260,7 +260,7 @@ EOF
 Install the package by running:
 
 ```
-tanzu package install tap -p tap.tanzu.vmware.com -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package install tap -p tap.tanzu.vmware.com -v 1.0.0 --values-file tap-values.yml -n tap-install
 ```
 > This will take some time.  Go grab a coffee and come back in 10 to 15 minutes.
 
@@ -294,7 +294,7 @@ ubuntu@ip-172-31-61-62:~$ tanzu package installed list -A
 To update all packages, run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 1.0.0 --values-file tap-values.yml -n tap-install
 ```
 > You'll need to do this when you add, adjust, or remove any key-value you specify in `tap-values.yml`.  Your mileage may vary.  The "nuclear" (and recommended) option if you're in a hurry is to just just delete the `tap` package and any lingering resources, then re-install.
 
@@ -451,7 +451,7 @@ EOT
 Let's apply our updates.
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file /tmp/tap-values-updated.yml -n tap-install
+tanzu package installed update tap -v 1.0.0 --values-file /tmp/tap-values-updated.yml -n tap-install
 ```
 
 Next, we'll patch a set of `ConfigMap`s in the `knative-serving` namespace by following these steps:
@@ -578,7 +578,7 @@ So we'll need to add a child property key named `ca_cert_data:` and an associate
 Then run:
 
 ```
-tanzu package installed update tap -v 0.4.0-build.13 --values-file tap-values.yml -n tap-install
+tanzu package installed update tap -v 1.0.0 --values-file tap-values.yml -n tap-install
 ```
 
 ### Problem with tap-gui
