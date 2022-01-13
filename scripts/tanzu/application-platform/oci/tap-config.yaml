@@ -46,16 +46,22 @@ ootb_supply_chain_basic:
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
+  gitops:
+    ssh_secret: #@ data.values.gitops_ssh_secret
 
 ootb_supply_chain_testing_scanning:
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
+  gitops:
+    ssh_secret: #@ data.values.gitops_ssh_secret
 
 ootb_supply_chain_testing:
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
+  gitops:
+    ssh_secret: #@ data.values.gitops_ssh_secret
 
 learningcenter:
   ingressDomain: #@ data.values.ingress_domain
