@@ -82,7 +82,7 @@ Evaluate:
 * [Tanzu Build Service](scripts/tanzu/build-service/README.md)
 * [Tanzu Observability](scripts/tanzu/observability/README.md)
 * [Tanzu Service Mesh](scripts/tanzu/service-mesh/README.md)
-* [Tanzu Application Platform](scripts/tanzu/community-edition/README.md)
+* [Tanzu Application Platform](scripts/tanzu/application-platform/README.md)
 * [Carvel kapp-controller](scripts/carvel/README.md)
 
 
