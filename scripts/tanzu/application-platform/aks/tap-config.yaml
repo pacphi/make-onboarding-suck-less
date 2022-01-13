@@ -69,6 +69,7 @@ ootb_supply_chain_testing:
     ssh_secret: #@ data.values.gitops_ssh_secret
 
 learningcenter:
+  ingressClass: "contour"
   ingressDomain: #@ data.values.ingress_domain
   ingressSecret:
     secretName: #@ data.values.ingress_secret_name
