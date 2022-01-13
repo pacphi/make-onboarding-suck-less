@@ -3,6 +3,7 @@
 #! Choices of profile are [ dev, full ].
 #! @see https://docs.vmware.com/en/VMware-Tanzu-Application-Platform/0.4/tap/GUID-install.html#about-tanzu-application-platform-package-profiles-1
 profile: "full"
+cluster_builder: "default"
 ingress_domain: "replace.me"
 ingress_namespace: "contour-tls"
 ingress_secret_name: "tls"

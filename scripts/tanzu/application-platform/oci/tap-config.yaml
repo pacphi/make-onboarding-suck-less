@@ -15,6 +15,8 @@ accelerator:
     secretName: #@ data.values.ingress_secret_name
 
 buildservice:
+  descriptor_name: "tap-1.0.0-full"
+  enable_automatic_dependency_updates: true
   kp_default_repository: #@ "{}/{}".format(data.values.container_image_server_url, data.values.container_image_repository)
   kp_default_repository_username: #@ data.values.container_image_server_username
   kp_default_repository_password: #@ data.values.container_image_server_password
@@ -43,6 +45,7 @@ metadata_store:
  app_service_type: #@ data.values.metadata_store_ingress_service_type
 
 ootb_supply_chain_basic:
+  cluster_builder: #@ data.values.cluster_builder
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
@@ -50,6 +53,7 @@ ootb_supply_chain_basic:
     ssh_secret: #@ data.values.gitops_ssh_secret
 
 ootb_supply_chain_testing_scanning:
+  cluster_builder: #@ data.values.cluster_builder
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
@@ -57,6 +61,7 @@ ootb_supply_chain_testing_scanning:
     ssh_secret: #@ data.values.gitops_ssh_secret
 
 ootb_supply_chain_testing:
+  cluster_builder: #@ data.values.cluster_builder
   registry:
     server: #@ data.values.container_image_server_url
     repository: #@ data.values.container_image_repository
