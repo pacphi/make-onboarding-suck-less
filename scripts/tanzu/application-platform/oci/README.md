@@ -129,9 +129,9 @@ REASON:
 
 / Retrieving repository tanzu-tap-repository...
 NAME:          tanzu-tap-repository
-VERSION:       4454281
+VERSION:       200943300
 REPOSITORY:    registry.tanzu.vmware.com/tanzu-application-platform/tap-packages
-TAG:           0.4.0
+TAG:           1.0.0
 STATUS:        Reconcile succeeded
 REASON:
 ```
@@ -156,7 +156,7 @@ Then run:
 To view possible configuration settings, run:
 
 ```
-tanzu package available get tap.tanzu.vmware.com/0.4.0 --values-schema --namespace tap-install
+tanzu package available get tap.tanzu.vmware.com/1.0.0 --values-schema --namespace tap-install
 ```
 > Note that currently that the `tap.tanzu.vmware.com` package does not show all configuration settings for packages it plans to install. To find them out, look at the individual package configuration settings via same `tanzu package available get` command (e.g. for CNRs use `tanzu package available get -n tap-install cnrs.tanzu.vmware.com/1.1.0 --values-schema`). Replace dashes with underscores. For example, if the package name is `cloud-native-runtimes`, use `cloud_native_runtimes` in the `tap-values` YAML file.
 

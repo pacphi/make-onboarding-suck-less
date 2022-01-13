@@ -35,20 +35,62 @@ EOF
 
 kubectl -n kube-system apply -f https://github.com/emberstack/kubernetes-reflector/releases/download/v6.0.42/reflector.yaml
 
-## Create the certificate in the contour-external namespace
-cat << EOF | tee knative-tls.yaml
+# Create namespace
+kubectl create ns contour-tls
+
+# Create TLSCertificateDelegation
+cat << EOF | tee tls-cert-delegation.yaml
+apiVersion: projectcontour.io/v1
+kind: TLSCertificateDelegation
+metadata:
+  name: contour-delegation
+  namespace: contour-tls
+spec:
+  delegations:
+    - secretName: tls
+      targetNamespaces:
+        - "*"
+EOF
+
+kubectl apply -f tls-cert-delegation.yaml
+
+# Expose API Portal
+## As of tap-beta4 there is no set of configuration options to do this via tap-values.yaml
+cat << EOF | tee api-portal-proxy.yaml
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: api-portal-external
+  namespace: api-portal
+spec:
+  routes:
+  - conditions:
+    - prefix: /
+    services:
+    - name: api-portal-server
+      port: 8080
+  virtualhost:
+    fqdn: "api-portal.${DOMAIN}"
+    tls:
+      secretName: contour-tls/tls
+EOF
+
+kubectl apply -f api-portal-proxy.yaml
+
+## Create the certificate in the contour-tls namespace
+cat << EOF | tee tls.yaml
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: knative-tls
-  namespace: contour-external
+  name: tls
+  namespace: contour-tls
 spec:
   secretTemplate:
     annotations:
       reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
       reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
-      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "educates"
-  secretName: knative-tls
+      reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "learningcenter"
+  secretName: tls
   commonName: "*.${DOMAIN}"
   dnsNames:
   - "*.${DOMAIN}"
@@ -59,14 +101,13 @@ EOF
 
 
 kubectl apply -f cluster-issuer.yaml
-kubectl apply -f knative-tls.yaml
+kubectl apply -f tls.yaml
 
 echo "Waiting..."
 sleep 2m 30s
 
-## If the above worked, you should get back a secret name starting with knative-tls in the contour-external namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
+## If the above worked, you should get back a secret name starting with tls in the contour-tls namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
 ## Let's verify...
 
-kubectl get secret -n contour-external | grep knative-tls
-kubectl describe challenges -n contour-external
-
+kubectl get secret -n contour-tls | grep tls
+kubectl describe challenges -n contour-tls
