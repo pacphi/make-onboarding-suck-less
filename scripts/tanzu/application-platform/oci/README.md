@@ -292,11 +292,11 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 
 ##### Install cert-manager-webhook
 
-We will install a [custom implementation](https://gitlab.com/dn13/cert-manager-webhook-oci) (instead of one provided by Tanzu package)
+We will install a [custom webhook implementation](https://gitlab.com/dn13/cert-manager-webhook-oci)
 
 ```
 helm repo add cert-manager-webhook-oci https://dn13.gitlab.io/cert-manager-webhook-oci
-helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci --set groupName {domain}
+helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci --set groupName={domain}
 ```
 
 Then
@@ -305,6 +305,7 @@ Then
 ./install-letsencrypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
+
 
 #### Create a new Tanzu Application Platform GUI catalog
 
