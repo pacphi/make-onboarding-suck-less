@@ -1,10 +1,14 @@
 #!/bin/bash
 set -e
 
-# Borrowed from https://gitlab.com/dn13/cert-manager-webhook-oci
-
-# Function to indent each line of multi-line string 4 spaces
-indent() { sed 's/^/    /'; }
+if ! command -v lego &> /dev/null
+then
+  echo "Downloading lego CLI..."
+	curl -LO curl -LO https://github.com/go-acme/lego/releases/download/v4.5.3/lego_v4.5.3_linux_386.tar.gz
+	tar xvf lego_v4.5.3_linux_386.tar.gz
+  rm -f CHANGELOG.md LICENSE
+	sudo mv lego /usr/local/bin
+fi
 
 # Automates wildcard ClusterIssuer, Certificate and Secret generation on a OCI cluster where cert-manager is already installed.
 
@@ -16,11 +20,27 @@ fi
 export REGION="$1"
 export TENANCY_OCID="$2"
 export USER_OCID="$3"
-export OCI_API_PK="$(cat $4 | indent)"
+export OCI_API_PK="$4"
 export FINGERPRINT="$5"
 export COMPARTMENT_OCID="$6"
 export DOMAIN="$7"
 export EMAIL_ADDRESS="$8"
+
+
+# Fetch cert and private key
+## @see https://go-acme.github.io/lego/dns/oraclecloud/
+
+OCI_PRIVKEY_FILE="${OCI_API_PK}" \
+OCI_PRIVKEY_PASS="" \
+OCI_TENANCY_OCID="${TENANCY_OCID}" \
+OCI_USER_OCID="${USER_OCID}" \
+OCI_PUBKEY_FINGERPRINT="${FINGERPRINT}" \
+OCI_REGION="${REGION}" \
+OCI_COMPARTMENT_OCID="${COMPARTMENT_OCID}" \
+lego --email ${EMAIL_ADDRESS} --dns oraclecloud --domains ${DOMAIN} --dns-timeout 180 --accept-tos run
+
+TLS_CRT=$(cat .lego/certificates/${DOMAIN}.crt)
+TLS_KEY=$(cat .lego/certificates/${DOMAIN}.key)
 
 
 ## Create secret
@@ -29,16 +49,11 @@ cat > oci-profile-secret.yml <<EOF
 apiVersion: v1
 kind: Secret
 metadata:
-  name: oci-profile
-type: Opaque
-stringData:
-  tenancy: "${TENANCY_OCID}"
-  user: "${USER_OCID}"
-  region: "${REGION}"
-  fingerprint: "${FINGERPRINT}"
-  privateKey: |
-${OCI_API_PK}
-  privateKeyPassphrase: ""
+  name: ca-key-pair
+  namespace: cert-manager
+data:
+  tls.crt: ${TLS_CRT}
+  tls.key: ${TLS_KEY}
 EOF
 
 kubectl apply -f oci-profile-secret.yml -n cert-manager
@@ -48,22 +63,11 @@ cat << EOF | tee cluster-issuer.yaml
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: ca-issuer
   namespace: cert-manager
 spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: ${EMAIL_ADDRESS}
-    privateKeySecretRef:
-      name: letsencrypt-prod
-    solvers:
-    - dns01:
-        webhook:
-          groupName: ${DOMAIN}
-          solverName: oci
-          config:
-            ociProfileSecretName: oci-profile
-            compartmentOCID: "${COMPARTMENT_OCID}"
+  ca:
+    secretName: ca-key-pair
 EOF
 
 ## Install EmberStack's Reflector
@@ -131,7 +135,7 @@ spec:
   dnsNames:
   - "*.${DOMAIN}"
   issuerRef:
-    name: letsencrypt-prod
+    name: ca-issuer
     kind: ClusterIssuer
 EOF
 

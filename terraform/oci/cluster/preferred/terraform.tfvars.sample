@@ -119,7 +119,7 @@ admission_controller_options = {
 allow_node_port_access       = false
 allow_worker_internet_access = true
 allow_worker_ssh_access      = false
-control_plane_type         = "private"
+control_plane_type         = "public"
 control_plane_allowed_cidrs  = ["0.0.0.0/0"]
 control_plane_nsgs           = []
 dashboard_enabled            = false
@@ -155,7 +155,7 @@ nodepool_upgrade_method = "out_of_place"
 
 # OKE Load Balancers
 enable_waf                   = false
-load_balancers               = "both"
+load_balancers               = "public"
 preferred_load_balancer      = "public"
 # internal_lb_allowed_cidrs  = ["172.16.1.0/24", "172.16.2.0/24"] # By default, anywhere i.e. 0.0.0.0/0 is allowed
 # internal_lb_allowed_ports  = [80, 443, "7001-7005"] # By default, only 80 and 443 are allowed
