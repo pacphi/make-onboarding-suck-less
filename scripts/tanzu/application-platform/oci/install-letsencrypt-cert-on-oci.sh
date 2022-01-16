@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Function to indent each line of multi-line string 4 spaces
+indent() { sed 's/^/    /'; }
+
 if ! command -v lego &> /dev/null
 then
   echo "Downloading lego CLI..."
@@ -17,12 +20,13 @@ if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ] && [ -z "$5" ] && [ 
 	exit 1
 fi
 
-export REGION="$1"
-export TENANCY_OCID="$2"
-export USER_OCID="$3"
-export OCI_API_PK="$4"
-export FINGERPRINT="$5"
-export COMPARTMENT_OCID="$6"
+export OCI_REGION="$1"
+export OCI_TENANCY_OCID="$2"
+export OCI_USER_OCID="$3"
+export OCI_PRIVKEY_FILE="$4"
+export OCI_PRIVKEY_PASS=""
+export OCI_PUBKEY_FINGERPRINT="$5"
+export OCI_COMPARTMENT_OCID="$6"
 export DOMAIN="$7"
 export EMAIL_ADDRESS="$8"
 
@@ -30,17 +34,14 @@ export EMAIL_ADDRESS="$8"
 # Fetch cert and private key
 ## @see https://go-acme.github.io/lego/dns/oraclecloud/
 
-OCI_PRIVKEY_FILE="${OCI_API_PK}" \
-OCI_PRIVKEY_PASS="" \
-OCI_TENANCY_OCID="${TENANCY_OCID}" \
-OCI_USER_OCID="${USER_OCID}" \
-OCI_PUBKEY_FINGERPRINT="${FINGERPRINT}" \
-OCI_REGION="${REGION}" \
-OCI_COMPARTMENT_OCID="${COMPARTMENT_OCID}" \
-lego --email ${EMAIL_ADDRESS} --dns oraclecloud --domains ${DOMAIN} --dns-timeout 180 --accept-tos run
+export OCI_POLLING_INTERVAL=120
+export OCI_PROPAGATION_TIMEOUT=900
+export OCI_TTL=900
 
-TLS_CRT=$(cat .lego/certificates/${DOMAIN}.crt)
-TLS_KEY=$(cat .lego/certificates/${DOMAIN}.key)
+lego --email ${EMAIL_ADDRESS} --dns oraclecloud --domains *.${DOMAIN} --accept-tos run
+
+TLS_CRT="$(cat .lego/certificates/_.${DOMAIN}.issuer.crt | base64 -w 0)"
+TLS_KEY="$(cat .lego/certificates/_.${DOMAIN}.key | base64 -w 0)"
 
 
 ## Create secret
@@ -144,7 +145,7 @@ kubectl apply -f cluster-issuer.yaml
 kubectl apply -f tls.yaml
 
 echo "Waiting..."
-sleep 2m 30s
+sleep 1m 30s
 
 ## If the above worked, you should get back a secret name starting with tls in the contour-tls namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
 ## Let's verify...

@@ -292,15 +292,6 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 
 ##### Install cert-manager-webhook
 
-We will install a [custom webhook implementation](https://gitlab.com/dn13/cert-manager-webhook-oci)
-
-```
-helm repo add cert-manager-webhook-oci https://dn13.gitlab.io/cert-manager-webhook-oci
-helm install --namespace cert-manager cert-manager-webhook-oci cert-manager-webhook-oci/cert-manager-webhook-oci --set groupName={domain}
-```
-
-Then
-
 ```
 ./install-letsencrypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
 ```
