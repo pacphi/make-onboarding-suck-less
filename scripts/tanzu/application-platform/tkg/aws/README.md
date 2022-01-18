@@ -359,7 +359,7 @@ We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) an
 
 #### Install a Let's Encrypt managed Certificate
 
-> Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Let's Encrypt.
+> Make sure that any self-hosted container image registry (e.g., Harbor) you're interacting with has been configured to trust the same CA via Let's Encrypt.
 
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on a TKG cluster on AWS where `cert-manager` is already installed.
 
