@@ -20,7 +20,7 @@ You will be prompted for
 * Tenancy OCID
   * to be found under `Profile > Tenancy: {account_name}`
 * Key file directory
- * just accept the default location
+  * just accept the default location
 * Region
   * you will be prompted with several options
 
