@@ -286,14 +286,14 @@ If you chose not to install `external-dns`, then you will have to [manually add]
 
 #### Install a Small Step managed Certificate
 
-> Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Small Step [see [certificates](https://github.com/smallstep/certificates) and [issuer](https://github.com/smallstep/step-issuer)].
+> Make sure that any self-hosted container image registry (e.g., Harbor) you're interacting with has been configured to trust the same CA via Small Step [see [certificates](https://github.com/smallstep/certificates) and [issuer](https://github.com/smallstep/step-issuer)].
 
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on an OCI cluster where `cert-manager` is already installed.
 
 ##### Install cert-manager-webhook
 
 ```
-./install-smallstep-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
+./install-smallstep-cert-on-oci.sh {domain}
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
 
