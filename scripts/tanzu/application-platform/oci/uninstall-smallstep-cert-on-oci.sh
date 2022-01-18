@@ -4,7 +4,7 @@ set -e
 # Remove Let's Encrypt managed Certificate plus Secret and ClusterIssuer
 
 ## Delete ClusterIssuer
-kubectl delete clusterissuer letsencrypt-prod -n cert-manager
+kubectl delete stepclusterissuer step-cluster-issuer -n default
 
 ## Delete Certificate
 kubectl delete cert tls -n contour-tls

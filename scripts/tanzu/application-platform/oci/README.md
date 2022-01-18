@@ -238,7 +238,7 @@ tanzu package installed update tap -v 1.0.0 --values-file tap-reified-values.yam
 
 ### Setting up Ingress
 
-We're going to adapt the setup process to automate it even more by employing [Let's Encrypt](https://letsencrypt.org/how-it-works/), [cert-manager](https://gitlab.com/dn13/cert-manager-webhook-oci), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/oracle.md) with [Contour](https://projectcontour.io/getting-started/).
+We're going to adapt the setup process to automate it even more by employing [Small Step](https://smallstep.com/blog/private-acme-server/), [cert-manager](https://gitlab.com/dn13/cert-manager-webhook-oci), and [external-dns](https://github.com/kubernetes-sigs/external-dns/blob/master/docs/tutorials/oracle.md) with [Contour](https://projectcontour.io/getting-started/).
 
 TAP already installed Contour.  We can verify that API resources were created by running:
 
@@ -284,16 +284,16 @@ Let's install the external-dns package with a [script](install-external-dns-pack
 
 If you chose not to install `external-dns`, then you will have to [manually add](https://docs.oracle.com/en-us/iaas/Content/DNS/Concepts/gettingstarted.htm#three) a wildcard domain as an `A` or `CNAME` record to the zone within Cloud DNS.
 
-#### Install a Let's Encrypt managed Certificate
+#### Install a Small Step managed Certificate
 
-> Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Let's Encrypt.
+> Use this option only when the container image registry you're interacting with has been configured to trust the same CA via Small Step [see [certificates](https://github.com/smallstep/certificates) and [issuer](https://github.com/smallstep/step-issuer)].
 
 We'll create a [ClusterIssuer](https://cert-manager.io/docs/concepts/issuer/) and [Certificate](https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/), and [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) on an OCI cluster where `cert-manager` is already installed.
 
 ##### Install cert-manager-webhook
 
 ```
-./install-letsencrypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
+./install-smallstep-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}
 ```
 > This script also makes use of [kubernetes-reflector](https://github.com/emberstack/kubernetes-reflector#cert-manager-support) to automatically mirror the `tls` secret in the `contour-tls` namespace into the `learningcenter` namespace.
 
@@ -468,12 +468,12 @@ Run this [script](uninstall-external-dns-package-on-oci.sh)
 ```
 
 
-## Uninstall the Let's Encrypt managed certificate
+## Uninstall the Small Step managed certificate
 
-Run this [script](uninstall-letsencrypt-cert-on-oci.sh)
+Run this [script](uninstall-smallstep-cert-on-oci.sh)
 
 ```
-./uninstall-letsencrypt-cert-on-oci.sh
+./uninstall-smallstep-cert-on-oci.sh
 ```
 
 ## Uninstall cert-manager

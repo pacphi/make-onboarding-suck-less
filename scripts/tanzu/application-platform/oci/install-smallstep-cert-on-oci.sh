@@ -1,75 +1,53 @@
 #!/bin/bash
+
 set -e
-
-# Function to indent each line of multi-line string 4 spaces
-indent() { sed 's/^/    /'; }
-
-if ! command -v lego &> /dev/null
-then
-  echo "Downloading lego CLI..."
-	curl -LO curl -LO https://github.com/go-acme/lego/releases/download/v4.5.3/lego_v4.5.3_linux_386.tar.gz
-	tar xvf lego_v4.5.3_linux_386.tar.gz
-  rm -f CHANGELOG.md LICENSE
-	sudo mv lego /usr/local/bin
-fi
 
 # Automates wildcard ClusterIssuer, Certificate and Secret generation on a OCI cluster where cert-manager is already installed.
 
-if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ] && [ -z "$5" ] && [ -z "$6" ] && [ -z "$7" ] && [ -z "$8" ]; then
-	echo "Usage: install-letsencypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}"
+if [ -z "$1" ]; then
+	echo "Usage: install-smallstep-cert-on-oci.sh {domain}"
 	exit 1
 fi
 
-export OCI_REGION="$1"
-export OCI_TENANCY_OCID="$2"
-export OCI_USER_OCID="$3"
-export OCI_PRIVKEY_FILE="$4"
-export OCI_PRIVKEY_PASS=""
-export OCI_PUBKEY_FINGERPRINT="$5"
-export OCI_COMPARTMENT_OCID="$6"
-export DOMAIN="$7"
-export EMAIL_ADDRESS="$8"
+DOMAIN="$1"
 
+## Install step-certificates and step-issuer Helm charts
 
-# Fetch cert and private key
-## @see https://go-acme.github.io/lego/dns/oraclecloud/
+helm repo add smallstep  https://smallstep.github.io/helm-charts
+helm repo update
+helm install step-certificates smallstep/step-certificates
+helm install step-issuer smallstep/step-issuer
 
-export OCI_POLLING_INTERVAL=120
-export OCI_PROPAGATION_TIMEOUT=900
-export OCI_TTL=900
+## Get step-certificates root certificate
 
-lego --email ${EMAIL_ADDRESS} --dns oraclecloud --domains *.${DOMAIN} --accept-tos run
+ROOT_CERT=$(kubectl get -o jsonpath="{.data['root_ca\.crt']}" configmaps/step-certificates-certs | base64 -w0)
 
-TLS_CRT="$(cat .lego/certificates/_.${DOMAIN}.issuer.crt | base64 -w 0)"
-TLS_KEY="$(cat .lego/certificates/_.${DOMAIN}.key | base64 -w 0)"
+## Get the step-certificate provisioner information
 
+PROVISIONER_INFO=$(kubectl get -o jsonpath="{.data['ca\.json']}" configmaps/step-certificates-config | jq .authority.provisioners)
+KID=$(echo "${PROVISIONER_INFO}" | jq  '.[0].key.kid' | tr -d '"')
 
-## Create secret
+## Create StepClusterIssuer
 
-cat > oci-profile-secret.yml <<EOF
-apiVersion: v1
-kind: Secret
+cat > step-cluster-issuer.yaml <<EOF
+---
+apiVersion: certmanager.step.sm/v1beta1
+kind: StepClusterIssuer
 metadata:
-  name: ca-key-pair
-  namespace: cert-manager
-data:
-  tls.crt: ${TLS_CRT}
-  tls.key: ${TLS_KEY}
-EOF
-
-kubectl apply -f oci-profile-secret.yml -n cert-manager
-
-## Create the cluster issuer
-cat << EOF | tee cluster-issuer.yaml
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: ca-issuer
-  namespace: cert-manager
+  name: step-cluster-issuer
+  namespace: default
 spec:
-  ca:
-    secretName: ca-key-pair
+  url: https://step-certificates.default.svc.cluster.local
+  caBundle: ${ROOT_CERT}
+  provisioner:
+    name: admin
+    kid: ${KID}
+    passwordRef:
+      namespace: default
+      name: step-certificates-provisioner-password
+      key: password
 EOF
+
 
 ## Install EmberStack's Reflector
 ### Reflector can create mirrors (of configmaps and secrets) with the same name in other namespaces automatically
@@ -135,13 +113,15 @@ spec:
   commonName: "*.${DOMAIN}"
   dnsNames:
   - "*.${DOMAIN}"
+  duration: 24h
+  renewBefore: 8h
   issuerRef:
-    name: ca-issuer
-    kind: ClusterIssuer
+    group: certmanager.step.sm
+    kind: StepClusterIssuer
+    name: step-cluster-issuer
 EOF
 
-
-kubectl apply -f cluster-issuer.yaml
+kubectl apply -f step-cluster-issuer.yaml
 kubectl apply -f tls.yaml
 
 echo "Waiting..."
