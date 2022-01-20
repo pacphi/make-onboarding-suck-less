@@ -1,7 +1,7 @@
 name: Build Ubuntu 20.04 VM Image on Google Compute
 
 on:
-  - pull_request
+  - workflow_dispatch
 
 jobs:
   build:

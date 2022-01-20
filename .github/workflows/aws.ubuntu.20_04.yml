@@ -1,7 +1,8 @@
 name: Build Ubuntu 20.04 VM Image on AWS
 
 on:
-  - pull_request
+  - workflow_dispatch
+
 
 jobs:
   build:
