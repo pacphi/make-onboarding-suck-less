@@ -253,6 +253,11 @@ main() {
   chmod +x mkpcli-linux-amd64 && \
   sudo mv mkpcli-linux-amd64 /usr/local/bin/mkpcli && \
 
+  # Install cmctl; @see https://cert-manager.io/docs/usage/cmctl/
+  curl -L -o cmctl.tar.gz https://github.com/jetstack/cert-manager/releases/latest/download/cmctl-linux-amd64.tar.gz
+  tar xzf cmctl.tar.gz
+  sudo mv cmctl /usr/local/bin
+
   # Clean-up APT cache
   rm -Rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
   apt clean

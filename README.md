@@ -34,7 +34,7 @@ The choice of tools used to package is not the focus rather the above are introd
 
 ## Examples
 
-### Found here
+### Build your own image
 
 * Vagrant
   * [MacOS 10.15](vagrant/macos/10_15)
@@ -48,15 +48,14 @@ The choice of tools used to package is not the focus rather the above are introd
   * [Ubuntu 20.04 on Azure VM](packer/azure/ubuntu/20_04)
   * [Ubuntu 20.04 on Oracle Cloud Infrastructure VM](packer/oci/ubuntu/20_04)
 
-### Elsewhere
+#### Other options
 
 * [alicloud-image-builder](https://alibabacloud-howto.github.io/devops/tutorials/devops_for_small_to_medium_web_applications/part_04_continuous_delivery.html)
 * [ibm-cloud-image-builder](https://github.com/IBM-Cloud/ibmcloud-image-builder)
 * [oci-image-builder](https://github.com/oracle-quickstart/oci-byo-image)
 * [vmware-vsphere-image-builder](https://github.com/allthingsclowd/packer-vsphere-iso-example)
 
-
-## What if I'm air-gapped?
+### Host your own image repository
 
 Host your own artifact repository within your own network. Mirror or package and maintain artifacts.
 
@@ -73,10 +72,23 @@ Consider:
 * [Snyk](https://snyk.io/product/container-vulnerability-management/)
 * [Tenable](https://www.tenable.com/)
 
+### What might you do with these toolset images?
+
+Evaluate:
+
+* [Tanzu Community Edition](scripts/tanzu/community-edition/README.md)
+* [Tanzu Kubernetes Grid](scripts/tanzu/kubernetes-grid/README.md)
+* [Harbor](scripts/harbor/README.md)
+* [Tanzu Build Service](scripts/tanzu/build-service/README.md)
+* [Tanzu Observability](scripts/tanzu/observability/README.md)
+* [Tanzu Service Mesh](scripts/tanzu/service-mesh/README.md)
+* [Tanzu Application Platform](scripts/tanzu/application-platform/README.md)
+* [Carvel kapp-controller](scripts/carvel/README.md)
+
 
 ## CI/CD Ideas
 
-* GitHub Actions
+* [GitHub Actions](.github/workflows)
   * [setup-packer](https://github.com/marketplace/actions/setup-packer)
   * [vagrant-github-actions](https://github.com/jonashackt/vagrant-github-actions)
 * [Start GitHub Actions self-hosted runner with VirtualBox and Vagrant ](https://dev.to/peaceiris/start-github-actions-self-hosted-runner-with-virtualbox-and-vagrant-49ei)

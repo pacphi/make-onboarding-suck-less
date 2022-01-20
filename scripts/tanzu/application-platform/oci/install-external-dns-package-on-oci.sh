@@ -68,4 +68,9 @@ deployment:
       secretName: external-dns-admin-credentials
 EOF
 
+## Remove --domain-filter when DOMAIN is set to "-"
+if [ "-" == "${DOMAIN}" ]; then
+  sed -i '12d' external-dns-data-values.yaml
+fi
+
 tanzu package install external-dns -p external-dns.tanzu.vmware.com -v 0.8.0+vmware.1-tkg.1 --values-file external-dns-data-values.yaml -n tanzu-package-repo-global

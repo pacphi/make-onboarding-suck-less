@@ -1,70 +1,53 @@
 #!/bin/bash
+
 set -e
-
-# Borrowed from https://gitlab.com/dn13/cert-manager-webhook-oci
-
-# Function to indent each line of multi-line string 4 spaces
-indent() { sed 's/^/    /'; }
 
 # Automates wildcard ClusterIssuer, Certificate and Secret generation on a OCI cluster where cert-manager is already installed.
 
-if [ -z "$1" ] && [ -z "$2" ] && [ -z "$3" ] && [ -z "$4" ] && [ -z "$5" ] && [ -z "$6" ] && [ -z "$7" ] && [ -z "$8" ]; then
-	echo "Usage: install-letsencypt-cert-on-oci.sh {region} {tenancy_ocid} {user_ocid} {path_to_oci_api_key_pem_file} {fingerprint} {compartment_ocid} {domain} {email-address}"
+if [ -z "$1" ]; then
+	echo "Usage: install-smallstep-cert-on-oci.sh {domain}"
 	exit 1
 fi
 
-export REGION="$1"
-export TENANCY_OCID="$2"
-export USER_OCID="$3"
-export OCI_API_PK="$(cat $4 | indent)"
-export FINGERPRINT="$5"
-export COMPARTMENT_OCID="$6"
-export DOMAIN="$7"
-export EMAIL_ADDRESS="$8"
+DOMAIN="$1"
 
+## Install step-certificates and step-issuer Helm charts
 
-## Create secret
+helm repo add smallstep  https://smallstep.github.io/helm-charts
+helm repo update
+helm install step-certificates smallstep/step-certificates
+helm install step-issuer smallstep/step-issuer
 
-cat > oci-profile-secret.yml <<EOF
-apiVersion: v1
-kind: Secret
+## Get step-certificates root certificate
+
+ROOT_CERT=$(kubectl get -o jsonpath="{.data['root_ca\.crt']}" configmaps/step-certificates-certs | base64 -w0)
+
+## Get the step-certificate provisioner information
+
+PROVISIONER_INFO=$(kubectl get -o jsonpath="{.data['ca\.json']}" configmaps/step-certificates-config | jq .authority.provisioners)
+KID=$(echo "${PROVISIONER_INFO}" | jq  '.[0].key.kid' | tr -d '"')
+
+## Create StepClusterIssuer
+
+cat > step-cluster-issuer.yaml <<EOF
+---
+apiVersion: certmanager.step.sm/v1beta1
+kind: StepClusterIssuer
 metadata:
-  name: oci-profile
-type: Opaque
-stringData:
-  tenancy: "${TENANCY_OCID}"
-  user: "${USER_OCID}"
-  region: "${REGION}"
-  fingerprint: "${FINGERPRINT}"
-  privateKey: |
-${OCI_API_PK}
-  privateKeyPassphrase: ""
-EOF
-
-kubectl apply -f oci-profile-secret.yml -n cert-manager
-
-## Create the cluster issuer
-cat << EOF | tee cluster-issuer.yaml
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod
-  namespace: cert-manager
+  name: step-cluster-issuer
+  namespace: default
 spec:
-  acme:
-    server: https://acme-v02.api.letsencrypt.org/directory
-    email: ${EMAIL_ADDRESS}
-    privateKeySecretRef:
-      name: letsencrypt-prod
-    solvers:
-    - dns01:
-        webhook:
-          groupName: ${DOMAIN}
-          solverName: oci
-          config:
-            ociProfileSecretName: oci-profile
-            compartmentOCID: "${COMPARTMENT_OCID}"
+  url: https://step-certificates.default.svc.cluster.local
+  caBundle: ${ROOT_CERT}
+  provisioner:
+    name: admin
+    kid: ${KID}
+    passwordRef:
+      namespace: default
+      name: step-certificates-provisioner-password
+      key: password
 EOF
+
 
 ## Install EmberStack's Reflector
 ### Reflector can create mirrors (of configmaps and secrets) with the same name in other namespaces automatically
@@ -130,17 +113,19 @@ spec:
   commonName: "*.${DOMAIN}"
   dnsNames:
   - "*.${DOMAIN}"
+  duration: 24h
+  renewBefore: 8h
   issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
+    group: certmanager.step.sm
+    kind: StepClusterIssuer
+    name: step-cluster-issuer
 EOF
 
-
-kubectl apply -f cluster-issuer.yaml
+kubectl apply -f step-cluster-issuer.yaml
 kubectl apply -f tls.yaml
 
 echo "Waiting..."
-sleep 2m 30s
+sleep 1m 30s
 
 ## If the above worked, you should get back a secret name starting with tls in the contour-tls namespace.  We should also see that the challenge succeeded (i.e., there should be no challenges in the namespace).
 ## Let's verify...
