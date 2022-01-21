@@ -72,6 +72,7 @@ source "azure-arm" "k8s-toolset" {
   image_version                      = "latest"
   vm_size                            = var.vm_size                    # e.g., az vm list-sizes --location westus -o table
   ssh_username                       = "ubuntu"
+  keep_os_disk                       = "true"
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
