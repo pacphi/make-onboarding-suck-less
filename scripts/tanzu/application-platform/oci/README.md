@@ -44,7 +44,7 @@ Obtain the new workload cluster `kubectl` configuration using the script:
 ## Install Tanzu Cluster Essentials
 
 ```
-./install-cluster-essentials.sh {tanzu-network-api-token} {tanzu-network-username} {tanzu-network-password}
+./install-tanzu-cluster-essentials.sh {tanzu-network-api-token} {tanzu-network-username} {tanzu-network-password}
 ```
 
 If you see an error message like
