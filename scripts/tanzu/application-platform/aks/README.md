@@ -66,7 +66,7 @@ tanzu plugin install all --local {path-to-cli-directory}
 Create new namespaces
 
 ```
-kubectl create ns tanzu-package-repo-global
+kubectl create namespace tanzu-package-repo-global --dry-run=client -o yaml | kubectl apply -f -
 kubectl create ns tap-install
 ```
 
