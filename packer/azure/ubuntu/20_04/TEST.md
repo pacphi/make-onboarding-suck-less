@@ -24,7 +24,7 @@ For example
 ❯ az vm create \
     --resource-group cloudmonk \
     --name K8sToolSetTest \
-    --image /subscriptions/bee31e51-b8ae-4c3d-9736-9ee2b9a0e344/resourceGroups/cloudmonk/providers/Microsoft.Compute/images/K8sToolsetImage \
+    --image /subscriptions/bee31e51-b8ae-4c3d-9736-9ee2b9a0e344/resourceGroups/cloudmonk/providers/Microsoft.Compute/galleries/toolsetvms/images/SpringOne2021K8sToolsetImage/versions/2022.1.26 \
     --admin-username ubuntu \
     --generate-ssh-keys
 
