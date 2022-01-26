@@ -65,7 +65,7 @@ source "azure-arm" "k8s-toolset" {
     image_name                       = var.image_name
     image_version                    = local.timestamp
     resource_group                   = var.resource_group
-    gallery_name                     = "toolset-vms",
+    gallery_name                     = "toolset-vms"
     replication_regions              = [ "eastus", "westus2", "centralus", "westcentralus", "northeurope", "ukwest", "southeastasia", "australiasoutheast" ]
   }
 
