@@ -1,5 +1,6 @@
 locals {
   timestamp = regex_replace(timestamp(), "[- TZ:]", "")
+  image_version = formatdate("YYYY.M.D", timestamp())
 }
 
 variable "client_id" {
@@ -63,7 +64,7 @@ source "azure-arm" "k8s-toolset" {
 
   shared_image_gallery_destination {
     image_name                       = var.image_name
-    image_version                    = local.timestamp
+    image_version                    = local.image_version
     resource_group                   = var.resource_group
     gallery_name                     = "toolsetvms"     # Shared Image Gallery must already exist in resource group
     replication_regions              = [ "eastus", "westus2", "centralus", "westcentralus", "northeurope", "ukwest", "southeastasia", "australiasoutheast" ]
