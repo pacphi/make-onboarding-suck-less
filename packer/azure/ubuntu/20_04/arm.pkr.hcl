@@ -44,7 +44,7 @@ variable "init_script" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_D4d_v4"
+  default = "Standard_D4s_v4"
 }
 
 variable "cloud_environment_name" {
