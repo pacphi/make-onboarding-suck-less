@@ -59,20 +59,34 @@ variable "cloud_environment_name" {
 
 source "azure-arm" "k8s-toolset" {
   use_azure_cli_auth                 = var.use_azure_cli_auth
+
   cloud_environment_name             = var.cloud_environment_name     # One of Public, China, Germany, or USGovernment. Defaults to Public. Long forms such as USGovernmentCloud and AzureUSGovernmentCloud are also supported.
-  managed_image_storage_account_type = "Standard_LRS"
+
   build_resource_group_name          = var.resource_group
+
+  shared_image_gallery_destination {
+    image_name                       = var.image_name
+    image_version                    = local.timestamp
+    resource_group                   = var.resource_group
+    gallery_name                     = "toolset-vms",
+    replication_regions              = [ "eastus", "westus2", "centralus", "westcentralus", "northeurope", "ukwest", "southeastasia", "australiasoutheast" ]
+  }
+
   managed_image_resource_group_name  = var.resource_group
   managed_image_name                 = "${var.image_name}${local.timestamp}"
+  managed_image_storage_account_type = "Premium_LRS"
+
   os_type                            = "Linux"
   os_disk_size_gb                    = 50
+
   image_publisher                    = "Canonical"                    # e.g., az vm image list-publishers --location westus2 -o table
   image_offer                        = "0001-com-ubuntu-server-focal" # e.g., az vm image list-offers --location westus2 --publisher Canonical -o table
   image_sku                          = "20_04-lts-gen2"               # e.g., az vm image list-skus --location westus2 --publisher Canonical --offer 0001-com-ubuntu-minimal-focal-daily -o table
   image_version                      = "latest"
+
   vm_size                            = var.vm_size                    # e.g., az vm list-sizes --location westus -o table
+
   ssh_username                       = "ubuntu"
-  keep_os_disk                       = "true"
 }
 
 # a build block invokes sources and runs provisioning steps on them. The
