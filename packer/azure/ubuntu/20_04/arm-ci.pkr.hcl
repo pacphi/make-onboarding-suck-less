@@ -30,7 +30,7 @@ variable "resource_group" {
 
 variable "image_name" {
   type    = string
-  default = "SpringOne2021K8sToolsetImage"
+  default = "k8stoolset"
 }
 
 variable "init_script" {
@@ -40,7 +40,7 @@ variable "init_script" {
 
 variable "vm_size" {
   type    = string
-  default = "Standard_D4s_v4"
+  default = "Standard_D4s_v3"
 }
 
 variable "cloud_environment_name" {
@@ -62,17 +62,10 @@ source "azure-arm" "k8s-toolset" {
 
   build_resource_group_name          = var.resource_group
 
-  shared_image_gallery_destination {
-    image_name                       = var.image_name
-    image_version                    = local.image_version
-    resource_group                   = var.resource_group
-    gallery_name                     = "toolsetvms"     # Shared Image Gallery must already exist in resource group
-    replication_regions              = [ "eastus", "westus2", "centralus", "westcentralus", "northeurope", "ukwest", "southeastasia", "australiasoutheast" ]
-  }
-
-  managed_image_resource_group_name  = var.resource_group
-  managed_image_name                 = "${var.image_name}${local.timestamp}"
-  managed_image_storage_account_type = "Premium_LRS"
+  storage_account                    = "toolsetvms"
+  capture_container_name             = "images"
+  capture_name_prefix                = var.image_name
+  resource_group_name                = var.resource_group
 
   os_type                            = "Linux"
   os_disk_size_gb                    = 50

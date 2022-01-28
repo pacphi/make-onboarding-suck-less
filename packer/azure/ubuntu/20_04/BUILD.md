@@ -40,6 +40,13 @@ az login --service-principal --username {APP_ID} --password {CLIENT_SECRET} --te
 ```
 > Replace `{APP_ID}`, `{CLIENT_SECRET}`, and `{TENANT_ID}` with the values you used to create the service principal above.
 
+## Create storage account for VHD
+
+```
+az storage account create -g {RESOURCE_GROUP} -n toolsetvms --access-tier hot --sku Standard_LRS --location "{AZURE_REGION}" --allow-blob-public-access true
+```
+> Replace `{RESOURCE_GROUP}` and `{AZURE_REGION}` above with valid values.  The resource group must already exist.  And you need to make sure that the input variables within the HCL files match.
+
 
 ## Use Packer to build and upload an Azure Virtual Machine Image
 
